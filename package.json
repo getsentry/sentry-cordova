@@ -1,0 +1,30 @@
+{
+  "name": "@sentry/cordova",
+  "version": "0.1.0",
+  "main": "www/Cordova.js",
+  "license": "MIT",
+  "repository": "git://github.com/getsentry/sentry-cordova.git",
+  "cordova": {
+    "id": "@sentry/cordova",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "description": "Official Sentry SDK for Cordova",
+  "dependencies": {
+    "@sentry/browser": "file:/Users/haza/Projects/HazAT/raven-js/packages/browser",
+    "@sentry/core": "file:/Users/haza/Projects/HazAT/raven-js/packages/core"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@types/cordova": "0.0.34",
+    "@types/node": "^8.0.33",
+    "prettier": "^1.7.4",
+    "typescript": "^2.5.3"
+  },
+  "scripts": {
+    "clean": "rm -f ./www/*",
+    "dist": "npm run clean && tsc -p tsconfig.json"
+  }
+}

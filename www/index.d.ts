@@ -1,0 +1,1 @@
+export { Cordova } from './Cordova';
