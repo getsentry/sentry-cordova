@@ -1,5 +1,5 @@
-import { Adapter, Client, Options, Event, Breadcrumb } from '@sentry/core';
-import { Browser } from '@sentry/browser';
+import {Adapter, Client, Options, Event, Breadcrumb, User} from '@sentry/core';
+import {Browser} from '@sentry/browser';
 
 declare var window;
 
@@ -22,8 +22,8 @@ export class Cordova extends Browser {
       this.cordovaExec = (<any>window).Cordova.exec;
     } else {
       this.cordovaExec = (...params) => {
-        // We cannot log here since this would cause an endless logging loop
-        // console.log('cordovaExec is not defined call stub with:', ...params);
+        // eslint-disable-next-line
+        client.log(params);
       };
     }
     return this;
@@ -73,5 +73,30 @@ export class Cordova extends Browser {
         [event]
       );
     });
+  }
+
+  setUserContext(user?: User) {
+    this.cordovaExec(null, null, this.PLUGIN_NAME, 'setUserContext', [user]);
+    return this;
+  }
+
+  setTagsContext(tags?: {[key: string]: any}) {
+    this.cordovaExec(null, null, this.PLUGIN_NAME, 'setTagsContext', [tags]);
+    return this;
+  }
+
+  setExtraContext(extra?: {[key: string]: any}) {
+    this.cordovaExec(null, null, this.PLUGIN_NAME, 'setExtraContext', [extra]);
+    return this;
+  }
+
+  addExtraContext(key: string, value: any) {
+    this.cordovaExec(null, null, this.PLUGIN_NAME, 'addExtraContext', [key, value]);
+    return this;
+  }
+
+  clearContext() {
+    this.cordovaExec(null, null, this.PLUGIN_NAME, 'clearContext', []);
+    return this;
   }
 }

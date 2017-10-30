@@ -1,4 +1,4 @@
-import { Client, Event, Breadcrumb } from '@sentry/core';
+import { Client, Event, Breadcrumb, User } from '@sentry/core';
 import { Browser } from '@sentry/browser';
 export declare namespace Cordova {
     type Options = Browser.Options & {
@@ -15,4 +15,13 @@ export declare class Cordova extends Browser {
     setOptions(options: Cordova.Options): this;
     captureBreadcrumb(crumb: Breadcrumb): Promise<Breadcrumb>;
     send(event: Event): Promise<Event>;
+    setUserContext(user?: User): this;
+    setTagsContext(tags?: {
+        [key: string]: any;
+    }): this;
+    setExtraContext(extra?: {
+        [key: string]: any;
+    }): this;
+    addExtraContext(key: string, value: any): this;
+    clearContext(): this;
 }

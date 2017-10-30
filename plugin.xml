@@ -42,8 +42,6 @@
 
         <header-file src="src/ios/SentryCordova.h" />
         <source-file src="src/ios/SentryCordova.m" />
-        <header-file src="src/ios/SentryNativeHelper.h" />
-        <source-file src="src/ios/SentryNativeHelper.m" />
 
         <framework src="src/ios/Carthage/Build/iOS/Sentry.framework" custom="true" embed="true" />
     </platform>

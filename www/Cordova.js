@@ -28,8 +28,8 @@ var Cordova = /** @class */ (function (_super) {
                 for (var _i = 0; _i < arguments.length; _i++) {
                     params[_i] = arguments[_i];
                 }
-                // We cannot log here since this would cause an endless logging loop
-                // console.log('cordovaExec is not defined call stub with:', ...params);
+                // eslint-disable-next-line
+                client.log(params);
             };
         }
         return _this;
@@ -60,6 +60,26 @@ var Cordova = /** @class */ (function (_super) {
         return new Promise(function (resolve, reject) {
             _this.cordovaExec(function (result) { return resolve(result); }, function (error) { return reject(error); }, _this.PLUGIN_NAME, 'sendEvent', [event]);
         });
+    };
+    Cordova.prototype.setUserContext = function (user) {
+        this.cordovaExec(null, null, this.PLUGIN_NAME, 'setUserContext', [user]);
+        return this;
+    };
+    Cordova.prototype.setTagsContext = function (tags) {
+        this.cordovaExec(null, null, this.PLUGIN_NAME, 'setTagsContext', [tags]);
+        return this;
+    };
+    Cordova.prototype.setExtraContext = function (extra) {
+        this.cordovaExec(null, null, this.PLUGIN_NAME, 'setExtraContext', [extra]);
+        return this;
+    };
+    Cordova.prototype.addExtraContext = function (key, value) {
+        this.cordovaExec(null, null, this.PLUGIN_NAME, 'addExtraContext', [key, value]);
+        return this;
+    };
+    Cordova.prototype.clearContext = function () {
+        this.cordovaExec(null, null, this.PLUGIN_NAME, 'clearContext', []);
+        return this;
     };
     return Cordova;
 }(browser_1.Browser));

@@ -3,7 +3,6 @@
     // for the documentation about the extensions.json format
     "recommendations": [
         "esbenp.prettier-vscode",
-        "jmlntw.vscode-ensure-single-final-newline",
         "emeraldwalk.runonsave"
     ]
 }
