@@ -7,6 +7,7 @@
         "types": [
             "node"
         ],
+        "target": "es5",
         "declaration": true,
         "allowJs": false,
         "outDir": "www"

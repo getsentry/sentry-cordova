@@ -1,1 +1,1 @@
-export {Cordova} from './Cordova';
+export { Cordova } from './Cordova';

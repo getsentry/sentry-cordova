@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/core';
+// @ts-ignore
 import { IonicErrorHandler } from 'ionic-angular';
 
 export class SentryIonicErrorHandler extends IonicErrorHandler {

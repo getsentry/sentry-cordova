@@ -1,7 +1,7 @@
-import { Client, Event, Breadcrumb, User } from '@sentry/core';
-import { Browser } from '@sentry/browser';
+import { Client, Event, IBreadcrumb, IUser } from '@sentry/core';
+import { Browser, IBrowserOptions } from '@sentry/browser';
 export declare namespace Cordova {
-    type Options = Browser.Options & {
+    type Options = IBrowserOptions & {
         testOption?: boolean;
     };
 }
@@ -9,19 +9,21 @@ export declare class Cordova extends Browser {
     options: Cordova.Options;
     private client;
     private cordovaExec;
+    private _isNativeExtensionAvailable;
     private PLUGIN_NAME;
     constructor(client: Client, options?: Cordova.Options);
-    install(): Promise<boolean>;
+    private readonly isNativeExtensionAvailable;
+    install(): any;
     setOptions(options: Cordova.Options): this;
-    captureBreadcrumb(crumb: Breadcrumb): Promise<Breadcrumb>;
-    send(event: Event): Promise<Event>;
-    setUserContext(user?: User): this;
+    captureBreadcrumb(crumb: IBreadcrumb): Promise<IBreadcrumb>;
+    send(event: Event): any;
+    setUserContext(user?: IUser): any;
     setTagsContext(tags?: {
         [key: string]: any;
-    }): this;
+    }): any;
     setExtraContext(extra?: {
         [key: string]: any;
-    }): this;
-    addExtraContext(key: string, value: any): this;
-    clearContext(): this;
+    }): any;
+    addExtraContext(key: string, value: any): any;
+    clearContext(): any;
 }

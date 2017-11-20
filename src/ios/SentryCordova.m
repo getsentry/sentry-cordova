@@ -2,6 +2,9 @@
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
+NSString *const SentryCordovaVersionString = @"0.1.0";
+NSString *const SentryCordovaSdkName = @"sentry-cordova";
+
 @implementation SentryCordova
 
 - (void)pluginInitialize {
@@ -16,6 +19,9 @@
         SentryClient *client = [[SentryClient alloc] initWithDsn:dsn didFailWithError:&error];
         SentryClient.sharedClient = client;
         [SentryClient.sharedClient startCrashHandlerWithError:&error];
+        client.beforeSerializeEvent = ^(SentryEvent * _Nonnull event) {
+            [self setReleaseVersionDist:event];
+        };
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
         if (error != nil) {
             NSLog(@"%@", error);
@@ -23,6 +29,22 @@
         }
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
+}
+
+- (void)setReleaseVersionDist:(SentryEvent *)event {
+    if (event.extra[@"__sentry_version"]) {
+        NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+        event.releaseName = [NSString stringWithFormat:@"%@-%@", infoDict[@"CFBundleIdentifier"], event.extra[@"__sentry_version"]];
+    }
+    if (event.extra[@"__sentry_release"]) {
+        event.releaseName = [NSString stringWithFormat:@"%@", event.extra[@"__sentry_release"]];
+    }
+    if (event.extra[@"__sentry_dist"]) {
+        event.dist = [NSString stringWithFormat:@"%@", event.extra[@"__sentry_dist"]];
+    }
+    event.sdk = @{@"name": SentryCordovaSdkName,
+                  @"version": SentryCordovaVersionString,
+                  @"integrations": @[@"sentry-cocoa"]};
 }
 
 - (void)sendEvent:(CDVInvokedUrlCommand *)command {
