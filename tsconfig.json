@@ -13,6 +13,6 @@
         "outDir": "www"
     },
     "include": [
-        "src/js/index.ts"
+        "src/js/Cordova.ts"
     ]
 }

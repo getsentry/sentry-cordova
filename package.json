@@ -30,7 +30,7 @@
     "vrsource-tslint-rules": "^5.8.0"
   },
   "scripts": {
-    "clean": "rm -f ./www/*",
+    "clean": "rm -rf ./www/*",
     "dist": "npm run clean && tsc -p tsconfig.json"
   }
 }

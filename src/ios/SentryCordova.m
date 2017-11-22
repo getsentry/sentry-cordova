@@ -88,22 +88,28 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 
 - (void)setUserContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
-        NSDictionary *jsonUser = [command.arguments objectAtIndex:0];
-        SentryClient.sharedClient.user = [SentryJavaScriptBridgeHelper createSentryUserFromJavaScriptUser:jsonUser];
+        id arg = [command.arguments objectAtIndex:0];
+        if ([arg isKindOfClass:NSDictionary.class]) {
+            SentryClient.sharedClient.user = [SentryJavaScriptBridgeHelper createSentryUserFromJavaScriptUser:arg];
+        }
     }];
 }
 
 - (void)setTagsContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
-        NSDictionary *jsonTags = [command.arguments objectAtIndex:0];
-        SentryClient.sharedClient.tags = jsonTags;
+        id arg = [command.arguments objectAtIndex:0];
+        if ([arg isKindOfClass:NSDictionary.class]) {
+            SentryClient.sharedClient.tags = arg;
+        }
     }];
 }
 
 - (void)setExtraContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
-        NSDictionary *jsonExtra = [command.arguments objectAtIndex:0];
-        SentryClient.sharedClient.extra = jsonExtra;
+        id arg = [command.arguments objectAtIndex:0];
+        if ([arg isKindOfClass:NSDictionary.class]) {
+            SentryClient.sharedClient.extra = arg;
+        }
     }];
 }
 

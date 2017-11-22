@@ -1,70 +1,90 @@
-import { IAdapter, Client, Event, IBreadcrumb, IUser } from '@sentry/core';
-import { Browser, IBrowserOptions } from '@sentry/browser';
+import { Browser } from '@sentry/browser';
+import { Client, Event, IAdapter, IBreadcrumb, IUser } from '@sentry/core';
 
 declare var window;
+declare var document;
 
-export namespace Cordova {
-  export type Options = IBrowserOptions & {
-    testOption?: boolean;
-  };
+const CORDOVA_DEVICE_RDY_TIMEOUT = 10000;
+
+export interface ICordovaOptions {
+  testOption?: boolean;
+  browser?: Browser;
 }
 
-export class Cordova extends Browser {
+export class SentryCordova implements IAdapter {
   private client: Client;
+  private browser: Browser;
   private cordovaExec: any;
-  private _isNativeExtensionAvailable = true;
 
   private PLUGIN_NAME = 'Sentry';
 
-  constructor(client: Client, public options: Cordova.Options = {}) {
-    super(client, options);
+  constructor(client: Client, public options: ICordovaOptions = {}) {
     this.client = client;
+    this.browser = new options.browser(client);
     return this;
   }
 
-  private get isNativeExtensionAvailable() {
-    if (<any>window && (<any>window).Cordova && (<any>window).Cordova.exec) {
-      this.cordovaExec = (<any>window).Cordova.exec;
-    } else {
-      this.client.log(
-        'Fallback to browser intragration due native integration not available'
-      );
-      this.cordovaExec = (...params) => {
-        // eslint-disable-next-line
-        this.client.log(params);
-      };
-      this._isNativeExtensionAvailable = false;
-    }
-
-    return this._isNativeExtensionAvailable;
-  }
-
-  install() {
-    if (!this.isNativeExtensionAvailable) {
-      return super.install();
-    }
-    super.setOptions(<Browser.Options>{
+  public install() {
+    this.browser.setOptions({
       allowDuplicates: true,
     });
-    super.install();
-    super.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
-    return new Promise<boolean>((resolve, reject) => {
-      this.cordovaExec(
-        result => resolve(result),
-        error => reject(error),
-        this.PLUGIN_NAME,
-        'install',
-        [this.client.dsn.getDsn(true), this.options]
-      );
+    this.browser.install();
+
+    let gResolve = null;
+    let gReject = null;
+
+    const promise = new Promise<boolean>((resolve, reject) => {
+      gResolve = resolve;
+      gReject = reject;
     });
+
+    if (document) {
+      const deviceReadyTimeout = setTimeout(() => {
+        gReject(`deviceready wasn't called for ${CORDOVA_DEVICE_RDY_TIMEOUT} ms`);
+      }, CORDOVA_DEVICE_RDY_TIMEOUT);
+      document.addEventListener(
+        'deviceready',
+        () => {
+          clearTimeout(deviceReadyTimeout);
+          if (!this.isNativeExtensionAvailable()) {
+            gReject('cordovaExec still not available');
+            return;
+          }
+          this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
+          this.cordovaExec(
+            result => gResolve(result),
+            error => gReject(error),
+            this.PLUGIN_NAME,
+            'install',
+            [this.client.dsn.getDsn(true), this.options]
+          );
+        },
+        false
+      );
+    } else {
+      gReject('document not available');
+    }
+
+    return promise;
   }
 
-  setOptions(options: Cordova.Options) {
+  public setOptions(options: ICordovaOptions) {
     Object.assign(this.options, options);
     return this;
   }
 
-  captureBreadcrumb(crumb: IBreadcrumb) {
+  public captureException(exception: Error) {
+    return this.browser.captureException(exception);
+  }
+
+  public captureMessage(message: string) {
+    return this.browser.captureMessage(message);
+  }
+
+  public captureBreadcrumb(crumb: IBreadcrumb) {
+    if (!this.isNativeExtensionAvailable()) {
+      return this.browser.captureBreadcrumb(crumb);
+    }
     return new Promise<IBreadcrumb>((resolve, reject) => {
       this.cordovaExec(
         result => resolve(result),
@@ -76,9 +96,9 @@ export class Cordova extends Browser {
     });
   }
 
-  send(event: Event) {
-    if (!this.isNativeExtensionAvailable) {
-      return super.send(event);
+  public send(event: Event) {
+    if (!this.isNativeExtensionAvailable()) {
+      return this.browser.send(event);
     }
     return new Promise<Event>((resolve, reject) => {
       this.cordovaExec(
@@ -91,43 +111,61 @@ export class Cordova extends Browser {
     });
   }
 
-  setUserContext(user?: IUser) {
-    if (!this.isNativeExtensionAvailable) {
-      return super.setUserContext(user);
+  public setUserContext(user?: IUser) {
+    if (!this.isNativeExtensionAvailable()) {
+      return this.browser.setUserContext(user);
     }
     this.cordovaExec(null, null, this.PLUGIN_NAME, 'setUserContext', [user]);
     return this;
   }
 
-  setTagsContext(tags?: { [key: string]: any }) {
-    if (!this.isNativeExtensionAvailable) {
-      return super.setTagsContext(tags);
+  public setTagsContext(tags?: { [key: string]: any }) {
+    if (!this.isNativeExtensionAvailable()) {
+      return this.browser.setTagsContext(tags);
     }
     this.cordovaExec(null, null, this.PLUGIN_NAME, 'setTagsContext', [tags]);
     return this;
   }
 
-  setExtraContext(extra?: { [key: string]: any }) {
-    if (!this.isNativeExtensionAvailable) {
-      return super.setExtraContext(extra);
+  public setExtraContext(extra?: { [key: string]: any }) {
+    if (!this.isNativeExtensionAvailable()) {
+      return this.browser.setExtraContext(extra);
     }
     this.cordovaExec(null, null, this.PLUGIN_NAME, 'setExtraContext', [extra]);
     return this;
   }
 
-  addExtraContext(key: string, value: any) {
-    if (!this.isNativeExtensionAvailable) {
-      return super.addExtraContext(key, value);
+  public addExtraContext(key: string, value: any) {
+    if (!this.isNativeExtensionAvailable()) {
+      return this.browser.addExtraContext(key, value);
     }
     this.cordovaExec(null, null, this.PLUGIN_NAME, 'addExtraContext', [key, value]);
     return this;
   }
 
-  clearContext() {
-    if (!this.isNativeExtensionAvailable) {
-      return super.clearContext();
+  public clearContext() {
+    if (!this.isNativeExtensionAvailable()) {
+      return this.browser.clearContext();
     }
     this.cordovaExec(null, null, this.PLUGIN_NAME, 'clearContext', []);
     return this;
+  }
+
+  private isNativeExtensionAvailable() {
+    let result = true;
+    if ((window as any) && (window as any).Cordova && (window as any).Cordova.exec) {
+      this.cordovaExec = (window as any).Cordova.exec;
+    } else {
+      this.client.log(
+        'Fallback to browser intragration due native integration not available'
+      );
+      this.cordovaExec = (...params) => {
+        // eslint-disable-next-line
+        // this.client.log(params);
+      };
+      result = false;
+    }
+
+    return result;
   }
 }

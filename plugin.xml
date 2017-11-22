@@ -10,10 +10,16 @@
     <repo>https://github.com/getsentry/sentry-cordova.git</repo>
     <issue>https://github.com/getsentry/sentry-cordova/issues</issue>
 
+    <engines>
+        <!-- Requires > 3.5.0 because of the custom Framework tag for iOS [CB-6698] -->
+        <!-- Requires > 4.0.0 because of the Framework tag for Android that uses gradle -->
+        <engine name="cordova-android" version=">=3.5.0" />
+        <engine name="cordova-ios" version=">=3.5.0" />
+    </engines>
+
     <!-- android -->
     <platform name="android">
       <js-module src="www/Cordova.js" name="Sentry">
-        <runs/>
         <clobbers target="Sentry" />
       </js-module>
       <config-file target="res/xml/config.xml" parent="/*">
@@ -31,13 +37,17 @@
     <!-- ios -->
     <platform name="ios">
         <js-module src="www/Cordova.js" name="Sentry">
-            <runs/>
             <clobbers target="Sentry" />
         </js-module>
         <config-file target="config.xml" parent="/*">
             <feature name="Sentry">
                 <param name="ios-package" value="SentryCordova" onload="true" />
             </feature>
+            <!-- <access origin="http://m.facebook.com" /> -->
+            <!-- <access origin="https://graph.facebook.com" />
+            <access origin="https://api.facebook.com" />
+            <access origin="https://*.fbcdn.net" />
+            <access origin="https://*.akamaihd.net" /> -->
         </config-file>
 
         <header-file src="src/ios/SentryCordova.h" />
@@ -46,5 +56,19 @@
         <framework src="src/ios/Carthage/Build/iOS/Sentry.framework" custom="true" embed="true" />
     </platform>
 
-    <hook type="after_prepare" src="scripts/after_prepare.js" />
+    <!-- browser -->
+    <!-- <platform name="browser">
+        <js-module src="www/Cordova.js" name="Sentry">
+            <clobbers target="Sentry" />
+        </js-module>
+        <config-file target="config.xml" parent="/*">
+            <feature name="Sentry">
+                <param name="browser-package" value="SentryPluginBrowser"/>
+                <param name="onload" value="true" />
+            </feature>
+            <plugin name="SentryCordova" value="SentryCordova"/>
+        </config-file>
+    </platform> -->
+
+    <!-- <hook type="after_prepare" src="scripts/after_prepare.js" /> -->
 </plugin>
