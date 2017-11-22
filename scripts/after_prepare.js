@@ -6,6 +6,7 @@ module.exports = function(ctx) {
   const fs = ctx.requireCordovaModule('fs');
   const crypto = require('crypto');
 
+  console.log(ctx.opts);
   function checksum(str) {
     return crypto
       .createHash('sha1')
@@ -20,7 +21,7 @@ module.exports = function(ctx) {
       uninstall: false,
       url: 'http://localhost:8000/',
       type: 'cordova',
-      platform: ctx.opts.platforms[0],
+      platform: [ctx.opts.platforms[0]],
     })
     .then(() => {
       const ignore = ['node_modules'];
