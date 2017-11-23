@@ -13,6 +13,6 @@
         "outDir": "www"
     },
     "include": [
-        "src/js/Cordova.ts"
+        "src/js/SentryCordova.ts"
     ]
 }

@@ -24,11 +24,11 @@ export class SentryCordova implements IAdapter {
     return this;
   }
 
-  public install() {
+  public async install() {
     this.browser.setOptions({
       allowDuplicates: true,
     });
-    this.browser.install();
+    await this.browser.install();
 
     let gResolve = null;
     let gReject = null;
@@ -44,22 +44,7 @@ export class SentryCordova implements IAdapter {
       }, CORDOVA_DEVICE_RDY_TIMEOUT);
       document.addEventListener(
         'deviceready',
-        () => {
-          clearTimeout(deviceReadyTimeout);
-          if (!this.isNativeExtensionAvailable()) {
-            gReject('cordovaExec still not available');
-            return;
-          }
-          this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
-          this.cordovaExec(
-            result => gResolve(result),
-            error => gReject(error),
-            this.PLUGIN_NAME,
-            'install',
-            [this.client.dsn.getDsn(true), this.options]
-          );
-        },
-        false
+        this.deviceReady(deviceReadyTimeout, gResolve, gReject)
       );
     } else {
       gReject('document not available');
@@ -167,5 +152,26 @@ export class SentryCordova implements IAdapter {
     }
 
     return result;
+  }
+
+  private deviceReady(
+    deviceReadyTimeout: NodeJS.Timer,
+    resolve: (value?: boolean | PromiseLike<boolean>) => void,
+    reject: (reason?: any) => void
+  ) {
+    document.removeEventListener('deviceready', this.deviceReady);
+    clearTimeout(deviceReadyTimeout);
+    if (!this.isNativeExtensionAvailable()) {
+      reject('deviceready fired, cordovaExec still not available');
+      return;
+    }
+    this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
+    this.cordovaExec(
+      result => resolve(result),
+      error => reject(error),
+      this.PLUGIN_NAME,
+      'install',
+      [this.client.dsn.getDsn(true), this.options]
+    );
   }
 }

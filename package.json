@@ -1,7 +1,7 @@
 {
   "name": "@sentry/cordova",
   "version": "0.1.0",
-  "main": "www/Cordova.js",
+  "main": "www/SentryCordova.js",
   "license": "MIT",
   "repository": "git://github.com/getsentry/sentry-cordova.git",
   "cordova": {
@@ -18,11 +18,19 @@
     "@sentry/webpack-plugin": "https://github.com/getsentry/sentry-webpack-plugin",
     "@sentry/wizard": "file:/Users/haza/Projects/sentry-setup-wizard"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@sentry/browser": "file:/Users/haza/Projects/HazAT/raven-js/packages/browser",
+    "@sentry/core": "file:/Users/haza/Projects/HazAT/raven-js/packages/core",
+    "@sentry/webpack-plugin": "https://github.com/getsentry/sentry-webpack-plugin",
+    "@sentry/wizard": "file:/Users/haza/Projects/sentry-setup-wizard"
+  },
   "devDependencies": {
     "@types/cordova": "0.0.34",
-    "@types/node": "^8.0.33",
+    "@types/jest": "^21.1.8",
+    "@types/node": "^8.0.53",
+    "jest": "^21.2.1",
     "prettier": "^1.7.4",
+    "ts-jest": "^21.2.3",
     "tslint": "^5.8.0",
     "tslint-config-prettier": "^1.6.0",
     "tslint-eslint-rules": "^4.1.1",
@@ -31,6 +39,27 @@
   },
   "scripts": {
     "clean": "rm -rf ./www/*",
-    "dist": "npm run clean && tsc -p tsconfig.json"
+    "dist": "npm run clean && tsc -p tsconfig.json",
+    "test": "npm run dist && jest",
+    "test:watch": "npm run dist && jest --watch --notify"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ],
+    "modulePathIgnorePatterns": [],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "\\.d\\.(jsx?|tsx?)$",
+      "\\.no-jest\\.(jsx?|tsx?)$"
+    ]
   }
 }

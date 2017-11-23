@@ -14,13 +14,5 @@
         "**/bower_components": true,
         "**/dist/**": true
     },
-    "tslint.autoFixOnSave": true,
-    "emeraldwalk.runonsave": {
-        "commands": [
-            {
-                "match": "\\.ts$",
-                "cmd": "cd /Users/haza/Projects/sentry-cordova && yarn dist"
-            }
-        ]
-    }
+    "tslint.autoFixOnSave": true
 }
