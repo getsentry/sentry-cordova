@@ -12,15 +12,18 @@ export interface ICordovaOptions {
 }
 
 export class SentryCordova implements IAdapter {
-  private client: Client;
   private browser: Browser;
-  private cordovaExec: any;
+  private client: Client;
+  private deviceReadyCallback: any;
 
   private PLUGIN_NAME = 'Sentry';
   private PATH_STRIP_RE = /^.*\/[^\.]+(\.app|CodePush|.*(?=\/))/;
 
   constructor(client: Client, public options: ICordovaOptions = {}) {
     this.client = client;
+    if (!options.browser) {
+      throw new Error('must pass Browser as an option { browser: Browser }');
+    }
     this.browser = new options.browser(client);
     return this;
   }
@@ -46,10 +49,9 @@ export class SentryCordova implements IAdapter {
       const deviceReadyTimeout = setTimeout(() => {
         gReject(`deviceready wasn't called for ${CORDOVA_DEVICE_RDY_TIMEOUT} ms`);
       }, CORDOVA_DEVICE_RDY_TIMEOUT);
-      document.addEventListener(
-        'deviceready',
-        this.deviceReady(deviceReadyTimeout, gResolve, gReject)
-      );
+      this.deviceReadyCallback = () =>
+        this.deviceReady(deviceReadyTimeout, gResolve, gReject);
+      document.addEventListener('deviceready', this.deviceReadyCallback);
     } else {
       gReject('document not available');
     }
@@ -62,6 +64,10 @@ export class SentryCordova implements IAdapter {
         return Promise.resolve(success);
       })
       .catch(reason => Promise.reject(reason));
+  }
+
+  public getBrowser(): any {
+    return this.browser as any;
   }
 
   public setOptions(options: ICordovaOptions) {
@@ -78,105 +84,59 @@ export class SentryCordova implements IAdapter {
   }
 
   public captureBreadcrumb(crumb: IBreadcrumb) {
-    if (!this.isNativeExtensionAvailable()) {
-      return this.browser.captureBreadcrumb(crumb);
-    }
-    return new Promise<IBreadcrumb>((resolve, reject) => {
-      this.cordovaExec(
-        result => resolve(result),
-        error => reject(error),
-        this.PLUGIN_NAME,
-        'captureBreadcrumb',
-        [crumb]
-      );
-    });
+    return this.nativeCall('captureBreadcrumb', crumb);
   }
 
   public send(event: Event) {
-    if (!this.isNativeExtensionAvailable()) {
-      return this.browser.send(event);
-    }
-    return new Promise<Event>((resolve, reject) => {
-      this.cordovaExec(
-        result => resolve(result),
-        error => reject(error),
-        this.PLUGIN_NAME,
-        'sendEvent',
-        [event]
-      );
-    });
+    return this.nativeCall('send', event);
   }
 
+  // TODO catch do nothing ---- or rewrite to also be a promise
   public setUserContext(user?: IUser) {
-    if (!this.isNativeExtensionAvailable()) {
-      return this.browser.setUserContext(user);
-    }
-    this.cordovaExec(null, null, this.PLUGIN_NAME, 'setUserContext', [user]);
+    this.nativeCall('setUserContext', user);
     return this;
   }
 
   public setTagsContext(tags?: { [key: string]: any }) {
-    if (!this.isNativeExtensionAvailable()) {
-      return this.browser.setTagsContext(tags);
-    }
-    this.cordovaExec(null, null, this.PLUGIN_NAME, 'setTagsContext', [tags]);
+    this.nativeCall('setExtraContext', tags);
     return this;
   }
 
   public setExtraContext(extra?: { [key: string]: any }) {
-    if (!this.isNativeExtensionAvailable()) {
-      return this.browser.setExtraContext(extra);
-    }
-    this.cordovaExec(null, null, this.PLUGIN_NAME, 'setExtraContext', [extra]);
+    this.nativeCall('setExtraContext', extra);
     return this;
   }
 
   public addExtraContext(key: string, value: any) {
-    if (!this.isNativeExtensionAvailable()) {
-      return this.browser.addExtraContext(key, value);
-    }
-    this.cordovaExec(null, null, this.PLUGIN_NAME, 'addExtraContext', [key, value]);
+    this.nativeCall('addExtraContext', key, value);
     return this;
   }
 
   public clearContext() {
-    if (!this.isNativeExtensionAvailable()) {
-      return this.browser.clearContext();
-    }
-    this.cordovaExec(null, null, this.PLUGIN_NAME, 'clearContext', []);
+    this.nativeCall('clearContext');
     return this;
   }
+  // ---------------------------------------
 
   // CORDOVA --------------------
-
-  private isNativeExtensionAvailable() {
-    let result = true;
-    if ((window as any) && (window as any).Cordova && (window as any).Cordova.exec) {
-      this.cordovaExec = (window as any).Cordova.exec;
-    } else {
-      this.client.log(
-        'Fallback to browser intragration due native integration not available'
-      );
-      // function(winParam) {},
-      // function(error) {},
-      // "service",
-      // "action",
-      // ["firstArgument", "secondArgument", 42, false]
-      // https://cordova.apache.org/docs/en/latest/guide/hybrid/plugins/#the-javascript-interface
-      this.cordovaExec = (
-        success: (result: any) => void,
-        fail: (message: string) => void,
-        service: string,
-        action: string,
-        args?: any[]
-      ) => {
-        // eslint-disable-next-line
-        // TODO
-        // this.client.log(params);
-      };
-      result = false;
-    }
-    return result;
+  private nativeCall(action: string, ...args: any[]): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const exec = window && (window as any).Cordova && (window as any).Cordova.exec;
+      if (!exec) {
+        reject('Cordova.exec not available');
+      } else {
+        // console.log((window as any).Cordova.exec);
+        // console.log(exec);
+        (window as any).Cordova.exec(resolve, reject, this.PLUGIN_NAME, action, args);
+      }
+    }).catch(e => {
+      if (e === 'not implemented' || e === 'Cordova.exec not available') {
+        // This is our fallback to the browser implementation
+        // console.log('catch errror', e);
+        return this.browser[action](...args);
+      }
+      throw e;
+    });
   }
 
   private deviceReady(
@@ -184,19 +144,11 @@ export class SentryCordova implements IAdapter {
     resolve: (value?: boolean | PromiseLike<boolean>) => void,
     reject: (reason?: any) => void
   ) {
-    document.removeEventListener('deviceready', this.deviceReady);
+    document.removeEventListener('deviceready', this.deviceReadyCallback);
     clearTimeout(deviceReadyTimeout);
-    if (!this.isNativeExtensionAvailable()) {
-      reject('deviceready fired, cordovaExec still not available');
-      return;
-    }
-    this.cordovaExec(
-      result => resolve(result),
-      error => reject(error),
-      this.PLUGIN_NAME,
-      'install',
-      [this.client.dsn.getDsn(true), this.options]
-    );
+    this.nativeCall('install', this.client.dsn.getDsn(true), this.options)
+      .then(resolve)
+      .catch(reject);
   }
   // ----------------------------------------------------------
   // Raven
@@ -213,7 +165,7 @@ export class SentryCordova implements IAdapter {
   }
 
   private setupNormalizeFrames() {
-    const raven = Browser.getRaven();
+    const raven = this.browser.getRaven();
     raven.setDataCallback(
       this.wrappedCallback(data => {
         data = this.normalizeData(data);

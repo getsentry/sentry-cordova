@@ -47,7 +47,7 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
                   @"integrations": @[@"sentry-cocoa"]};
 }
 
-- (void)sendEvent:(CDVInvokedUrlCommand *)command {
+- (void)send:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         BOOL shouldSend = NO;
         NSDictionary *jsonEvent = [command.arguments objectAtIndex:0];

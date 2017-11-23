@@ -30,6 +30,7 @@
     "@types/node": "^8.0.53",
     "jest": "^21.2.1",
     "prettier": "^1.7.4",
+    "raven-js": "^3.20.1",
     "ts-jest": "^21.2.3",
     "tslint": "^5.8.0",
     "tslint-config-prettier": "^1.6.0",
