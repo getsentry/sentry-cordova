@@ -19,12 +19,12 @@
 
     <!-- android -->
     <platform name="android">
-      <js-module src="www/Cordova.js" name="Sentry">
+      <js-module src="www/SentryCordova.js" name="Sentry">
         <clobbers target="Sentry" />
       </js-module>
       <config-file target="res/xml/config.xml" parent="/*">
         <feature name="Sentry">
-          <param name="android-package" value="io.sentry.sentry" />
+          <param name="android-package" value="io.sentry.SentryCordova" />
           <param name="onload" value="true" />
         </feature>
       </config-file>
@@ -36,18 +36,13 @@
 
     <!-- ios -->
     <platform name="ios">
-        <js-module src="www/Cordova.js" name="Sentry">
+        <js-module src="www/SentryCordova.js" name="Sentry">
             <clobbers target="Sentry" />
         </js-module>
         <config-file target="config.xml" parent="/*">
             <feature name="Sentry">
                 <param name="ios-package" value="SentryCordova" onload="true" />
             </feature>
-            <!-- <access origin="http://m.facebook.com" /> -->
-            <!-- <access origin="https://graph.facebook.com" />
-            <access origin="https://api.facebook.com" />
-            <access origin="https://*.fbcdn.net" />
-            <access origin="https://*.akamaihd.net" /> -->
         </config-file>
 
         <header-file src="src/ios/SentryCordova.h" />
@@ -70,5 +65,5 @@
         </config-file>
     </platform> -->
 
-    <!-- <hook type="after_prepare" src="scripts/after_prepare.js" /> -->
+    <hook type="after_prepare" src="scripts/after_prepare.js" />
 </plugin>

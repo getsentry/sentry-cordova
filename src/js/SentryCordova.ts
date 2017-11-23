@@ -54,7 +54,14 @@ export class SentryCordova implements IAdapter {
       gReject('document not available');
     }
 
-    return promise;
+    return promise
+      .then(success => {
+        // We only want to register the breadcrumbcallback on success
+        // otherwise we will get an endless loop
+        this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
+        return Promise.resolve(success);
+      })
+      .catch(reason => Promise.reject(reason));
   }
 
   public setOptions(options: ICordovaOptions) {
@@ -150,7 +157,19 @@ export class SentryCordova implements IAdapter {
       this.client.log(
         'Fallback to browser intragration due native integration not available'
       );
-      this.cordovaExec = (...params) => {
+      // function(winParam) {},
+      // function(error) {},
+      // "service",
+      // "action",
+      // ["firstArgument", "secondArgument", 42, false]
+      // https://cordova.apache.org/docs/en/latest/guide/hybrid/plugins/#the-javascript-interface
+      this.cordovaExec = (
+        success: (result: any) => void,
+        fail: (message: string) => void,
+        service: string,
+        action: string,
+        args?: any[]
+      ) => {
         // eslint-disable-next-line
         // TODO
         // this.client.log(params);
@@ -171,7 +190,6 @@ export class SentryCordova implements IAdapter {
       reject('deviceready fired, cordovaExec still not available');
       return;
     }
-    this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
     this.cordovaExec(
       result => resolve(result),
       error => reject(error),
