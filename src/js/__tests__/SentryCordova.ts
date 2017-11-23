@@ -46,7 +46,7 @@ describe('SentryCordova', () => {
       .install();
   });
 
-  test.only('captureException', async done => {
+  test('captureException', async done => {
     expect.assertions(3);
     const raven = Browser.getRaven();
     raven._globalOptions.instrument = false;
