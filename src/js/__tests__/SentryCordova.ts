@@ -33,8 +33,6 @@ describe('SentryCordova', () => {
     raven._globalOptions.instrument = false;
     raven._globalOptions.autoBreadcrumbs = false;
 
-    // console.log(raven);
-
     callDeviceReady();
 
     (window as any).Cordova.exec = (...params) => {
@@ -46,5 +44,34 @@ describe('SentryCordova', () => {
     await Sentry.create(dsn)
       .use(SentryCordova, { browser: Browser })
       .install();
+  });
+
+  test.only('captureException', async done => {
+    expect.assertions(3);
+    const raven = Browser.getRaven();
+    raven._globalOptions.instrument = false;
+    raven._globalOptions.autoBreadcrumbs = false;
+    callDeviceReady();
+
+    (window as any).Cordova.exec = (...params) => {
+      if (params[3] === 'sendEvent') {
+        const event = params[4][0]; // this is an event
+        // raven._originalConsole.log(event.exception.values[0].type);
+        expect(event.exception.values[0].type).toBe('Error');
+        expect(event.exception.values[0].value).toBe('yo');
+        expect(
+          event.exception.values[0].stacktrace.frames[0].filename.indexOf('app:///')
+        ).toBe(0);
+      }
+      params[0](true); // to resolve it
+    };
+
+    await Sentry.create(dsn)
+      .use(SentryCordova, { browser: Browser })
+      .install();
+
+    Sentry.getSharedClient().captureException(new Error('yo'));
+
+    done();
   });
 });

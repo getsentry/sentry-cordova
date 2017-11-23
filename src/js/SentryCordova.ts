@@ -17,6 +17,7 @@ export class SentryCordova implements IAdapter {
   private cordovaExec: any;
 
   private PLUGIN_NAME = 'Sentry';
+  private PATH_STRIP_RE = /^.*\/[^\.]+(\.app|CodePush|.*(?=\/))/;
 
   constructor(client: Client, public options: ICordovaOptions = {}) {
     this.client = client;
@@ -29,6 +30,9 @@ export class SentryCordova implements IAdapter {
       allowDuplicates: true,
     });
     await this.browser.install();
+    // This will prefix frames in raven with app://
+    // this is just a fallback if native is not available
+    this.setupNormalizeFrames();
 
     let gResolve = null;
     let gReject = null;
@@ -136,6 +140,8 @@ export class SentryCordova implements IAdapter {
     return this;
   }
 
+  // CORDOVA --------------------
+
   private isNativeExtensionAvailable() {
     let result = true;
     if ((window as any) && (window as any).Cordova && (window as any).Cordova.exec) {
@@ -146,11 +152,11 @@ export class SentryCordova implements IAdapter {
       );
       this.cordovaExec = (...params) => {
         // eslint-disable-next-line
+        // TODO
         // this.client.log(params);
       };
       result = false;
     }
-
     return result;
   }
 
@@ -174,4 +180,57 @@ export class SentryCordova implements IAdapter {
       [this.client.dsn.getDsn(true), this.options]
     );
   }
+  // ----------------------------------------------------------
+  // Raven
+
+  private wrappedCallback(callback) {
+    function dataCallback(data, original) {
+      const normalizedData = callback(data) || data;
+      if (original) {
+        return original(normalizedData) || normalizedData;
+      }
+      return normalizedData;
+    }
+    return dataCallback;
+  }
+
+  private setupNormalizeFrames() {
+    const raven = Browser.getRaven();
+    raven.setDataCallback(
+      this.wrappedCallback(data => {
+        data = this.normalizeData(data);
+        // TODO
+        // if (internalDataCallback) {
+        //   internalDataCallback(data);
+        // }
+      })
+    );
+  }
+
+  private normalizeUrl(url: string, pathStripRe: RegExp) {
+    return 'app://' + url.replace(/^file\:\/\//, '').replace(pathStripRe, '');
+  }
+
+  private normalizeData(data: any, pathStripRe?: RegExp) {
+    if (!pathStripRe) {
+      pathStripRe = this.PATH_STRIP_RE;
+    }
+    if (data.culprit) {
+      data.culprit = this.normalizeUrl(data.culprit, pathStripRe);
+    }
+    // NOTE: if data.exception exists, exception.values and exception.values[0] are
+    // guaranteed to exist
+    const stacktrace =
+      data.stacktrace || (data.exception && data.exception.values[0].stacktrace);
+    if (stacktrace) {
+      stacktrace.frames.forEach(frame => {
+        if (frame.filename !== '[native code]') {
+          frame.filename = this.normalizeUrl(frame.filename, pathStripRe);
+        }
+      });
+    }
+    return data;
+  }
+
+  // -----------------------------------------------------------
 }
