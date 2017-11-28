@@ -28,7 +28,8 @@ public class SentryCordova extends CordovaPlugin {
     if(action.equals("install")) {
       String dsn = args.getString(0);
       Sentry.init(dsn, new AndroidSentryClientFactory(this.cordova.getActivity().getApplicationContext()));
-      callbackContext.sendPluginResult(new PluginResult(Status.OK));
+      // We need to return false here to not create the captureBreadcrumb hook
+      callbackContext.sendPluginResult(new PluginResult(Status.OK, false));
     } else {
       callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
     }

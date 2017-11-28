@@ -58,9 +58,11 @@ export class SentryCordova implements IAdapter {
 
     return promise
       .then(success => {
-        // We only want to register the breadcrumbcallback on success
-        // otherwise we will get an endless loop
-        this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
+        if (success) {
+          // We only want to register the breadcrumbcallback on success
+          // otherwise we will get an endless loop
+          this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
+        }
         return Promise.resolve(success);
       })
       .catch(reason => Promise.reject(reason));

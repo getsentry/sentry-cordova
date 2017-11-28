@@ -43,11 +43,6 @@
             <feature name="Sentry">
                 <param name="ios-package" value="SentryCordova" onload="true" />
             </feature>
-            <access origin="https://*.ngrok.io" />
-            <access origin="https://*.sentry.io" />
-            <access origin="https://sentry.io" />
-            <access origin="http://*.ngrok.io" />
-
         </config-file>
 
         <header-file src="src/ios/SentryCordova.h" />
