@@ -14,15 +14,7 @@
   "description": "Official Sentry SDK for Cordova",
   "dependencies": {
     "@sentry/browser": "file:/Users/haza/Projects/HazAT/raven-js/packages/browser",
-    "@sentry/core": "file:/Users/haza/Projects/HazAT/raven-js/packages/core",
-    "@sentry/webpack-plugin": "https://github.com/getsentry/sentry-webpack-plugin",
-    "@sentry/wizard": "file:/Users/haza/Projects/sentry-setup-wizard"
-  },
-  "peerDependencies": {
-    "@sentry/browser": "file:/Users/haza/Projects/HazAT/raven-js/packages/browser",
-    "@sentry/core": "file:/Users/haza/Projects/HazAT/raven-js/packages/core",
-    "@sentry/webpack-plugin": "https://github.com/getsentry/sentry-webpack-plugin",
-    "@sentry/wizard": "file:/Users/haza/Projects/sentry-setup-wizard"
+    "@sentry/wizard": "^0.7.0"
   },
   "devDependencies": {
     "@types/cordova": "0.0.34",

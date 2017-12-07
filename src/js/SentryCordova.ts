@@ -1,4 +1,4 @@
-import { Browser } from '@sentry/browser';
+import { ISentryBrowserOptions, SentryBrowser } from '@sentry/browser';
 import { Client, Event, IAdapter, IBreadcrumb, IUser } from '@sentry/core';
 
 declare var window;
@@ -6,25 +6,31 @@ declare var document;
 
 const CORDOVA_DEVICE_RDY_TIMEOUT = 10000;
 
-export interface ICordovaOptions {
+export interface ISentryBrowserConstructable<T> {
+  new (client: Client, options?: ISentryBrowserOptions): T;
+}
+
+export interface ISentryCordovaOptions {
   testOption?: boolean;
-  browser?: Browser;
+  sentryBrowser?: ISentryBrowserConstructable<SentryBrowser>;
 }
 
 export class SentryCordova implements IAdapter {
-  private browser: Browser;
+  private browser: SentryBrowser;
   private client: Client;
   private deviceReadyCallback: any;
 
   private PLUGIN_NAME = 'Sentry';
   private PATH_STRIP_RE = /^.*\/[^\.]+(\.app|CodePush|.*(?=\/))/;
 
-  constructor(client: Client, public options: ICordovaOptions = {}) {
+  constructor(client: Client, public options: ISentryCordovaOptions = {}) {
     this.client = client;
-    if (!options.browser) {
-      throw new Error('must pass Browser as an option { browser: Browser }');
+    if (!options.sentryBrowser) {
+      throw new Error(
+        'must pass SentryBrowser as an option { sentryBrowser: SentryBrowser }'
+      );
     }
-    this.browser = new options.browser(client);
+    this.browser = new options.sentryBrowser(client);
     return this;
   }
 
@@ -46,21 +52,26 @@ export class SentryCordova implements IAdapter {
     });
 
     if (document) {
-      const deviceReadyTimeout = setTimeout(() => {
-        gReject(`deviceready wasn't called for ${CORDOVA_DEVICE_RDY_TIMEOUT} ms`);
-      }, CORDOVA_DEVICE_RDY_TIMEOUT);
-      this.deviceReadyCallback = () =>
-        this.deviceReady(deviceReadyTimeout, gResolve, gReject);
-      document.addEventListener('deviceready', this.deviceReadyCallback);
+      if (this.isCordova()) {
+        const deviceReadyTimeout = setTimeout(() => {
+          gReject(`deviceready wasn't called for ${CORDOVA_DEVICE_RDY_TIMEOUT} ms`);
+        }, CORDOVA_DEVICE_RDY_TIMEOUT);
+        this.deviceReadyCallback = () =>
+          this.runInstall(gResolve, gReject, deviceReadyTimeout);
+        document.addEventListener('deviceready', this.deviceReadyCallback);
+      } else {
+        // We are in a browser
+        this.runInstall(gResolve, gReject);
+      }
     } else {
       gReject('document not available');
     }
 
     return promise
       .then(success => {
-        if (success) {
-          // We only want to register the breadcrumbcallback on success
-          // otherwise we will get an endless loop
+        if (success && this.isCordova()) {
+          // We only want to register the breadcrumbcallback on success and running on
+          // Cordova otherwise we will get an endless loop
           this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
         }
         return Promise.resolve(success);
@@ -72,7 +83,7 @@ export class SentryCordova implements IAdapter {
     return this.browser as any;
   }
 
-  public setOptions(options: ICordovaOptions) {
+  public setOptions(options: ISentryCordovaOptions) {
     Object.assign(this.options, options);
     return this;
   }
@@ -127,27 +138,26 @@ export class SentryCordova implements IAdapter {
       if (!exec) {
         reject('Cordova.exec not available');
       } else {
-        // console.log((window as any).Cordova.exec);
-        // console.log(exec);
         (window as any).Cordova.exec(resolve, reject, this.PLUGIN_NAME, action, args);
       }
     }).catch(e => {
       if (e === 'not implemented' || e === 'Cordova.exec not available') {
         // This is our fallback to the browser implementation
-        // console.log('catch errror', e);
         return this.browser[action](...args);
       }
       throw e;
     });
   }
 
-  private deviceReady(
-    deviceReadyTimeout: NodeJS.Timer,
+  private runInstall(
     resolve: (value?: boolean | PromiseLike<boolean>) => void,
-    reject: (reason?: any) => void
+    reject: (reason?: any) => void,
+    deviceReadyTimeout?: NodeJS.Timer
   ) {
-    document.removeEventListener('deviceready', this.deviceReadyCallback);
-    clearTimeout(deviceReadyTimeout);
+    if (deviceReadyTimeout) {
+      document.removeEventListener('deviceready', this.deviceReadyCallback);
+      clearTimeout(deviceReadyTimeout);
+    }
     this.nativeCall('install', this.client.dsn.getDsn(true), this.options)
       .then(resolve)
       .catch(reject);
@@ -181,6 +191,10 @@ export class SentryCordova implements IAdapter {
 
   private normalizeUrl(url: string, pathStripRe: RegExp) {
     return 'app://' + url.replace(/^file\:\/\//, '').replace(pathStripRe, '');
+  }
+
+  private isCordova() {
+    return window.cordova !== undefined;
   }
 
   private normalizeData(data: any, pathStripRe?: RegExp) {

@@ -3,30 +3,32 @@
 
 
 "@sentry/browser@file:../HazAT/raven-js/packages/browser":
-  version "0.1.0"
+  version "0.0.1"
   dependencies:
     "@sentry/core" "file:../../Library/Caches/Yarn/v1/npm-@sentry/core"
     raven-js "^3.18.1"
 
+"@sentry/cli@^1.26.0":
+  version "1.26.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli/-/cli-1.26.0.tgz#6f2c79375b9b6d264d33f228eb3de7d0091bd744"
+  dependencies:
+    progress "2.0.0"
+
 "@sentry/core@file:../HazAT/raven-js/packages/core":
-  version "0.1.0"
-
-"@sentry/webpack-plugin@https://github.com/getsentry/sentry-webpack-plugin":
   version "0.0.1"
-  resolved "https://github.com/getsentry/sentry-webpack-plugin#4da97ac33ef7ab885942d76ad42bf55e6af2e0ea"
-  dependencies:
-    sentry-cli-binary "^1.22.0"
 
-"@sentry/wizard@file:../sentry-setup-wizard":
-  version "0.3.0"
+"@sentry/wizard@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@sentry/wizard/-/wizard-0.7.0.tgz#46ade32d3822c972ecd47f85f4025ab4cea5c79a"
   dependencies:
+    "@sentry/cli" "^1.26.0"
     chalk "^2.3.0"
     glob "^7.1.2"
     inquirer "^4.0.0"
     lodash "^4.17.4"
     open "^0.0.5"
     r2 "^2.0.0"
-    sentry-cli-binary "^1.22.0"
+    read-env "^1.1.1"
     xcode "^1.0.0"
     yargs "^10.0.3"
 
@@ -2214,6 +2216,12 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+read-env@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/read-env/-/read-env-1.1.1.tgz#561f16438792b19ed10ffede0315bde37f9f87fc"
+  dependencies:
+    camelcase "^4.1.0"
+
 read-pkg-up@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/read-pkg-up/-/read-pkg-up-1.0.1.tgz#9d63c13276c065918d57f002a57f40a1b643fb02"
@@ -2425,12 +2433,6 @@ sax@^1.2.1:
 "semver@2 || 3 || 4 || 5", semver@^5.3.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
-
-sentry-cli-binary@^1.22.0:
-  version "1.22.0"
-  resolved "https://registry.yarnpkg.com/sentry-cli-binary/-/sentry-cli-binary-1.22.0.tgz#25f0e6784a467d287abb09d32b9e2e946aad2cd8"
-  dependencies:
-    progress "2.0.0"
 
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
