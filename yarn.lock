@@ -8,20 +8,20 @@
     "@sentry/core" "file:../../Library/Caches/Yarn/v1/npm-@sentry/core"
     raven-js "^3.18.1"
 
-"@sentry/cli@^1.26.0":
-  version "1.26.0"
-  resolved "https://registry.yarnpkg.com/@sentry/cli/-/cli-1.26.0.tgz#6f2c79375b9b6d264d33f228eb3de7d0091bd744"
+"@sentry/cli@^1.26.1":
+  version "1.26.1"
+  resolved "https://registry.yarnpkg.com/@sentry/cli/-/cli-1.26.1.tgz#2c803e985b1b662b9a05eadb15b65d5b6ba2921d"
   dependencies:
     progress "2.0.0"
 
 "@sentry/core@file:../HazAT/raven-js/packages/core":
   version "0.0.1"
 
-"@sentry/wizard@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@sentry/wizard/-/wizard-0.7.0.tgz#46ade32d3822c972ecd47f85f4025ab4cea5c79a"
+"@sentry/wizard@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@sentry/wizard/-/wizard-0.7.3.tgz#76782f79aedb3774e79e60b7dd73cee32308ad18"
   dependencies:
-    "@sentry/cli" "^1.26.0"
+    "@sentry/cli" "^1.26.1"
     chalk "^2.3.0"
     glob "^7.1.2"
     inquirer "^4.0.0"

@@ -14,7 +14,7 @@
   "description": "Official Sentry SDK for Cordova",
   "dependencies": {
     "@sentry/browser": "file:/Users/haza/Projects/HazAT/raven-js/packages/browser",
-    "@sentry/wizard": "^0.7.0"
+    "@sentry/wizard": "^0.7.3"
   },
   "devDependencies": {
     "@types/cordova": "0.0.34",

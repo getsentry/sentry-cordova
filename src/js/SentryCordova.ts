@@ -19,6 +19,7 @@ export class SentryCordova implements IAdapter {
   private browser: SentryBrowser;
   private client: Client;
   private deviceReadyCallback: any;
+  private internalOptions: { [key: string]: string } = {};
 
   private PLUGIN_NAME = 'Sentry';
   private PATH_STRIP_RE = /^.*\/[^\.]+(\.app|CodePush|.*(?=\/))/;
@@ -104,14 +105,13 @@ export class SentryCordova implements IAdapter {
     return this.nativeCall('send', event);
   }
 
-  // TODO catch do nothing ---- or rewrite to also be a promise
   public setUserContext(user?: IUser) {
     this.nativeCall('setUserContext', user);
     return this;
   }
 
   public setTagsContext(tags?: { [key: string]: any }) {
-    this.nativeCall('setExtraContext', tags);
+    this.nativeCall('setTagsContext', tags);
     return this;
   }
 
@@ -129,9 +129,32 @@ export class SentryCordova implements IAdapter {
     this.nativeCall('clearContext');
     return this;
   }
+
+  public setRelease(release: string) {
+    this.setInternalOption('release', release);
+  }
+
+  public setDist(dist: string) {
+    this.setInternalOption('dist', dist);
+  }
+
+  public setVersion(version: string) {
+    this.setInternalOption('version', version);
+  }
+
+  // Private helpers
+
+  private setInternalOption(key: string, value: string) {
+    this.addExtraContext(`__sentry_${key}`, value);
+  }
+
   // ---------------------------------------
 
   // CORDOVA --------------------
+  private isCordova() {
+    return window.cordova !== undefined || window.Cordova !== undefined;
+  }
+
   private nativeCall(action: string, ...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
       const exec = window && (window as any).Cordova && (window as any).Cordova.exec;
@@ -191,10 +214,6 @@ export class SentryCordova implements IAdapter {
 
   private normalizeUrl(url: string, pathStripRe: RegExp) {
     return 'app://' + url.replace(/^file\:\/\//, '').replace(pathStripRe, '');
-  }
-
-  private isCordova() {
-    return window.cordova !== undefined;
   }
 
   private normalizeData(data: any, pathStripRe?: RegExp) {
