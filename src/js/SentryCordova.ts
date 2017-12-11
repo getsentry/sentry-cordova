@@ -75,6 +75,7 @@ export class SentryCordova implements IAdapter {
           // Cordova otherwise we will get an endless loop
           this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
         }
+        this.tryToSetSentryRelease();
         return Promise.resolve(success);
       })
       .catch(reason => Promise.reject(reason));
@@ -120,11 +121,6 @@ export class SentryCordova implements IAdapter {
     return this;
   }
 
-  public addExtraContext(key: string, value: any) {
-    this.nativeCall('addExtraContext', key, value);
-    return this;
-  }
-
   public clearContext() {
     this.nativeCall('clearContext');
     return this;
@@ -145,7 +141,17 @@ export class SentryCordova implements IAdapter {
   // Private helpers
 
   private setInternalOption(key: string, value: string) {
-    this.addExtraContext(`__sentry_${key}`, value);
+    this.setExtraContext({
+      [`__sentry_${key}`]: value,
+    });
+  }
+
+  private tryToSetSentryRelease() {
+    if (window.sentryRelease !== undefined && window.sentryRelease.id !== undefined) {
+      this.setRelease(window.sentryRelease.id);
+      this.browser.getRaven().setRelease(window.sentryRelease.id);
+      this.client.log('received release from w.sentryRelease');
+    }
   }
 
   // ---------------------------------------
@@ -185,6 +191,7 @@ export class SentryCordova implements IAdapter {
       .then(resolve)
       .catch(reject);
   }
+
   // ----------------------------------------------------------
   // Raven
 

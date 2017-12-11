@@ -97,29 +97,29 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 
 - (void)setTagsContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
-        id arg = [command.arguments objectAtIndex:0];
-        if ([arg isKindOfClass:NSDictionary.class]) {
-            SentryClient.sharedClient.tags = arg;
+        if (SentryClient.sharedClient && SentryClient.sharedClient.tags) {
+            id dict = [command.arguments objectAtIndex:0];
+            if ([dict isKindOfClass:NSDictionary.class]) {
+                NSMutableDictionary *newDict = [NSMutableDictionary new];
+                [newDict addEntriesFromDictionary:SentryClient.sharedClient.tags];
+                [newDict addEntriesFromDictionary:dict];
+                SentryClient.sharedClient.tags = newDict;
+            }
         }
     }];
 }
 
 - (void)setExtraContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
-        id arg = [command.arguments objectAtIndex:0];
-        if ([arg isKindOfClass:NSDictionary.class]) {
-            SentryClient.sharedClient.extra = arg;
+        if (SentryClient.sharedClient && SentryClient.sharedClient.extra) {
+            id dict = [command.arguments objectAtIndex:0];
+            if ([dict isKindOfClass:NSDictionary.class]) {
+                NSMutableDictionary *newDict = [NSMutableDictionary new];
+                [newDict addEntriesFromDictionary:SentryClient.sharedClient.extra];
+                [newDict addEntriesFromDictionary:dict];
+                SentryClient.sharedClient.extra = newDict;
+            }
         }
-    }];
-}
-
-- (void)addExtraContext:(CDVInvokedUrlCommand *)command {
-    [self.commandDelegate runInBackground:^{
-        NSString *key = [command.arguments objectAtIndex:0];
-        id value = [command.arguments objectAtIndex:1];
-        NSMutableDictionary *prevExtra = SentryClient.sharedClient.extra.mutableCopy;
-        [prevExtra setValue:value forKey:key];
-        SentryClient.sharedClient.extra = prevExtra;
     }];
 }
 

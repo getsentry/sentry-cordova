@@ -34,12 +34,20 @@ module.exports = function(ctx) {
     return;
   }
 
+  const indexHtml = path.join(buildPath, '..', 'index.html');
+  if (!fs.existsSync(configFile)) {
+    console.error('index.html does not exist');
+    process.exit(1);
+    return;
+  }
+
   // Adding files to include
   let includes = [];
   includes.push(path.join(buildPath, 'main.js'));
   includes.push(path.join(buildPath, 'main.js.map'));
   includes.push(path.join(buildPath, 'vendor.js.map'));
   includes.push(path.join(buildPath, 'vendor.js'));
+  includes.push(path.join(buildPath, 'polyfills.js'));
 
   const algorithm = 'sha1';
   let allHash = '';
@@ -55,10 +63,27 @@ module.exports = function(ctx) {
   const fileHash = shasum2.digest('hex');
   const release = fileHash.slice(0, 7);
 
-  fs.writeFileSync(
-    path.join(buildPath, 'sentry-release.json'),
-    JSON.stringify({ id: release })
-  );
+  const regex = /<head>(?:.*(<!-- sentry-cordova -->))?/;
+  let contents = fs.readFileSync(indexHtml, {
+    encoding: 'utf-8',
+  });
+  const releaseSentry = `
+  <script>
+  (function(w){var i=w.sentryRelease=w.sentryRelease||{};i.id='${release}';})(window);
+  </script>
+  <!-- sentry-cordova -->
+  `;
+  const replaceWith = `<head>${releaseSentry}`;
+  fs.writeFileSync(indexHtml, contents.replace(regex, replaceWith));
+
+  // This is allowed to fail because it's ionic specific
+  const projectRootIndexHtml = path.join(ctx.opts.projectRoot, 'src', 'index.html');
+  if (fs.existsSync(projectRootIndexHtml)) {
+    contents = fs.readFileSync(projectRootIndexHtml, {
+      encoding: 'utf-8',
+    });
+    fs.writeFileSync(projectRootIndexHtml, contents.replace(regex, replaceWith));
+  }
 
   const ignore = ['node_modules'];
 
