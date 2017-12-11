@@ -18,7 +18,14 @@ module.exports = function(ctx) {
     return;
   }
 
-  const configFile = path.join(buildPath, '..', '..', 'sentry.properties');
+  const configFile = path.join(
+    buildPath,
+    '..',
+    '..',
+    ctx.opts.platforms[0] === 'android' ? '..' : '',
+    'sentry.properties'
+  );
+
   if (!fs.existsSync(configFile)) {
     console.error(
       'sentry.properties does not exist, please run `sentry-wizard -i cordova`'
@@ -49,7 +56,7 @@ module.exports = function(ctx) {
   const release = fileHash.slice(0, 7);
 
   fs.writeFileSync(
-    path.join(ctx.opts.paths[0], 'build', 'sentry-release.json'),
+    path.join(buildPath, 'sentry-release.json'),
     JSON.stringify({ id: release })
   );
 
