@@ -11,9 +11,19 @@
       "ios"
     ]
   },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios",
+    "sentry",
+    "debugging",
+    "errors",
+    "exceptions",
+    "logging"
+  ],
   "description": "Official Sentry SDK for Cordova",
   "dependencies": {
-    "@sentry/browser": "file:/Users/haza/Projects/HazAT/raven-js/packages/browser",
+    "@sentry/browser": "^0.1.0",
     "@sentry/wizard": "^0.7.3"
   },
   "devDependencies": {
