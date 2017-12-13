@@ -17,16 +17,20 @@
         <engine name="cordova-ios" version=">=3.5.0" />
     </engines>
 
+    <js-module src="www/SentryCordova.js" name="SentryCordova">
+        <runs/>
+    </js-module>
+    <js-module src="www/SentryCordova.bundle.js" name="SentryCordovaBundle">
+        <runs/>
+    </js-module>
+
     <!-- android -->
     <platform name="android">
-      <js-module src="www/SentryCordova.js" name="Sentry">
-        <clobbers target="Sentry" />
-      </js-module>
       <config-file target="res/xml/config.xml" parent="/*">
-        <feature name="Sentry">
-          <param name="android-package" value="io.sentry.SentryCordova" />
-          <param name="onload" value="true" />
-        </feature>
+          <feature name="Sentry">
+            <param name="android-package" value="io.sentry.SentryCordova" />
+            <param name="onload" value="true" />
+          </feature>
       </config-file>
 
       <source-file src="src/android/io/sentry/SentryCordova.java" target-dir="src/io/sentry/" />
@@ -36,9 +40,6 @@
 
     <!-- ios -->
     <platform name="ios">
-        <js-module src="www/SentryCordova.js" name="Sentry">
-            <clobbers target="Sentry" />
-        </js-module>
         <config-file target="config.xml" parent="/*">
             <feature name="Sentry">
                 <param name="ios-package" value="SentryCordova" onload="true" />

@@ -1,8 +1,8 @@
 import { ISentryBrowserOptions, SentryBrowser } from '@sentry/browser';
 import { Client, Event, IAdapter, IBreadcrumb, IUser } from '@sentry/core';
 
-declare var window;
-declare var document;
+declare var window: any;
+declare var document: any;
 
 const CORDOVA_DEVICE_RDY_TIMEOUT = 10000;
 
@@ -44,8 +44,12 @@ export class SentryCordova implements IAdapter {
     // this is just a fallback if native is not available
     this.setupNormalizeFrames();
 
-    let gResolve = null;
-    let gReject = null;
+    let gResolve: (value?: boolean | PromiseLike<boolean> | undefined) => void = () => {
+      this.client.log('resolve not set');
+    };
+    let gReject: (reason?: any) => void = (reason?: any) => {
+      this.client.log(reason);
+    };
 
     const promise = new Promise<boolean>((resolve, reject) => {
       gResolve = resolve;
@@ -172,7 +176,8 @@ export class SentryCordova implements IAdapter {
     }).catch(e => {
       if (e === 'not implemented' || e === 'Cordova.exec not available') {
         // This is our fallback to the browser implementation
-        return this.browser[action](...args);
+        const browserCast = this.browser as any;
+        return browserCast[action](...args);
       }
       throw e;
     });
@@ -195,8 +200,8 @@ export class SentryCordova implements IAdapter {
   // ----------------------------------------------------------
   // Raven
 
-  private wrappedCallback(callback) {
-    function dataCallback(data, original) {
+  private wrappedCallback(callback: any) {
+    function dataCallback(data: any, original: any) {
       const normalizedData = callback(data) || data;
       if (original) {
         return original(normalizedData) || normalizedData;
@@ -209,7 +214,7 @@ export class SentryCordova implements IAdapter {
   private setupNormalizeFrames() {
     const raven = this.browser.getRaven();
     raven.setDataCallback(
-      this.wrappedCallback(data => {
+      this.wrappedCallback((data: any) => {
         data = this.normalizeData(data);
         // TODO
         // if (internalDataCallback) {
@@ -235,8 +240,8 @@ export class SentryCordova implements IAdapter {
     const stacktrace =
       data.stacktrace || (data.exception && data.exception.values[0].stacktrace);
     if (stacktrace) {
-      stacktrace.frames.forEach(frame => {
-        if (frame.filename !== '[native code]') {
+      stacktrace.frames.forEach((frame: any) => {
+        if (frame.filename !== '[native code]' && pathStripRe) {
           frame.filename = this.normalizeUrl(frame.filename, pathStripRe);
         }
       });

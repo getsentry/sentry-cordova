@@ -1,6 +1,16 @@
 {
     "compilerOptions": {
-        "sourceMap": false,
+        "stripInternal": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "commonjs",
+
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "inlineSources": true,
+        "sourceMap": true,
         "lib": [
             "es2015"
         ],
@@ -13,6 +23,7 @@
         "outDir": "www"
     },
     "include": [
-        "src/js/SentryCordova.ts"
+        "src/js/SentryCordova.ts",
+        "src/js/SentryCordova.bundle.ts"
     ]
 }

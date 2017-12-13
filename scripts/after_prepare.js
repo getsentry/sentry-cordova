@@ -13,8 +13,10 @@ module.exports = function(ctx) {
 
   const buildPath = path.join(ctx.opts.paths[0], 'build');
   if (!fs.existsSync(buildPath)) {
-    console.error('build path does not exist');
-    process.exit(1);
+    console.error('Sentry: build path does not exist');
+    console.error('This is not an Ionic project, please check out:');
+    console.error('https://docs.sentry.io/clients/javascript/sourcemaps/');
+    console.error('to find out how to correctly upload sourcemaps for your project.');
     return;
   }
 
@@ -28,7 +30,7 @@ module.exports = function(ctx) {
 
   if (!fs.existsSync(configFile)) {
     console.error(
-      'sentry.properties does not exist, please run `sentry-wizard -i cordova`'
+      'Sentry: sentry.properties does not exist, please run `sentry-wizard -i cordova`'
     );
     process.exit(1);
     return;
@@ -36,8 +38,7 @@ module.exports = function(ctx) {
 
   const indexHtml = path.join(buildPath, '..', 'index.html');
   if (!fs.existsSync(configFile)) {
-    console.error('index.html does not exist');
-    process.exit(1);
+    console.error('Sentry: index.html does not exist');
     return;
   }
 
