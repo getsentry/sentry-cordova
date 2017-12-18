@@ -11,6 +11,7 @@ node_modules
 build/
 DerivedData
 www
+coverage
 
 ## Various settings
 *.pbxuser

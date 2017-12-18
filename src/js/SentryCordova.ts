@@ -89,7 +89,7 @@ export class SentryCordova implements IAdapter {
     return this.browser as any;
   }
 
-  public setOptions(options: ISentryCordovaOptions) {
+  public async setOptions(options: ISentryCordovaOptions) {
     Object.assign(this.options, options);
     return this;
   }
@@ -110,42 +110,41 @@ export class SentryCordova implements IAdapter {
     return this.nativeCall('send', event);
   }
 
-  public setUserContext(user?: IUser) {
-    this.nativeCall('setUserContext', user);
+  public async setUserContext(user?: IUser) {
+    await this.nativeCall('setUserContext', user);
     return this;
   }
 
-  public setTagsContext(tags?: { [key: string]: any }) {
-    this.nativeCall('setTagsContext', tags);
+  public async setTagsContext(tags?: { [key: string]: any }) {
+    await this.nativeCall('setTagsContext', tags);
     return this;
   }
 
-  public setExtraContext(extra?: { [key: string]: any }) {
-    this.nativeCall('setExtraContext', extra);
+  public async setExtraContext(extra?: { [key: string]: any }) {
+    await this.nativeCall('setExtraContext', extra);
     return this;
   }
 
-  public clearContext() {
-    this.nativeCall('clearContext');
-    return this;
+  public async clearContext() {
+    return this.nativeCall('clearContext');
   }
 
-  public setRelease(release: string) {
-    this.setInternalOption('release', release);
+  public async setRelease(release: string) {
+    return this.setInternalOption('release', release);
   }
 
-  public setDist(dist: string) {
-    this.setInternalOption('dist', dist);
+  public async setDist(dist: string) {
+    return this.setInternalOption('dist', dist);
   }
 
-  public setVersion(version: string) {
-    this.setInternalOption('version', version);
+  public async setVersion(version: string) {
+    return this.setInternalOption('version', version);
   }
 
   // Private helpers
 
-  private setInternalOption(key: string, value: string) {
-    this.setExtraContext({
+  private async setInternalOption(key: string, value: string) {
+    return this.setExtraContext({
       [`__sentry_${key}`]: value,
     });
   }

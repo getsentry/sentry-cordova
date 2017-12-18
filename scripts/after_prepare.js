@@ -64,7 +64,7 @@ module.exports = function(ctx) {
   const fileHash = shasum2.digest('hex');
   const release = fileHash.slice(0, 7);
 
-  const regex = /<head>(?:.*(<!-- sentry-cordova -->))?/;
+  const regex = /<head>(?:[\s\S]*(<!-- sentry-cordova -->))?/g;
   let contents = fs.readFileSync(indexHtml, {
     encoding: 'utf-8',
   });
@@ -72,8 +72,7 @@ module.exports = function(ctx) {
   <script>
   (function(w){var i=w.sentryRelease=w.sentryRelease||{};i.id='${release}';})(window);
   </script>
-  <!-- sentry-cordova -->
-  `;
+  <!-- sentry-cordova -->`;
   const replaceWith = `<head>${releaseSentry}`;
   fs.writeFileSync(indexHtml, contents.replace(regex, replaceWith));
 
