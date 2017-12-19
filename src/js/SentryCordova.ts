@@ -11,7 +11,7 @@ export interface ISentryBrowserConstructable<T> {
 }
 
 export interface ISentryCordovaOptions {
-  testOption?: boolean;
+  deviceReadyTimeout?: number;
   sentryBrowser?: ISentryBrowserConstructable<SentryBrowser>;
 }
 
@@ -44,35 +44,20 @@ export class SentryCordova implements IAdapter {
     // this is just a fallback if native is not available
     this.setupNormalizeFrames();
 
-    let gResolve: (value?: boolean | PromiseLike<boolean> | undefined) => void = () => {
-      this.client.log('resolve not set');
-    };
-    let gReject: (reason?: any) => void = (reason?: any) => {
-      this.client.log(reason);
-    };
-
-    const promise = new Promise<boolean>((resolve, reject) => {
-      gResolve = resolve;
-      gReject = reject;
-    });
-
-    if (document) {
+    return new Promise<boolean>((resolve, reject) => {
       if (this.isCordova()) {
+        const timeout = this.options.deviceReadyTimeout || CORDOVA_DEVICE_RDY_TIMEOUT;
         const deviceReadyTimeout = setTimeout(() => {
-          gReject(`deviceready wasn't called for ${CORDOVA_DEVICE_RDY_TIMEOUT} ms`);
-        }, CORDOVA_DEVICE_RDY_TIMEOUT);
+          reject(`deviceready wasn't called for ${timeout} ms`);
+        }, timeout);
         this.deviceReadyCallback = () =>
-          this.runInstall(gResolve, gReject, deviceReadyTimeout);
+          this.runInstall(resolve, reject, deviceReadyTimeout);
         document.addEventListener('deviceready', this.deviceReadyCallback);
       } else {
         // We are in a browser
-        this.runInstall(gResolve, gReject);
+        this.runInstall(resolve, reject);
       }
-    } else {
-      gReject('document not available');
-    }
-
-    return promise
+    })
       .then(success => {
         if (success && this.isCordova()) {
           // We only want to register the breadcrumbcallback on success and running on
@@ -143,7 +128,7 @@ export class SentryCordova implements IAdapter {
 
   // Private helpers
 
-  private async setInternalOption(key: string, value: string) {
+  private setInternalOption(key: string, value: string) {
     return this.setExtraContext({
       [`__sentry_${key}`]: value,
     });
@@ -228,11 +213,8 @@ export class SentryCordova implements IAdapter {
   }
 
   private normalizeData(data: any, pathStripRe?: RegExp) {
-    if (!pathStripRe) {
-      pathStripRe = this.PATH_STRIP_RE;
-    }
     if (data.culprit) {
-      data.culprit = this.normalizeUrl(data.culprit, pathStripRe);
+      data.culprit = this.normalizeUrl(data.culprit, this.PATH_STRIP_RE);
     }
     // NOTE: if data.exception exists, exception.values and exception.values[0] are
     // guaranteed to exist
@@ -240,8 +222,8 @@ export class SentryCordova implements IAdapter {
       data.stacktrace || (data.exception && data.exception.values[0].stacktrace);
     if (stacktrace) {
       stacktrace.frames.forEach((frame: any) => {
-        if (frame.filename !== '[native code]' && pathStripRe) {
-          frame.filename = this.normalizeUrl(frame.filename, pathStripRe);
+        if (frame.filename !== '[native code]') {
+          frame.filename = this.normalizeUrl(frame.filename, this.PATH_STRIP_RE);
         }
       });
     }
