@@ -23,8 +23,8 @@
   ],
   "description": "Official Sentry SDK for Cordova",
   "dependencies": {
-    "@sentry/browser": "^0.1.0",
-    "@sentry/core": "^0.1.0",
+    "@sentry/browser": "^0.2.1",
+    "@sentry/core": "^0.2.1",
     "@sentry/wizard": "^0.7.3",
     "raven-js": "^3.21.0"
   },
