@@ -5,3 +5,6 @@
 <br/>
     <h1>Official Sentry SDK for Cordova (Ionic, ...)</h1>
 </p>
+
+[![Travis](https://img.shields.io/travis/getsentry/sentry-cordova.svg?maxAge=2592000)](https://travis-ci.org/getsentry/sentry-cordova)
+[![codecov](https://codecov.io/gh/getsentry/sentry-cordova/branch/master/graph/badge.svg)](https://codecov.io/gh/getsentry/sentry-cordova)
