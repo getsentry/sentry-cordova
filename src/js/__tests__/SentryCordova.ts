@@ -16,7 +16,7 @@ function callDeviceReady() {
     const e = document.createEvent('Events');
     e.initEvent('deviceready', true, false);
     document.dispatchEvent(e);
-  }, 10);
+  }, 50);
 }
 
 beforeEach(() => {
