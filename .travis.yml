@@ -13,7 +13,10 @@ before_install:
 
 matrix:
   include:
-    - script: yarn dist && yarn test
+    - script:
+      - yarn dist
+      - yarn test
+      - yarn codecov
 
     - language: objective-c
       #if: tag IS present
