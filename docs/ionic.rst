@@ -8,9 +8,9 @@ cordova plugin with ``ionic cordova plugin add @sentry/cordova``.
     $ npm i @sentry/cordova --save
 
 Upon adding it Sentry Wizard will configure the project for you.
-Additionaly you have to add the following to your ``app.module.ts``::
+Additionaly you have to add the following to your ``app.module.ts``:
 
-.. sourcecode:: javascript
+.. code-block:: javascript
 
     import * as Sentry from '@sentry/core';
     import { SentryBrowser } from '@sentry/browser';
@@ -23,7 +23,7 @@ Additionaly you have to add the following to your ``app.module.ts``::
 Note that we try to set the release dynamically in the ``index.html``
 but if it fails you should call ``setRelease``.
 
-.. sourcecode:: javascript
+.. code-block:: javascript
 
     Sentry.create('___DSN___')
         .use(SentryCordova, {sentryBrowser: SentryBrowser})
@@ -32,31 +32,31 @@ but if it fails you should call ``setRelease``.
         });
 
 In order to also use the Ionic provided ``IonicErrorHandler`` we need to add the following
-to ``app.module.ts``::
+to ``app.module.ts``:
 
-Add this to ``app.module.ts``::
+.. code-block:: javascript
 
-.. sourcecode:: javascript
     class SentryIonicErrorHandler extends IonicErrorHandler {
-      public handleError(error) {
-        super.handleError(error);
-        try {
-          Sentry.getSharedClient().captureException(error.originalError || error);
-        } catch (e) {
-          console.error(e);
+        public handleError(error) {
+            super.handleError(error);
+            try {
+                Sentry.getSharedClient().captureException(error.originalError || error);
+            } catch (e) {
+                console.error(e);
+            }
         }
-      }
     }
 
 Then change the ``@NgModule{providers:[]}`` to following:
 
-.. sourcecode:: javascript
+.. code-block:: javascript
+
     @NgModule({
-      ...
-      providers: [
-        StatusBar,
-        SplashScreen,
-        // {provide: ErrorHandler, useClass: IonicErrorHandler} remove this, add next line
-        {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
-      ]
+        ...
+        providers: [
+            StatusBar,
+            SplashScreen,
+            // {provide: ErrorHandler, useClass: IonicErrorHandler} remove this, add next line
+            {provide: ErrorHandler, useClass: SentryIonicErrorHandler}
+        ]
     })

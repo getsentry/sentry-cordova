@@ -25,7 +25,8 @@ Configuration
 This example shows the bare minium for a plain Cordova project.
 Add this to you `index.js`:
 
-.. sourcecode:: javascript
+.. code-block:: javascript
+
     onDeviceReady: function() {
         ...
         var Sentry = cordova.require("cordova-plugin-sentry.SentryCordovaBundle").default;
