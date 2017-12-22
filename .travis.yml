@@ -27,3 +27,13 @@ matrix:
       after_failure:
         - npm install -g @zeus-ci/cli
         - zeus upload -t "application/tar+npm" *.tgz
+
+notifications:
+  webhooks:
+    urls:
+      - https://zeus.ci/hooks/e7d8af60-e6f5-11e7-a54a-0a580a281e06/public/provider/travis/webhook
+    on_success: always
+    on_failure: always
+    on_start: always
+    on_cancel: always
+    on_error: always
