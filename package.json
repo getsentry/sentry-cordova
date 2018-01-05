@@ -1,6 +1,6 @@
 {
   "name": "@sentry/cordova",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "www/SentryCordova.js",
   "license": "MIT",
   "repository": "git://github.com/getsentry/sentry-cordova.git",
@@ -58,7 +58,9 @@
     "test": "npm-run-all test:browser",
     "codecov": "codecov",
     "preversion:changelog": "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
-    "version": "npm run preversion:changelog && node ./scripts/version-bump.js && git add -A"
+    "version": "npm run preversion:changelog && node ./scripts/version-bump.js && git add -A",
+    "preversion": "yarn test",
+    "postversion": "git push && git push --tags"
   },
   "jest": {
     "globals": {
