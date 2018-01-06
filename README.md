@@ -23,7 +23,7 @@ Sentry.create('___DSN___')
     .install();
 ```
 
-## Sentry documentation
+## Documentation
 - [Installation](https://docs.sentry.io/clients/cordova/#installation)
 - [Using Sentry with Ionic](https://docs.sentry.io/clients/cordova/ionic/)
 - [Documentation](https://docs.sentry.io/clients/cordova/)
