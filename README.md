@@ -16,12 +16,14 @@
 [![deps dev](https://david-dm.org/getsentry/sentry-cordova/dev-status.svg)](https://david-dm.org/getsentry/sentry-cordova?type=dev&view=list)
 [![deps peer](https://david-dm.org/getsentry/sentry-cordova/peer-status.svg)](https://david-dm.org/getsentry/sentry-cordova?type=peer&view=list)
 
-Usage:
+## Usage
 ```javascript
 Sentry.create('___DSN___')
     .use(SentryCordova, {sentryBrowser: SentryBrowser})
     .install();
 ```
 
+## Documentation
 - [Installation](https://docs.sentry.io/clients/cordova/#installation)
+- [Using Sentry with Ionic](https://docs.sentry.io/clients/cordova/ionic/)
 - [Documentation](https://docs.sentry.io/clients/cordova/)
