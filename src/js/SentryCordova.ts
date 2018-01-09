@@ -135,10 +135,10 @@ export class SentryCordova implements IAdapter {
   }
 
   private tryToSetSentryRelease() {
-    if (window.sentryRelease !== undefined && window.sentryRelease.id !== undefined) {
-      this.setRelease(window.sentryRelease.id);
-      this.browser.getRaven().setRelease(window.sentryRelease.id);
-      this.client.log('received release from w.sentryRelease');
+    if (window.SENTRY_RELEASE !== undefined && window.SENTRY_RELEASE.id !== undefined) {
+      this.setRelease(window.SENTRY_RELEASE.id);
+      this.browser.getRaven().setRelease(window.SENTRY_RELEASE.id);
+      this.client.log('received release from window.SENTRY_RELEASE');
     }
   }
 

@@ -70,7 +70,7 @@ module.exports = function(ctx) {
   });
   const releaseSentry = `
   <script>
-  (function(w){var i=w.sentryRelease=w.sentryRelease||{};i.id='${release}';})(window);
+  (function(w){var i=w.SENTRY_RELEASE=w.SENTRY_RELEASE||{};i.id='${release}';})(this);
   </script>
   <!-- sentry-cordova -->`;
   const replaceWith = `<head>${releaseSentry}`;
