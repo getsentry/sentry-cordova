@@ -19,7 +19,7 @@ matrix:
       - yarn codecov
 
     - language: objective-c
-      if: tag IS present
+      if: type NOT pull_request
       osx_image: xcode9.2
       script: .travis/deploy.sh
       after_success:
