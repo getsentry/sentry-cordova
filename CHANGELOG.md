@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.0
+
+- Rename sentry release window global var for Ionic #5
+
 ## v0.1.3
 
 - Fix build for iOS project (add framework)
