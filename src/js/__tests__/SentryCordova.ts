@@ -22,7 +22,7 @@ function callDeviceReady() {
 beforeEach(() => {
   jest.resetAllMocks();
   (window as any).Cordova = {};
-  (window as any).sentryRelease = {};
+  (window as any).SENTRY_RELEASE = {};
   disableRavenInstrument();
 });
 
@@ -168,8 +168,8 @@ describe('SentryCordova', () => {
 
   test('Call setRelease from window', async done => {
     expect.assertions(4);
-    (window as any).sentryRelease = {};
-    (window as any).sentryRelease.id = 'abc';
+    (window as any).SENTRY_RELEASE = {};
+    (window as any).SENTRY_RELEASE.id = 'abc';
 
     callDeviceReady();
 
