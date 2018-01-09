@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1
+
+- Fix travis
+
 ## v0.2.0
 
 - Rename sentry release window global var for Ionic #5
