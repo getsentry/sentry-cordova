@@ -62,7 +62,7 @@ module.exports = function(ctx) {
   const shasum2 = crypto.createHash(algorithm);
   shasum2.update(allHash);
   const fileHash = shasum2.digest('hex');
-  const release = fileHash.slice(0, 7);
+  const release = fileHash.slice(0, 20);
 
   const regex = /<head>(?:[\s\S]*(<!-- sentry-cordova -->))?/g;
   let contents = fs.readFileSync(indexHtml, {
@@ -89,14 +89,13 @@ module.exports = function(ctx) {
 
   const sentryCli = new SentryCli(configFile);
 
-  return sentryCli
-    .createRelease(release)
+  return sentryCli.releases
+    .new(release)
     .then(() =>
-      sentryCli.uploadSourceMaps({
-        release: release,
+      sentryCli.releases.uploadSourceMaps(release, {
         include: includes,
         ignore: ignore,
       })
     )
-    .then(() => sentryCli.finalizeRelease(release));
+    .then(() => sentryCli.releases.finalize(release));
 };
