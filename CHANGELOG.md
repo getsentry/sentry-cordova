@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.0
+
+- Bump sentry-wizard and sentry-cli to use new JS interface
+
 ## v0.2.1
 
 - Fix travis
