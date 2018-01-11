@@ -7,7 +7,7 @@ To use Sentry with `Ionic <https://ionicframework.com/>`_ you have to add
 
 First run ``npm i --save @sentry/cordova`` and make sure you already added the
 the platfroms you want to support with ``ionic cordova platform add ios`` and/or
-``ionic cordova platform add ios``.
+``ionic cordova platform add android``.
 
 
 After that it's important to run ``cordova plugin add @sentry/cordova``
