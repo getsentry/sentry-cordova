@@ -9,7 +9,7 @@ module.exports = function(ctx) {
       integration: 'cordova',
     });
   } else {
-    const wizardPath = resolve('@sentry/wizard/bin/sentry-wizard');
+    const wizardPath = require.resolve('@sentry/wizard/bin/sentry-wizard');
     console.error(
       'Please run # \\n\\n' + wizardPath + '\\n\\n # to fully setup your project'
     );
