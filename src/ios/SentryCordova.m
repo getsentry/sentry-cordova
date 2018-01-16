@@ -14,7 +14,6 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 - (void)install:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         NSString *dsn = [command.arguments objectAtIndex:0];
-        //    NSString *options = [command.arguments objectAtIndex:1];
         NSError *error = nil;
         SentryClient *client = [[SentryClient alloc] initWithDsn:dsn didFailWithError:&error];
         SentryClient.sharedClient = client;
@@ -27,6 +26,7 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
             NSLog(@"%@", error);
             result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:NO];
         }
+        [SentryClient.sharedClient enableAutomaticBreadcrumbTracking];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }

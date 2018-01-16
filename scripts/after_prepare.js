@@ -4,6 +4,11 @@ module.exports = function(ctx) {
   const fs = ctx.requireCordovaModule('fs');
   const crypto = require('crypto');
 
+  if (process.env.SENTRY_SKIP_AUTO_RELEASE) {
+    console.log('Skipping Sentry auto release');
+    return;
+  }
+
   function checksum(str) {
     return crypto
       .createHash('sha1')
