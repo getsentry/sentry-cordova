@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.0
+
+- Detect tty if sentry-wizard should run on the setup process
+- Added SENTRY_SKIP_AUTO_RELEASE to skip automatic release version
+- Enabled automatic breadcrumb tracking on iOS
+
 ## v0.3.0
 
 - Bump sentry-wizard and sentry-cli to use new JS interface
