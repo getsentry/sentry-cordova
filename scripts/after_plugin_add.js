@@ -3,15 +3,15 @@ module.exports = function(ctx) {
   const tty = require('tty');
   const path = require('path');
 
-  if (tty.isatty()) {
+  if (process.stdin.isTTY) {
     return wizard.run({
       quiet: false,
       integration: 'cordova',
     });
   } else {
-    const wizardPath = require.resolve('@sentry/wizard');
-    console.error(
-      'Please run # \\n\\n' + wizardPath + '\\n\\n # to fully setup your project'
-    );
+    console.error('Please run $ sentry-wizard to fully setup your project');
+    console.error('$ sentry-wizard to fully setup your project');
+    console.error('to fully setup your project');
+    console.error('See: https://github.com/getsentry/sentry-wizard');
   }
 };
