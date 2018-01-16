@@ -1,7 +1,6 @@
 module.exports = function(ctx) {
   const wizard = require('@sentry/wizard');
   const tty = require('tty');
-  const path = require('path');
 
   if (process.stdin.isTTY) {
     return wizard.run({
@@ -9,9 +8,14 @@ module.exports = function(ctx) {
       integration: 'cordova',
     });
   } else {
-    console.error('Please run $ sentry-wizard to fully setup your project');
-    console.error('$ sentry-wizard to fully setup your project');
+    console.error('***********************************************');
+    console.error('Sentry Setup Incomplete');
+    console.error('***********************************************');
+    console.error('Please run:');
+    console.error('$ sentry-wizard');
     console.error('to fully setup your project');
     console.error('See: https://github.com/getsentry/sentry-wizard');
+    console.error('***********************************************');
+    console.error('***********************************************');
   }
 };
