@@ -34,7 +34,7 @@ Otherwise we are not able to upload sourcemaps to Sentry.
 
     If you want to skip the automatic release version and set the release completly
     for yourself. You have to add this env var to disable it e.g.:
-        SENTRY_SKIP_AUTO_RELEASE=true ionic cordova emulate ios --prod
+    ``SENTRY_SKIP_AUTO_RELEASE=true ionic cordova emulate ios --prod``
 
 To setup Sentry in your codebase add this to your ``app.module.ts``:
 
