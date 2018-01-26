@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-    id="cordova-plugin-sentry"
-    version="1.0.0">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="sentry-cordova" version="0.4.0">
     <name>Sentry</name>
     <description></description>
     <license>MIT</license>
@@ -11,6 +9,9 @@
     <issue>https://github.com/getsentry/sentry-cordova/issues</issue>
 
     <engines>
+        <!-- https://issues.apache.org/jira/browse/CB-10239?jql=labels%20%3D%20cordova-8.0.0 -->
+        <!-- Requires > 8.0.0 because of scoped npm packages -->
+        <!-- <engine name="cordova" version=">=8.0.0" /> -->
         <!-- Requires > 3.5.0 because of the custom Framework tag for iOS [CB-6698] -->
         <!-- Requires > 4.0.0 because of the Framework tag for Android that uses gradle -->
         <engine name="cordova-android" version=">=3.5.0" />
@@ -35,6 +36,8 @@
 
       <source-file src="src/android/io/sentry/SentryCordova.java" target-dir="src/io/sentry/" />
 
+      <resource-file src="sentry.properties" target="sentry.properties" />
+
       <framework src="io.sentry:sentry-android:1+" />
     </platform>
 
@@ -49,7 +52,10 @@
         <header-file src="src/ios/SentryCordova.h" />
         <source-file src="src/ios/SentryCordova.m" />
 
+        <resource-file src="sentry.properties" target="../../sentry.properties" />
+
         <framework src="src/ios/Carthage/Build/iOS/Sentry.framework" custom="true" embed="true" />
+
     </platform>
 
     <!-- browser -->
@@ -66,6 +72,7 @@
         </config-file>
     </platform> -->
 
-    <hook type="after_plugin_add" src="scripts/after_plugin_add.js" />
+    <hook type="before_plugin_install" src="scripts/before_plugin_install_uninstall.js" />
+    <hook type="before_plugin_uninstall" src="scripts/before_plugin_install_uninstall.js" />
     <hook type="after_prepare" src="scripts/after_prepare.js" />
 </plugin>

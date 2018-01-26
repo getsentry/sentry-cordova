@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.0
+
+- Fix uploading of all build assests @DavidStrausz
+- Fix install/uninstall with wizard
+- Move sentry.properties into plugin folder
+
 ## v0.4.0
 
 - Detect tty if sentry-wizard should run on the setup process

@@ -49,11 +49,23 @@ module.exports = function(ctx) {
 
   // Adding files to include
   let includes = [];
-  includes.push(path.join(buildPath, 'main.js'));
-  includes.push(path.join(buildPath, 'main.js.map'));
-  includes.push(path.join(buildPath, 'vendor.js.map'));
-  includes.push(path.join(buildPath, 'vendor.js'));
-  includes.push(path.join(buildPath, 'polyfills.js'));
+  fs.readdir(buildPath, (error, files) => {
+    if (error) {
+      console.error('Could not list files of build directory: ', buildPath);
+    }
+
+    files.forEach((file, index) => {
+      let f = path.basename(file);
+      let [name, ext1, ext2] = f.split('.');
+      // we only want js source files and the according sourcemaps (no css etc.)
+      if (ext1 === 'js' || (ext1 === 'js' && ext2 === 'map')) {
+        // ignore sw-toolbox file
+        if (name !== 'sw-toolbox') {
+          includes.push(path.join(buildPath, f));
+        }
+      }
+    });
+  });
 
   const algorithm = 'sha1';
   let allHash = '';
