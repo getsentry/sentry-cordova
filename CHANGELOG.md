@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.1
+
+- Removed console.log
+
 ## v0.5.0
 
 - Fix uploading of all build assests @DavidStrausz

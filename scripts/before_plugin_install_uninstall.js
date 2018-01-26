@@ -2,7 +2,6 @@ module.exports = function(ctx) {
   const wizard = require('@sentry/wizard');
   const tty = require('tty');
 
-  console.log(ctx);
   if (process.stdin.isTTY) {
     let platform = ['ios', 'android'];
     if (ctx.opts && ctx.opts.plugin && ctx.opts.plugin.platform) {
