@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.3
+
+- Fix sentry.properties location
+
 ## v0.5.2
 
 - Require cordova 7.0.0 and cordova-ios 4.4.0 since we need to support embed framework
