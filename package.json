@@ -1,6 +1,6 @@
 {
   "name": "@sentry/cordova",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "main": "www/SentryCordova.js",
   "license": "MIT",
   "repository": "git://github.com/getsentry/sentry-cordova.git",
