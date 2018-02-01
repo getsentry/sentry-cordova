@@ -22,6 +22,12 @@ symbols we need to symbolicate iOS crashes.
 Configuration
 -------------
 
+You have to whitelist ``sentry.io`` in your ``config.xml`` like:
+
+    <access origin="sentry.io" />
+
+Keep in mind if you use an on premise installtion, adjust this domain accordingly.
+
 This example shows the bare minium for a plain Cordova project.
 Add this to you `index.js`:
 
