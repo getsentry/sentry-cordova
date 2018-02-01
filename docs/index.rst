@@ -26,7 +26,7 @@ You have to whitelist ``sentry.io`` in your ``config.xml`` like:
 
     <access origin="sentry.io" />
 
-Keep in mind if you use an on premise installtion, adjust this domain accordingly.
+Keep in mind if you use an on-premise installation, adjust this domain accordingly.
 
 This example shows the bare minium for a plain Cordova project.
 Add this to you `index.js`:
