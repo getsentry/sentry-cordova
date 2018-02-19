@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.6.0
+
+- Fixed #13
+- Added SENTRY_SKIP_WIZARD to skip wizard invocation
+
 ## v0.5.3
 
 - Fix sentry.properties location
