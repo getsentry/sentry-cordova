@@ -4,6 +4,11 @@ module.exports = function(ctx) {
 
   let uninstall = false;
 
+  if (process.env.SENTRY_SKIP_WIZARD) {
+    console.log('Skipping Sentry Wizard');
+    return;
+  }
+
   if (process.stdin.isTTY) {
     let platform = ['ios', 'android'];
     if (ctx.opts && ctx.opts.plugin && ctx.opts.plugin.platform) {
