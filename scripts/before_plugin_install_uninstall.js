@@ -2,12 +2,13 @@ module.exports = function(ctx) {
   const wizard = require('@sentry/wizard');
   const tty = require('tty');
 
+  let uninstall = false;
+
   if (process.stdin.isTTY) {
     let platform = ['ios', 'android'];
     if (ctx.opts && ctx.opts.plugin && ctx.opts.plugin.platform) {
       platform = [ctx.opts.plugin.platform];
     }
-    let uninstall = false;
     if (ctx.hook === 'before_plugin_uninstall') {
       uninstall = true;
     }
