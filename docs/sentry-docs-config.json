@@ -1,0 +1,14 @@
+{
+   "support_level": "production",
+   "platforms": {
+     "cordova": {
+       "name": "Cordova",
+       "type": "language",
+       "doc_link": "",
+       "wizard": [
+         "index#installation",
+         "index#configuration"
+       ]
+     }
+   },
+ }
