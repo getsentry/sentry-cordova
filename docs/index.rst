@@ -35,9 +35,9 @@ Add this to you `index.js`:
 
     onDeviceReady: function() {
         ...
-        var Sentry = cordova.require("cordova-plugin-sentry.SentryCordovaBundle").default;
-        var SentryBrowser = cordova.require("cordova-plugin-sentry.SentryCordovaBundle").SentryBrowser;
-        var SentryCordova = cordova.require("cordova-plugin-sentry.SentryCordovaBundle").SentryCordova;
+        var Sentry = cordova.require("sentry-cordova.SentryCordovaBundle").default;
+        var SentryBrowser = cordova.require("sentry-cordova.SentryCordovaBundle").SentryBrowser;
+        var SentryCordova = cordova.require("sentry-cordova.SentryCordovaBundle").SentryCordova;
 
         Sentry.create('___DSN___')
             .use(SentryCordova, {sentryBrowser: SentryBrowser})
