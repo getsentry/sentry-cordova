@@ -1,5 +1,12 @@
-import { ISentryBrowserOptions, SentryBrowser } from '@sentry/browser';
-import { Client, Event, IAdapter, IBreadcrumb, IUser } from '@sentry/core';
+import { SentryBrowser, SentryBrowserOptions } from '@sentry/browser';
+import {
+  Adapter,
+  Breadcrumb,
+  Client,
+  Context,
+  SentryEvent,
+  User,
+} from '@sentry/core';
 
 declare var window: any;
 declare var document: any;
@@ -7,15 +14,15 @@ declare var document: any;
 const CORDOVA_DEVICE_RDY_TIMEOUT = 10000;
 
 export interface ISentryBrowserConstructable<T> {
-  new (client: Client, options?: ISentryBrowserOptions): T;
+  new (client: Client, options?: SentryBrowserOptions): T;
 }
 
-export interface ISentryCordovaOptions {
+export interface SentryCordovaOptions extends SentryBrowserOptions {
   deviceReadyTimeout?: number;
   sentryBrowser?: ISentryBrowserConstructable<SentryBrowser>;
 }
 
-export class SentryCordova implements IAdapter {
+export class SentryCordova implements Adapter {
   private browser: SentryBrowser;
   private client: Client;
   private deviceReadyCallback: any;
@@ -24,21 +31,18 @@ export class SentryCordova implements IAdapter {
   private PLUGIN_NAME = 'Sentry';
   private PATH_STRIP_RE = /^.*\/[^\.]+(\.app|CodePush|.*(?=\/))/;
 
-  constructor(client: Client, public options: ISentryCordovaOptions = {}) {
+  constructor(client: Client, public options: SentryCordovaOptions = {}) {
     this.client = client;
     if (!options.sentryBrowser) {
       throw new Error(
-        'must pass SentryBrowser as an option { sentryBrowser: SentryBrowser }'
+        'must pass SentryBrowser as an option { sentryBrowser: SentryBrowser }',
       );
     }
     this.browser = new options.sentryBrowser(client);
     return this;
   }
 
-  public async install() {
-    this.browser.setOptions({
-      allowDuplicates: true,
-    });
+  public async install(): Promise<boolean> {
     await this.browser.install();
     // This will prefix frames in raven with app://
     // this is just a fallback if native is not available
@@ -46,7 +50,8 @@ export class SentryCordova implements IAdapter {
 
     return new Promise<boolean>((resolve, reject) => {
       if (this.isCordova()) {
-        const timeout = this.options.deviceReadyTimeout || CORDOVA_DEVICE_RDY_TIMEOUT;
+        const timeout =
+          this.options.deviceReadyTimeout || CORDOVA_DEVICE_RDY_TIMEOUT;
         const deviceReadyTimeout = setTimeout(() => {
           reject(`deviceready wasn't called for ${timeout} ms`);
         }, timeout);
@@ -59,11 +64,6 @@ export class SentryCordova implements IAdapter {
       }
     })
       .then(success => {
-        if (success && this.isCordova()) {
-          // We only want to register the breadcrumbcallback on success and running on
-          // Cordova otherwise we will get an endless loop
-          this.browser.setBreadcrumbCallback(crumb => this.captureBreadcrumb(crumb));
-        }
         this.tryToSetSentryRelease();
         return Promise.resolve(success);
       })
@@ -74,68 +74,75 @@ export class SentryCordova implements IAdapter {
     return this.browser as any;
   }
 
-  public async setOptions(options: ISentryCordovaOptions) {
+  public async setOptions(options: SentryCordovaOptions): Promise<void> {
     Object.assign(this.options, options);
-    return this;
+    return;
   }
 
-  public captureException(exception: Error) {
+  public captureException(exception: Error): Promise<SentryEvent> {
     return this.browser.captureException(exception);
   }
 
-  public captureMessage(message: string) {
+  public captureMessage(message: string): Promise<SentryEvent> {
     return this.browser.captureMessage(message);
   }
 
-  public captureBreadcrumb(crumb: IBreadcrumb) {
+  public captureBreadcrumb(crumb: Breadcrumb): Promise<Breadcrumb> {
     return this.nativeCall('captureBreadcrumb', crumb);
   }
 
-  public send(event: Event) {
+  public send(event: SentryEvent): Promise<void> {
     return this.nativeCall('send', event);
   }
 
-  public async setUserContext(user?: IUser) {
-    await this.nativeCall('setUserContext', user);
-    return this;
+  // TODO: should call nativeCall
+  public async getContext(): Promise<Context> {
+    return Promise.resolve(this.browser.getContext());
   }
 
-  public async setTagsContext(tags?: { [key: string]: any }) {
-    await this.nativeCall('setTagsContext', tags);
-    return this;
+  public async setContext(context: Context): Promise<void> {
+    if (context.extra) {
+      await this.nativeCall('setExtraContext', context.extra);
+    }
+    if (context.user) {
+      await this.nativeCall('setUserContext', context.user);
+    }
+    if (context.tags) {
+      await this.nativeCall('setTagsContext', context.tags);
+    }
   }
 
-  public async setExtraContext(extra?: { [key: string]: any }) {
-    await this.nativeCall('setExtraContext', extra);
-    return this;
-  }
-
-  public async clearContext() {
+  public async clearContext(): Promise<any> {
     return this.nativeCall('clearContext');
   }
 
-  public async setRelease(release: string) {
+  public async setRelease(release: string): Promise<void> {
     return this.setInternalOption('release', release);
   }
 
-  public async setDist(dist: string) {
+  public async setDist(dist: string): Promise<void> {
     return this.setInternalOption('dist', dist);
   }
 
-  public async setVersion(version: string) {
+  public async setVersion(version: string): Promise<void> {
     return this.setInternalOption('version', version);
   }
 
   // Private helpers
 
-  private setInternalOption(key: string, value: string) {
-    return this.setExtraContext({
-      [`__sentry_${key}`]: value,
+  private setInternalOption(key: string, value: string): Promise<void> {
+    return this.setContext({
+      extra: {
+        [`__sentry_${key}`]: value,
+      },
     });
   }
 
-  private tryToSetSentryRelease() {
-    if (window.SENTRY_RELEASE !== undefined && window.SENTRY_RELEASE.id !== undefined) {
+  private tryToSetSentryRelease(): void {
+    if (
+      window.SENTRY_RELEASE !== undefined &&
+      window.SENTRY_RELEASE.id !== undefined
+    ) {
       this.setRelease(window.SENTRY_RELEASE.id);
       this.browser.getRaven().setRelease(window.SENTRY_RELEASE.id);
       this.client.log('received release from window.SENTRY_RELEASE');
@@ -145,17 +152,24 @@ export class SentryCordova implements IAdapter {
   // ---------------------------------------
 
   // CORDOVA --------------------
-  private isCordova() {
+  private isCordova(): boolean {
     return window.cordova !== undefined || window.Cordova !== undefined;
   }
 
   private nativeCall(action: string, ...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
-      const exec = window && (window as any).Cordova && (window as any).Cordova.exec;
+      const exec =
+        window && (window as any).Cordova && (window as any).Cordova.exec;
       if (!exec) {
         reject('Cordova.exec not available');
       } else {
-        (window as any).Cordova.exec(resolve, reject, this.PLUGIN_NAME, action, args);
+        (window as any).Cordova.exec(
+          resolve,
+          reject,
+          this.PLUGIN_NAME,
+          action,
+          args,
+        );
       }
     }).catch(e => {
       if (e === 'not implemented' || e === 'Cordova.exec not available') {
@@ -170,13 +184,13 @@ export class SentryCordova implements IAdapter {
   private runInstall(
     resolve: (value?: boolean | PromiseLike<boolean>) => void,
     reject: (reason?: any) => void,
-    deviceReadyTimeout?: NodeJS.Timer
-  ) {
+    deviceReadyTimeout?: NodeJS.Timer,
+  ): void {
     if (deviceReadyTimeout) {
       document.removeEventListener('deviceready', this.deviceReadyCallback);
       clearTimeout(deviceReadyTimeout);
     }
-    this.nativeCall('install', this.client.dsn.getDsn(true), this.options)
+    this.nativeCall('install', this.client.dsn.toString(true), this.options)
       .then(resolve)
       .catch(reject);
   }
@@ -184,8 +198,8 @@ export class SentryCordova implements IAdapter {
   // ----------------------------------------------------------
   // Raven
 
-  private wrappedCallback(callback: any) {
-    function dataCallback(data: any, original: any) {
+  private wrappedCallback(callback: any): (data: any, original: any) => void {
+    function dataCallback(data: any, original: any): void {
       const normalizedData = callback(data) || data;
       if (original) {
         return original(normalizedData) || normalizedData;
@@ -195,35 +209,35 @@ export class SentryCordova implements IAdapter {
     return dataCallback;
   }
 
-  private setupNormalizeFrames() {
+  private setupNormalizeFrames(): void {
     const raven = this.browser.getRaven();
     raven.setDataCallback(
       this.wrappedCallback((data: any) => {
         data = this.normalizeData(data);
-        // TODO
-        // if (internalDataCallback) {
-        //   internalDataCallback(data);
-        // }
-      })
+      }),
     );
   }
 
-  private normalizeUrl(url: string, pathStripRe: RegExp) {
+  private normalizeUrl(url: string, pathStripRe: RegExp): string {
     return 'app://' + url.replace(/^file\:\/\//, '').replace(pathStripRe, '');
   }
 
-  private normalizeData(data: any, pathStripRe?: RegExp) {
+  private normalizeData(data: any, pathStripRe?: RegExp): any {
     if (data.culprit) {
       data.culprit = this.normalizeUrl(data.culprit, this.PATH_STRIP_RE);
     }
     // NOTE: if data.exception exists, exception.values and exception.values[0] are
     // guaranteed to exist
     const stacktrace =
-      data.stacktrace || (data.exception && data.exception.values[0].stacktrace);
+      data.stacktrace ||
+      (data.exception && data.exception.values[0].stacktrace);
     if (stacktrace) {
       stacktrace.frames.forEach((frame: any) => {
         if (frame.filename !== '[native code]') {
-          frame.filename = this.normalizeUrl(frame.filename, this.PATH_STRIP_RE);
+          frame.filename = this.normalizeUrl(
+            frame.filename,
+            this.PATH_STRIP_RE,
+          );
         }
       });
     }
