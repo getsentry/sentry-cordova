@@ -294,7 +294,7 @@ describe('SentryCordova', () => {
     await Sentry.getSharedClient().setContext({ user: { id: '4433' } });
   });
 
-  test.only('Call getContext', async done => {
+  test('Call getContext', async done => {
     expect.assertions(3);
 
     callDeviceReady();
