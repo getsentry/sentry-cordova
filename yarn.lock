@@ -30,9 +30,9 @@
   version "0.4.0-beta.2"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-0.4.0-beta.2.tgz#a17dc5e4718f5d580a1a4683cf7f6944105058ed"
 
-"@sentry/wizard@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@sentry/wizard/-/wizard-0.9.0.tgz#57e93519003f558bc5dfbe9da6d03e128c8eb5b7"
+"@sentry/wizard@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@sentry/wizard/-/wizard-0.9.1.tgz#f047672f03184f2fb20224775cefebd1f176795b"
   dependencies:
     "@sentry/cli" "^1.30.1"
     chalk "^2.3.1"

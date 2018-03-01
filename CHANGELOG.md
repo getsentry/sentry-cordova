@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.7.0
+
+- Using new `0.4.0` of `@sentry/core` & `@sentry/browser`
+- Bump `sentry-wizard` to fix #29
+
 ## v0.6.0
 
 - Fixed #13
