@@ -294,6 +294,33 @@ describe('SentryCordova', () => {
     await Sentry.getSharedClient().setContext({ user: { id: '4433' } });
   });
 
+  test.only('Call getContext', async done => {
+    expect.assertions(3);
+
+    callDeviceReady();
+
+    (window as any).Cordova.exec = (...params) => {
+      // params[0] == resolve
+      // params[1] == reject
+      // params[3] == function send/install .....
+      // raven._originalConsole.log(params);
+      expect(params[2]).toBe('Sentry');
+      if (params[3] === 'getContext') {
+        params[0](true);
+        done();
+      } else if (params[3] === 'install') {
+        params[0](false);
+        expect(params[3]).toBe('install');
+      }
+    };
+
+    await Sentry.create(dsn)
+      .use(SentryCordova, { sentryBrowser: SentryBrowser })
+      .install();
+
+    await Sentry.getSharedClient().getContext();
+  });
+
   test('Call captureBreadcrumb', async done => {
     expect.assertions(4);
 

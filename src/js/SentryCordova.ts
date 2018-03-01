@@ -95,9 +95,8 @@ export class SentryCordova implements Adapter {
     return this.nativeCall('send', event);
   }
 
-  // TODO: should call nativeCall
   public async getContext(): Promise<Context> {
-    return Promise.resolve(this.browser.getContext());
+    return this.nativeCall('getContext');
   }
 
   public async setContext(context: Context): Promise<void> {
