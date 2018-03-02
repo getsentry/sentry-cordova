@@ -129,4 +129,16 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
     }];
 }
 
+- (void)getContext:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        NSDictionary *context = @{
+                                  @"extra": SentryClient.sharedClient.extra,
+                                  @"tags": SentryClient.sharedClient.tags,
+                                  @"user": [SentryClient.sharedClient.user serialize]
+                                };
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:context];
+        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    }];
+}
+
 @end

@@ -1,17 +1,18 @@
 import { SentryBrowser } from '@sentry/browser';
 import * as Sentry from '@sentry/core';
 import { SentryCordova } from '../SentryCordova';
+// tslint:disable-next-line:no-implicit-dependencies
 const Raven = require('raven-js');
 
 const dsn = 'https://username:password@domain/path';
 
-function disableRavenInstrument() {
+function disableRavenInstrument(): void {
   const raven = Raven;
   raven._globalOptions.instrument = false;
   raven._globalOptions.autoBreadcrumbs = false;
 }
 
-function callDeviceReady() {
+function callDeviceReady(): void {
   setTimeout(() => {
     const e = document.createEvent('Events');
     e.initEvent('deviceready', true, false);
@@ -33,7 +34,7 @@ describe('SentryCordova', () => {
     return expect(
       Sentry.create(dsn)
         .use(SentryCordova, { sentryBrowser: SentryBrowser })
-        .install()
+        .install(),
     ).resolves.toBeTruthy();
   });
 
@@ -44,7 +45,7 @@ describe('SentryCordova', () => {
     return expect(
       Sentry.create(dsn)
         .use(SentryCordova, { sentryBrowser: SentryBrowser })
-        .install()
+        .install(),
     ).resolves.toBeTruthy();
   });
 
@@ -82,7 +83,9 @@ describe('SentryCordova', () => {
         expect(event.exception.values[0].type).toBe('Error');
         expect(event.exception.values[0].value).toBe('yo');
         expect(
-          event.exception.values[0].stacktrace.frames[0].filename.indexOf('app:///')
+          event.exception.values[0].stacktrace.frames[0].filename.indexOf(
+            'app:///',
+          ),
         ).toBe(0);
         done();
       }
@@ -120,7 +123,7 @@ describe('SentryCordova', () => {
 
     const spy1 = jest.spyOn(
       (Sentry.getSharedClient().getAdapter() as SentryCordova).getBrowser(),
-      'send'
+      'send',
     );
 
     Sentry.getSharedClient()
@@ -227,11 +230,12 @@ describe('SentryCordova', () => {
       .use(SentryCordova, { sentryBrowser: SentryBrowser })
       .install();
 
-    await Sentry.getSharedClient().setRelease('xxx');
-    const adapater = Sentry.getSharedClient().getAdapter<SentryCordova>();
-    expect(adapater).toBeInstanceOf(SentryCordova);
-    await adapater.setDist('dist');
-    await adapater.setVersion('version');
+    const adapter = Sentry.getSharedClient().getAdapter() as SentryCordova;
+
+    await adapter.setRelease('xxx');
+    expect(adapter).toBeInstanceOf(SentryCordova);
+    await adapter.setDist('dist');
+    await adapter.setVersion('version');
   });
 
   test('Call setTagsContext', async done => {
@@ -259,7 +263,7 @@ describe('SentryCordova', () => {
       .use(SentryCordova, { sentryBrowser: SentryBrowser })
       .install();
 
-    await Sentry.getSharedClient().setTagsContext({ jest: 'yo' });
+    await Sentry.getSharedClient().setContext({ tags: { jest: 'yo' } });
   });
 
   test('Call setUserContext', async done => {
@@ -287,7 +291,34 @@ describe('SentryCordova', () => {
       .use(SentryCordova, { sentryBrowser: SentryBrowser })
       .install();
 
-    await Sentry.getSharedClient().setUserContext({ id: '4433' });
+    await Sentry.getSharedClient().setContext({ user: { id: '4433' } });
+  });
+
+  test('Call getContext', async done => {
+    expect.assertions(3);
+
+    callDeviceReady();
+
+    (window as any).Cordova.exec = (...params) => {
+      // params[0] == resolve
+      // params[1] == reject
+      // params[3] == function send/install .....
+      // raven._originalConsole.log(params);
+      expect(params[2]).toBe('Sentry');
+      if (params[3] === 'getContext') {
+        params[0](true);
+        done();
+      } else if (params[3] === 'install') {
+        params[0](false);
+        expect(params[3]).toBe('install');
+      }
+    };
+
+    await Sentry.create(dsn)
+      .use(SentryCordova, { sentryBrowser: SentryBrowser })
+      .install();
+
+    await Sentry.getSharedClient().getContext();
   });
 
   test('Call captureBreadcrumb', async done => {
@@ -342,7 +373,8 @@ describe('SentryCordova', () => {
       .use(SentryCordova, { sentryBrowser: SentryBrowser })
       .install();
 
-    await Sentry.getSharedClient().clearContext();
+    const adapter = Sentry.getSharedClient().getAdapter() as SentryCordova;
+    await adapter.clearContext();
   });
 
   test('Call captureMessage', async done => {
@@ -413,7 +445,7 @@ describe('SentryCordova', () => {
       .setOptions({ deviceReadyTimeout: 1 });
 
     return expect(Sentry.getSharedClient().install()).rejects.toBe(
-      "deviceready wasn't called for 1 ms"
+      "deviceready wasn't called for 1 ms",
     );
   });
 });
