@@ -30,6 +30,12 @@
   version "0.4.0-beta.2"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-0.4.0-beta.2.tgz#a17dc5e4718f5d580a1a4683cf7f6944105058ed"
 
+"@sentry/typescript@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@sentry/typescript/-/typescript-0.4.1.tgz#3dd1d6d211b9b868d9c37eb474df3749dfe004ff"
+  dependencies:
+    tslint-config-prettier "^1.9.0"
+
 "@sentry/wizard@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@sentry/wizard/-/wizard-0.9.1.tgz#f047672f03184f2fb20224775cefebd1f176795b"
@@ -3229,6 +3235,10 @@ tslint-config-prettier@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/tslint-config-prettier/-/tslint-config-prettier-1.6.0.tgz#fec1ee8fb07e8f033c63fed6b135af997f31962a"
 
+tslint-config-prettier@^1.9.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/tslint-config-prettier/-/tslint-config-prettier-1.10.0.tgz#5063c413d43de4f6988c73727f65ecfc239054ec"
+
 tslint-eslint-rules@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/tslint-eslint-rules/-/tslint-eslint-rules-4.1.1.tgz#7c30e7882f26bc276bff91d2384975c69daf88ba"
@@ -3302,9 +3312,9 @@ typedarray-to-buffer@^3.1.2:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.6.2.tgz#3c5b6fd7f6de0914269027f03c0946758f7673a4"
+typescript@^2.7.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.7.2.tgz#2d615a1ef4aee4f574425cdff7026edf81919836"
 
 uglify-es@^3.3.7:
   version "3.3.8"

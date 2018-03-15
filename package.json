@@ -1,11 +1,11 @@
 {
-  "name": "@sentry/cordova",
+  "name": "sentry-cordova",
   "version": "0.7.0",
   "main": "www/SentryCordova.js",
   "license": "MIT",
   "repository": "git://github.com/getsentry/sentry-cordova.git",
   "cordova": {
-    "id": "@sentry/cordova",
+    "id": "sentry-cordova",
     "platforms": [
       "android",
       "ios"
@@ -28,6 +28,7 @@
     "@sentry/wizard": "^0.9.1"
   },
   "devDependencies": {
+    "@sentry/typescript": "^0.4.1",
     "@types/cordova": "0.0.34",
     "@types/jest": "^22.1.0",
     "@types/node": "^9.3.0",
@@ -45,12 +46,12 @@
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.6.0",
     "tslint-eslint-rules": "^4.1.1",
-    "typescript": "^2.6.2",
+    "typescript": "^2.7.2",
     "vrsource-tslint-rules": "^5.8.0"
   },
   "scripts": {
     "build:bundle": "rollup --config",
-    "build:typescript": "tsc -p tsconfig.json",
+    "build:typescript": "tsc -p tsconfig.build.json",
     "clean": "rm -rf ./www/*",
     "dist": "npm-run-all clean build:typescript build:bundle",
     "test:browser": "jest",

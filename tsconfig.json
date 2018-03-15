@@ -1,29 +1,9 @@
 {
+    "extends": "./tsconfig.build.json",
+    "include": ["src/**/*.ts", "test/**/*.ts"],
+    "exclude": ["dist"],
     "compilerOptions": {
-        "stripInternal": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "noFallthroughCasesInSwitch": true,
-        "module": "commonjs",
-
-        "skipLibCheck": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "inlineSources": true,
-        "sourceMap": true,
-        "lib": [
-            "es2015"
-        ],
-        "types": [
-            "node"
-        ],
-        "target": "es5",
-        "declaration": true,
-        "allowJs": false,
-        "outDir": "www"
-    },
-    "include": [
-        "src/js/SentryCordova.ts",
-        "src/js/SentryCordova.bundle.ts"
-    ]
-}
+      "rootDir": ".",
+      "plugins": [{ "name": "tslint-language-service" }]
+    }
+  }
