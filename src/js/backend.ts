@@ -4,7 +4,6 @@ import {
   Context,
   Frontend,
   Options,
-  SentryError,
   SentryEvent,
 } from '@sentry/core';
 

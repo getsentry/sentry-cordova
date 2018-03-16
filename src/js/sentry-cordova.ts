@@ -1,0 +1,1 @@
+export { SentryClient } from './frontend';

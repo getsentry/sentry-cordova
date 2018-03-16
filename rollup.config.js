@@ -23,18 +23,18 @@ const defaultMinPlugins = [
 
 export default [
   {
-    input: 'www/SentryCordova.bundle.js',
+    input: 'www/js/sentry-cordova.js',
     output: {
-      file: 'www/SentryCordova.bundle.min.js',
+      file: 'www/js/sentry-cordova.bundle.min.js',
       format: 'cjs',
       exports: 'named',
     },
     plugins: defaultMinPlugins,
   },
   {
-    input: 'www/SentryCordova.bundle.js',
+    input: 'www/js/sentry-cordova.js',
     output: {
-      file: 'www/SentryCordova.bundle.js',
+      file: 'www/js/sentry-cordova.bundle.js',
       format: 'cjs',
       exports: 'named',
     },
