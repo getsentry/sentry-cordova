@@ -8,7 +8,7 @@ import {
   SentryEvent,
 } from '@sentry/core';
 
-import { BrowserBackend } from '@sentry/browser';
+import { BrowserBackend, BrowserOptions } from '@sentry/browser';
 
 import { normalizeData } from './normalize';
 
@@ -26,19 +26,18 @@ function isCordova(): boolean {
  * Configuration options for the Sentry Cordova SDK.
  * @see CordovaFrontend for more information.
  */
-export interface CordovaOptions extends Options {
+export interface CordovaOptions extends Options, BrowserOptions {
   // TOOD
   deviceReadyTimeout?: number;
+
+  autoBreadcrumbs?: boolean;
+  instrument?: boolean;
 }
 
 /** The Sentry Cordova SDK Backend. */
 export class CordovaBackend implements Backend {
   /** Handle to the SDK frontend for callbacks. */
   private readonly frontend: Frontend<CordovaOptions>;
-  /** In memory store for breadcrumbs. */
-  private breadcrumbs: Breadcrumb[] = [];
-  /** In memory store for context infos. */
-  private context: Context = {};
 
   private browserBackend: BrowserBackend;
 
@@ -54,16 +53,6 @@ export class CordovaBackend implements Backend {
    * @inheritDoc
    */
   public async install(): Promise<boolean> {
-    // We are only called by the frontend if the SDK is enabled and a valid DSN
-    // has been configured. If no DSN is present, this indicates a programming
-    // error.
-    const dsn = this.frontend.getDSN();
-    if (!dsn) {
-      throw new SentryError(
-        'Invariant exception: install() must not be called when disabled',
-      );
-    }
-
     await this.browserBackend.install();
 
     return new Promise<boolean>((resolve, reject) => {
@@ -107,15 +96,14 @@ export class CordovaBackend implements Backend {
    * @inheritDoc
    */
   public async storeContext(context: Context): Promise<void> {
-    this.context = { ...context };
-    await this.nativeCall('storeContext', this.context);
+    await this.nativeCall('storeContext', context);
   }
 
   /**
    * @inheritDoc
    */
   public async loadContext(): Promise<Context> {
-    return { ...this.context, ...(await this.nativeCall('loadContext')) };
+    return { ...(await this.nativeCall('loadContext')) };
   }
 
   /**
@@ -132,15 +120,15 @@ export class CordovaBackend implements Backend {
    * @inheritDoc
    */
   public async storeBreadcrumbs(breadcrumbs: Breadcrumb[]): Promise<void> {
-    // TODO
-    this.breadcrumbs = [...breadcrumbs];
+    await this.nativeCall('storeBreadcrumbs', [...breadcrumbs]);
   }
 
   /**
    * @inheritDoc
    */
   public async loadBreadcrumbs(): Promise<Breadcrumb[]> {
-    return [...this.breadcrumbs];
+    const breadcrumbs = (await this.nativeCall('loadBreadcrumbs')) || [];
+    return [...breadcrumbs];
   }
 
   // CORDOVA --------------------
@@ -153,8 +141,6 @@ export class CordovaBackend implements Backend {
   }
 
   private nativeCall(action: string, ...args: any[]): Promise<any> {
-    // TODO
-    // action=store and loadcontext do nothing
     return new Promise((resolve, reject) => {
       const exec =
         window && (window as any).Cordova && (window as any).Cordova.exec;
@@ -201,8 +187,8 @@ export class CordovaBackend implements Backend {
       window.SENTRY_RELEASE !== undefined &&
       window.SENTRY_RELEASE.id !== undefined
     ) {
-      await this.setInternalOption('release', window.SENTRY_RELEASE.id);
       this.frontend.setOptions({ release: window.SENTRY_RELEASE.id });
+      await this.setInternalOption('release', window.SENTRY_RELEASE.id);
     }
   }
 }
