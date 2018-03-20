@@ -1,20 +1,17 @@
 {
-    "[typescript]": {
-        "editor.formatOnSave": true
-    },
-    "[javascript]": {
-        "editor.formatOnSave": true
-    },
-    "prettier.typescriptEnable": [
-        "typescript",
-        "typescriptreact"
-    ],
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/dist/**": true
-    },
-    "tslint.autoFixOnSave": true,
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.renderWhitespace": "all",
+    "editor.wordWrap": "on",
+    "editor.wrappingIndent": "indent",
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true,
+    "editor.minimap.enabled": false,
     "editor.tabSize": 2,
-    "typescript.tsdk": "node_modules/typescript/lib"
-}
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.mouseWheelZoom": false,
+    "tslint.enable": false,
+    "typescript.autoImportSuggestions.enabled": false
+  }

@@ -50,7 +50,7 @@ export class CordovaFrontend extends FrontendBase<
  * use the provided methods.
  *
  * @example
- * const { SentryClient } = require('@sentry/Cordova');
+ * const { SentryClient } = require('@sentry/cordova');
  *
  * SentryClient.create({
  *   dsn: '__DSN__',

@@ -68,7 +68,7 @@ describe('SentryCordova', () => {
     });
   });
   describe('Capture', () => {
-    test('Exception', async done => {
+    test.only('Exception', async done => {
       expect.assertions(3);
       callDeviceReady();
 
@@ -82,12 +82,11 @@ describe('SentryCordova', () => {
         ) => {
           if (action === 'sendEvent') {
             const event = value[0]; // this is an event
-            // raven._originalConsole.log(event.exception.values[0].type);
             expect(event.exception[0].type).toBe('Error');
             expect(event.exception[0].value).toBe('yo');
             expect(
               event.exception[0].stacktrace.frames[0].filename.indexOf(
-                'app:///',
+                'app://',
               ),
             ).toBe(0);
             done();
