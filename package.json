@@ -25,6 +25,7 @@
   "dependencies": {
     "@sentry/browser": "0.4.1",
     "@sentry/core": "0.4.1",
+    "@sentry/shim": "../raven-js/packages/shim",
     "@sentry/wizard": "^0.9.1"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "rollup": "^0.57.0",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.2.0",
+    "rollup-plugin-shim": "^1.0.0",
     "rollup-plugin-uglify": "^3.0.0",
     "ts-jest": "^22.4.1",
     "tslint": "^5.9.1",

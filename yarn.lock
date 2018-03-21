@@ -31,6 +31,11 @@
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-0.4.1.tgz#45587c673ac848a0dddfc9a9ea99f19c6798ef9b"
 
+"@sentry/shim@../raven-js/packages/shim":
+  version "0.4.1"
+  dependencies:
+    "@sentry/utils" "0.4.1"
+
 "@sentry/typescript@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@sentry/typescript/-/typescript-0.4.1.tgz#3dd1d6d211b9b868d9c37eb474df3749dfe004ff"
@@ -2982,6 +2987,10 @@ rollup-plugin-node-resolve@^3.2.0:
     builtin-modules "^2.0.0"
     is-module "^1.0.0"
     resolve "^1.1.6"
+
+rollup-plugin-shim@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-shim/-/rollup-plugin-shim-1.0.0.tgz#b00f5cb44cdae81358c5342fe82fa71a1602b56b"
 
 rollup-plugin-uglify@^3.0.0:
   version "3.0.0"

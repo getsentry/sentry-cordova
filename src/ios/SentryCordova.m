@@ -76,44 +76,49 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
     }];
 }
 
-- (void)storeBreadcrumbs:(CDVInvokedUrlCommand *)command {
+- (void)addBreadcrumb:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
-        NSArray *breadcrumbs = [command.arguments objectAtIndex:0];
-        [SentryClient.sharedClient.breadcrumbs clear];
-        for (NSDictionary *jsonBreadcrumb in breadcrumbs) {
-            SentryBreadcrumb *breadcrumb = [SentryJavaScriptBridgeHelper createSentryBreadcrumbFromJavaScriptBreadcrumb:jsonBreadcrumb];
-            [SentryClient.sharedClient.breadcrumbs addBreadcrumb:breadcrumb];
-            CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
-            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-        }
-    }];
-}
-
-- (void)loadBreadcrumbs:(CDVInvokedUrlCommand *)command {
-    [self.commandDelegate runInBackground:^{
-        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[SentryClient.sharedClient.breadcrumbs serialize]];
+        NSDictionary *jsonBreadcrumb = [command.arguments objectAtIndex:0];
+        SentryBreadcrumb *breadcrumb = [SentryJavaScriptBridgeHelper createSentryBreadcrumbFromJavaScriptBreadcrumb:jsonBreadcrumb];
+        [SentryClient.sharedClient.breadcrumbs addBreadcrumb:breadcrumb];
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[breadcrumb serialize]];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }
 
-- (void)storeContext:(CDVInvokedUrlCommand *)command {
+
+- (void)setUserContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         id arg = [command.arguments objectAtIndex:0];
         if ([arg isKindOfClass:NSDictionary.class]) {
-            if ([arg[@"extra"] isKindOfClass:NSDictionary.class]) {
-                NSMutableDictionary *newDict = [NSMutableDictionary new];
-                [newDict addEntriesFromDictionary:SentryClient.sharedClient.extra];
-                [newDict addEntriesFromDictionary:arg[@"extra"]];
-                SentryClient.sharedClient.extra = newDict;
-            }
-            if ([arg[@"tags"] isKindOfClass:NSDictionary.class]) {
+            SentryClient.sharedClient.user = [SentryJavaScriptBridgeHelper createSentryUserFromJavaScriptUser:arg];
+        }
+    }];
+}
+
+- (void)setTagsContext:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        if (SentryClient.sharedClient && SentryClient.sharedClient.tags) {
+            id dict = [command.arguments objectAtIndex:0];
+            if ([dict isKindOfClass:NSDictionary.class]) {
                 NSMutableDictionary *newDict = [NSMutableDictionary new];
                 [newDict addEntriesFromDictionary:SentryClient.sharedClient.tags];
-                [newDict addEntriesFromDictionary:arg[@"tags"]];
+                [newDict addEntriesFromDictionary:dict];
                 SentryClient.sharedClient.tags = newDict;
             }
-            if ([arg[@"user"] isKindOfClass:NSDictionary.class]) {
-                SentryClient.sharedClient.user = [SentryJavaScriptBridgeHelper createSentryUserFromJavaScriptUser:arg[@"user"]];
+        }
+    }];
+}
+
+- (void)setExtraContext:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        if (SentryClient.sharedClient && SentryClient.sharedClient.extra) {
+            id dict = [command.arguments objectAtIndex:0];
+            if ([dict isKindOfClass:NSDictionary.class]) {
+                NSMutableDictionary *newDict = [NSMutableDictionary new];
+                [newDict addEntriesFromDictionary:SentryClient.sharedClient.extra];
+                [newDict addEntriesFromDictionary:dict];
+                SentryClient.sharedClient.extra = newDict;
             }
         }
     }];
@@ -122,18 +127,6 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 - (void)clearContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         [SentryClient.sharedClient clearContext];
-    }];
-}
-
-- (void)loadContext:(CDVInvokedUrlCommand *)command {
-    [self.commandDelegate runInBackground:^{
-        NSDictionary *context = @{
-                                  @"extra": SentryClient.sharedClient.extra,
-                                  @"tags": SentryClient.sharedClient.tags,
-                                  @"user": [SentryClient.sharedClient.user serialize]
-                                };
-        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:context];
-        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }
 

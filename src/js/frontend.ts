@@ -1,5 +1,33 @@
-import { FrontendBase, Sdk, SdkInfo } from '@sentry/core';
+import {
+  Breadcrumb,
+  FrontendBase,
+  Scope,
+  SdkInfo,
+  SentryEvent,
+  User,
+} from '@sentry/core';
+import {
+  addBreadcrumb as shimAddBreadcrumb,
+  bindClient,
+  getCurrentClient,
+  setExtraContext as shimSetExtraContext,
+  setUserContext as shimSetUserContext,
+} from '@sentry/shim';
+// tslint:disable-next-line:no-submodule-imports
+import { forget } from '@sentry/utils/dist/lib/async';
 import { CordovaBackend, CordovaOptions } from './backend';
+
+export {
+  captureEvent,
+  captureException,
+  captureMessage,
+  popScope,
+  pushScope,
+  setExtraContext,
+  setTagsContext,
+} from '@sentry/shim';
+
+declare var window: any;
 
 /**
  * The Sentry Cordova SDK Frontend.
@@ -19,18 +47,6 @@ export class CordovaFrontend extends FrontendBase<
     super(CordovaBackend, options);
   }
 
-  public async setRelease(release: string): Promise<void> {
-    return this.getBackend().setInternalOption('release', release);
-  }
-
-  public async setDist(dist: string): Promise<void> {
-    return this.getBackend().setInternalOption('dist', dist);
-  }
-
-  public async setVersion(version: string): Promise<void> {
-    return this.getBackend().setInternalOption('version', version);
-  }
-
   /**
    * @inheritDoc
    */
@@ -39,6 +55,26 @@ export class CordovaFrontend extends FrontendBase<
       name: 'sentry-cordova',
       version: '0.7.0',
     };
+  }
+
+  /**
+   * @inheritDoc
+   */
+  protected async prepareEvent(
+    event: SentryEvent,
+    scope: Scope,
+  ): Promise<SentryEvent> {
+    if (
+      window.SENTRY_RELEASE !== undefined &&
+      window.SENTRY_RELEASE.id !== undefined
+    ) {
+      scope.context = {
+        ...{ extra: { __sentry_release: window.SENTRY_RELEASE.id } },
+        ...scope.context.extra,
+      };
+    }
+    const prepared = await super.prepareEvent(event, scope);
+    return prepared;
   }
 }
 
@@ -83,4 +119,50 @@ export class CordovaFrontend extends FrontendBase<
  * @see CordovaOptions for documentation on configuration options.
  */
 // tslint:disable-next-line:variable-name
-export const SentryClient = new Sdk(CordovaFrontend);
+export function create(options: CordovaOptions): void {
+  if (!getCurrentClient()) {
+    const client = new CordovaFrontend(options);
+    forget(client.install());
+    bindClient(client);
+  }
+}
+
+/**
+ * TODO
+ * @param breadcrumb
+ */
+export function addBreadcrumb(breadcrumb: Breadcrumb): void {
+  shimAddBreadcrumb(breadcrumb);
+}
+
+/**
+ * TODO
+ * @param breadcrumb
+ */
+export function setUserContext(user: User): void {
+  shimSetUserContext(user);
+}
+
+/**
+ * TODO
+ * @param breadcrumb
+ */
+export function setRelease(release: string): void {
+  shimSetExtraContext({ __sentry_release: release });
+}
+
+/**
+ * TODO
+ * @param breadcrumb
+ */
+export function setDist(dist: string): void {
+  shimSetExtraContext({ __sentry_dist: dist });
+}
+
+/**
+ * TODO
+ * @param breadcrumb
+ */
+export function setVersion(version: string): void {
+  shimSetExtraContext({ __sentry_version: version });
+}

@@ -5,9 +5,10 @@
 
 - (void)install:(CDVInvokedUrlCommand *)command;
 - (void)sendEvent:(CDVInvokedUrlCommand *)command;
-- (void)storeBreadcrumbs:(CDVInvokedUrlCommand *)command;
-- (void)loadBreadcrumbs:(CDVInvokedUrlCommand *)command;
-- (void)storeContext:(CDVInvokedUrlCommand *)command;
+- (void)addBreadcrumb:(CDVInvokedUrlCommand *)command;
+- (void)setUserContext:(CDVInvokedUrlCommand *)command;
+- (void)setTagsContext:(CDVInvokedUrlCommand *)command;
+- (void)setExtraContext:(CDVInvokedUrlCommand *)command;
 - (void)clearContext:(CDVInvokedUrlCommand *)command;
 
 @end

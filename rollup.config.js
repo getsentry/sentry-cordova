@@ -1,6 +1,7 @@
 import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
 import resolve from 'rollup-plugin-node-resolve';
+import shim from 'rollup-plugin-shim';
 
 const defaultPlugins = [
   resolve({
@@ -9,6 +10,9 @@ const defaultPlugins = [
     browser: true,
   }),
   commonjs(),
+  shim({
+    domain: `export var active = false;`,
+  }),
 ];
 
 const defaultMinPlugins = [
@@ -18,6 +22,9 @@ const defaultMinPlugins = [
     browser: true,
   }),
   commonjs(),
+  shim({
+    domain: `export var active = false;`,
+  }),
   uglify(),
 ];
 

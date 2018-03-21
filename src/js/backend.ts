@@ -1,12 +1,4 @@
-import {
-  Backend,
-  Breadcrumb,
-  Context,
-  Frontend,
-  Options,
-  SentryEvent,
-} from '@sentry/core';
-
+import { Backend, Frontend, Options, SentryEvent } from '@sentry/core';
 import { BrowserBackend, BrowserOptions } from '@sentry/browser';
 
 import { normalizeData } from './normalize';
@@ -26,7 +18,7 @@ function isCordova(): boolean {
  * @see CordovaFrontend for more information.
  */
 export interface CordovaOptions extends Options, BrowserOptions {
-  // TOOD
+  // TODO
   deviceReadyTimeout?: number;
 
   autoBreadcrumbs?: boolean;
@@ -69,12 +61,7 @@ export class CordovaBackend implements Backend {
         // We are in a browser
         this.runInstall(resolve, reject);
       }
-    })
-      .then(async success => {
-        await this.tryToSetSentryRelease();
-        return Promise.resolve(success);
-      })
-      .catch(reason => Promise.reject(reason));
+    }).catch(reason => Promise.reject(reason));
   }
 
   /**
@@ -94,20 +81,6 @@ export class CordovaBackend implements Backend {
   /**
    * @inheritDoc
    */
-  public async storeContext(context: Context): Promise<void> {
-    await this.nativeCall('storeContext', context);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public async loadContext(): Promise<Context> {
-    return { ...(await this.nativeCall('loadContext')) };
-  }
-
-  /**
-   * @inheritDoc
-   */
   public async sendEvent(event: SentryEvent): Promise<number> {
     const mergedEvent = {
       ...normalizeData(event),
@@ -115,30 +88,7 @@ export class CordovaBackend implements Backend {
     return this.nativeCall('sendEvent', mergedEvent);
   }
 
-  /**
-   * @inheritDoc
-   */
-  public async storeBreadcrumbs(breadcrumbs: Breadcrumb[]): Promise<void> {
-    await this.nativeCall('storeBreadcrumbs', [...breadcrumbs]);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public async loadBreadcrumbs(): Promise<Breadcrumb[]> {
-    const breadcrumbs = (await this.nativeCall('loadBreadcrumbs')) || [];
-    return [...breadcrumbs];
-  }
-
   // CORDOVA --------------------
-  public async setInternalOption(key: string, value: string): Promise<void> {
-    return this.storeContext({
-      extra: {
-        [`__sentry_${key}`]: value,
-      },
-    });
-  }
-
   private nativeCall(action: string, ...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
       const exec =
@@ -179,15 +129,5 @@ export class CordovaBackend implements Backend {
     )
       .then(resolve)
       .catch(reject);
-  }
-
-  private async tryToSetSentryRelease(): Promise<void> {
-    if (
-      window.SENTRY_RELEASE !== undefined &&
-      window.SENTRY_RELEASE.id !== undefined
-    ) {
-      this.frontend.setOptions({ release: window.SENTRY_RELEASE.id });
-      await this.setInternalOption('release', window.SENTRY_RELEASE.id);
-    }
   }
 }
