@@ -1,4 +1,10 @@
-import { FrontendBase, Scope, SdkInfo, SentryEvent } from '@sentry/core';
+import {
+  Breadcrumb,
+  FrontendBase,
+  Scope,
+  SdkInfo,
+  SentryEvent,
+} from '@sentry/core';
 
 import { CordovaBackend, CordovaOptions } from './backend';
 
@@ -30,6 +36,15 @@ export class CordovaFrontend extends FrontendBase<
       name: 'sentry-cordova',
       version: '0.7.0',
     };
+  }
+
+  public async addBreadcrumb(
+    breadcrumb: Breadcrumb,
+    scope: Scope,
+  ): Promise<void> {
+    super.addBreadcrumb(breadcrumb, scope);
+    // TODO: addBreadcrumb should return breadcrumb
+    this.getBackend().nativeCall('addBreadcrumb', breadcrumb);
   }
 
   /**

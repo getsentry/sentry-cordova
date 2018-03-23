@@ -8,10 +8,6 @@ const PLUGIN_NAME = 'Sentry';
 declare var window: any;
 declare var document: any;
 
-function isCordova(): boolean {
-  return window.cordova !== undefined || window.Cordova !== undefined;
-}
-
 /**
  * Configuration options for the Sentry Cordova SDK.
  * @see CordovaFrontend for more information.
@@ -42,7 +38,7 @@ export class CordovaBackend implements Backend {
   public install(): boolean {
     this.browserBackend.install();
 
-    if (isCordova()) {
+    if (this.isCordova()) {
       this.deviceReadyCallback = () => this.runNativeInstall();
       document.addEventListener('deviceready', this.deviceReadyCallback);
     }
@@ -75,7 +71,7 @@ export class CordovaBackend implements Backend {
   }
 
   // CORDOVA --------------------
-  private nativeCall(action: string, ...args: any[]): Promise<any> {
+  public nativeCall(action: string, ...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
       const exec =
         window && (window as any).Cordova && (window as any).Cordova.exec;
@@ -91,20 +87,28 @@ export class CordovaBackend implements Backend {
         );
       }
     }).catch(e => {
-      if (e === 'not implemented' || e === 'Cordova.exec not available') {
+      if (
+        (e === 'not implemented' || e === 'Cordova.exec not available') &&
+        (this.browserBackend as any)[action]
+      ) {
         // This is our fallback to the browser implementation
         return (this.browserBackend as any)[action](...args);
       }
-      console.error(e);
     });
   }
 
   private runNativeInstall(): void {
     document.removeEventListener('deviceready', this.deviceReadyCallback);
-    this.nativeCall(
-      'install',
-      this.frontend.getDSN(),
-      this.frontend.getOptions(),
-    );
+    if (this.frontend.getDSN()) {
+      this.nativeCall(
+        'install',
+        this.frontend.getDSN()!.toString(),
+        this.frontend.getOptions(),
+      );
+    }
+  }
+
+  private isCordova(): boolean {
+    return window.cordova !== undefined || window.Cordova !== undefined;
   }
 }

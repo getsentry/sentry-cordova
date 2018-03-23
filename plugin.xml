@@ -18,11 +18,9 @@
         <engine name="cordova-ios" version=">=4.4.0" />
     </engines>
 
-    <js-module src="www/SentryCordova.js" name="SentryCordova">
-        <runs/>
-    </js-module>
-    <js-module src="www/SentryCordova.bundle.js" name="SentryCordovaBundle">
-        <runs/>
+    <!-- TODO use min version -->
+    <js-module src="dist/js/sentry-cordova.bundle.js" name="Sentry">
+        <clobbers target="Sentry" />
     </js-module>
 
     <!-- android -->

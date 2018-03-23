@@ -1,7 +1,7 @@
 {
   "name": "sentry-cordova",
   "version": "0.7.0",
-  "main": "dist/js/SentryCordova.js",
+  "main": "dist/js/sentry-cordova.js",
   "license": "MIT",
   "repository": "git://github.com/getsentry/sentry-cordova.git",
   "cordova": {
@@ -53,8 +53,8 @@
   "scripts": {
     "build:bundle": "run-s build:typescript && rollup --config",
     "build:typescript": "run-s clean && tsc -p tsconfig.build.json",
+    "build": "npm-run-all clean build:typescript build:bundle",
     "clean": "rimraf dist",
-    "dist": "npm-run-all clean build:typescript build:bundle",
     "test:browser": "run-s build:bundle && jest",
     "test:watch": "jest --watch --notify",
     "test": "npm-run-all test:browser",
