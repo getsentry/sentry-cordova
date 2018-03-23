@@ -1,3 +1,4 @@
+export { CordovaFrontend } from './frontend';
 export {
   addBreadcrumb,
   create,
@@ -12,4 +13,4 @@ export {
   setRelease,
   setTagsContext,
   setVersion,
-} from './frontend';
+} from './sdk';

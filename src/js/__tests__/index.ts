@@ -1,11 +1,13 @@
 import { BrowserBackend } from '@sentry/browser';
 import { SentryEvent } from '@sentry/core';
 import { CordovaOptions } from '../backend';
+import { CordovaFrontend } from '../frontend';
 import {
   addBreadcrumb,
+  captureEvent,
   captureException,
   captureMessage,
-  CordovaFrontend,
+  clearScope,
   create,
   popScope,
   pushScope,
@@ -15,10 +17,9 @@ import {
   setTagsContext,
   setUserContext,
   setVersion,
-} from '../frontend';
+} from '../sdk';
 
-const dsn =
-  'https://1e7e9e1f2a51437a802724a538b7051d:0443033dd67e4c2ea615e884ea4edc7a@sentry.io/304324';
+const dsn = 'https://1e7e9e1f2a51437a802724a538b7051d@sentry.io/304324';
 
 const defaultOptions: CordovaOptions = {
   autoBreadcrumbs: false,
@@ -49,7 +50,7 @@ describe('SentryCordova', () => {
   });
 
   describe('Setup', () => {
-    test('Call install with cordovaExec', done => {
+    test('call install with cordovaExec', done => {
       expect.assertions(1);
 
       callDeviceReady();
@@ -68,7 +69,7 @@ describe('SentryCordova', () => {
   });
 
   describe('Capture', () => {
-    test('Exception', done => {
+    test('exception', done => {
       expect.assertions(3);
       callDeviceReady();
 
@@ -97,7 +98,7 @@ describe('SentryCordova', () => {
       captureException(new Error('yo'));
     });
 
-    test('Send with browser fallback', done => {
+    test('send with browser fallback', done => {
       expect.assertions(1);
       callDeviceReady();
 
@@ -120,12 +121,11 @@ describe('SentryCordova', () => {
           dsn,
         }),
       );
-      create(defaultOptions);
       captureMessage('hey');
       popScope();
     });
 
-    test('Message', done => {
+    test('message', done => {
       expect.assertions(2);
 
       callDeviceReady();
@@ -173,33 +173,6 @@ describe('SentryCordova', () => {
     });
   });
 
-  // test('Call clearContext', async done => {
-  //   expect.assertions(3);
-
-  //   callDeviceReady();
-
-  //   (window as any).Cordova.exec = (...params) => {
-  //     // params[0] == resolve
-  //     // params[1] == reject
-  //     // params[3] == function send/install .....
-  //     // raven._originalConsole.log(params);
-  //
-  //     if (params[3] === 'clearContext') {
-  //       params[0](true);
-  //       done();
-  //     } else if (params[3] === 'install') {
-  //       params[0](false);
-  //       expect(params[3]).toBe('install');
-  //     }
-  //   };
-
-  //   await Sentry.create(dsn)
-  //     .use(SentryCordova, { sentryBrowser: SentryBrowser })
-  //     .install();
-
-  //   const adapter = Sentry.getSharedClient().getAdapter() as SentryCordova;
-  //   await adapter.clearContext();
-  // });
   describe('General', () => {
     beforeEach(() => {
       (window as any).Cordova.exec = jest.fn((...params: any[]) => {
@@ -212,32 +185,12 @@ describe('SentryCordova', () => {
       callDeviceReady();
     });
 
-    test('setOptions', async done => {
-      expect.assertions(2);
-
-      const frontend = new CordovaFrontend(defaultOptions);
-      await frontend.install();
-
-      expect(frontend.getOptions().deviceReadyTimeout).toBeUndefined();
-      await frontend.setOptions({ deviceReadyTimeout: 1000 });
-      expect(frontend.getOptions().deviceReadyTimeout).toBe(1000);
-      done();
-    });
-
-    test('DeviceReady to slow should reject', () => {
-      const frontend = new CordovaFrontend({ dsn, deviceReadyTimeout: 1 });
-      return expect(frontend.install()).rejects.toBe(
-        "deviceready wasn't called for 1 ms",
-      );
-    });
-
     test('setRelease from window', done => {
       expect.hasAssertions();
 
       (window as any).SENTRY_RELEASE = {};
       (window as any).SENTRY_RELEASE.id = 'abc';
 
-      create(defaultOptions);
       pushScope(
         new CordovaFrontend({
           afterSend: (event: SentryEvent) => {
@@ -251,10 +204,27 @@ describe('SentryCordova', () => {
       popScope();
     });
 
+    test('setRelease from window but event should be stronger', done => {
+      expect.hasAssertions();
+
+      (window as any).SENTRY_RELEASE = {};
+      (window as any).SENTRY_RELEASE.id = 'abc';
+
+      pushScope(
+        new CordovaFrontend({
+          afterSend: (event: SentryEvent) => {
+            expect(event.release).toBe('xyz');
+            done();
+          },
+          dsn,
+        }),
+      );
+      captureEvent({ message: 'test', release: 'xyz' });
+      popScope();
+    });
+
     test('setRelease/setDist/setVersion', done => {
       expect.assertions(3);
-
-      create(defaultOptions);
       pushScope(
         new CordovaFrontend({
           afterSend: (event: SentryEvent) => {
@@ -275,9 +245,6 @@ describe('SentryCordova', () => {
 
     test('setTagsContext', async done => {
       expect.assertions(1);
-
-      create(defaultOptions);
-
       pushScope(
         new CordovaFrontend({
           afterSend: (event: SentryEvent) => {
@@ -294,9 +261,6 @@ describe('SentryCordova', () => {
 
     test('setUserContext', async done => {
       expect.assertions(1);
-
-      create(defaultOptions);
-
       pushScope(
         new CordovaFrontend({
           afterSend: (event: SentryEvent) => {
@@ -313,9 +277,6 @@ describe('SentryCordova', () => {
 
     test('setUserContext', async done => {
       expect.assertions(1);
-
-      create(defaultOptions);
-
       pushScope(
         new CordovaFrontend({
           afterSend: (event: SentryEvent) => {
@@ -326,6 +287,23 @@ describe('SentryCordova', () => {
         }),
       );
       setExtraContext({ id: '44335' });
+      captureMessage('knife');
+      popScope();
+    });
+
+    test('clearScope', async done => {
+      expect.assertions(1);
+      pushScope(
+        new CordovaFrontend({
+          afterSend: (event: SentryEvent) => {
+            expect((event.extra as any).id).toBeUndefined();
+            done();
+          },
+          dsn,
+        }),
+      );
+      setExtraContext({ id: '44335' });
+      clearScope();
       captureMessage('knife');
       popScope();
     });

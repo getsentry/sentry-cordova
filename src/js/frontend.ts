@@ -1,31 +1,6 @@
-import {
-  Breadcrumb,
-  FrontendBase,
-  Scope,
-  SdkInfo,
-  SentryEvent,
-  User,
-} from '@sentry/core';
-import {
-  addBreadcrumb as shimAddBreadcrumb,
-  bindClient,
-  getCurrentClient,
-  setExtraContext as shimSetExtraContext,
-  setUserContext as shimSetUserContext,
-} from '@sentry/shim';
-// tslint:disable-next-line:no-submodule-imports
-import { forget } from '@sentry/utils/dist/lib/async';
-import { CordovaBackend, CordovaOptions } from './backend';
+import { FrontendBase, Scope, SdkInfo, SentryEvent } from '@sentry/core';
 
-export {
-  captureEvent,
-  captureException,
-  captureMessage,
-  popScope,
-  pushScope,
-  setExtraContext,
-  setTagsContext,
-} from '@sentry/shim';
+import { CordovaBackend, CordovaOptions } from './backend';
 
 declare var window: any;
 
@@ -64,105 +39,23 @@ export class CordovaFrontend extends FrontendBase<
     event: SentryEvent,
     scope: Scope,
   ): Promise<SentryEvent> {
-    if (
-      window.SENTRY_RELEASE !== undefined &&
-      window.SENTRY_RELEASE.id !== undefined
-    ) {
-      scope.context = {
-        ...{ extra: { __sentry_release: window.SENTRY_RELEASE.id } },
-        ...scope.context.extra,
+    let prepared = await super.prepareEvent(event, scope);
+
+    // We add SENTRY_RELEASE from window
+    const release = window.SENTRY_RELEASE && window.SENTRY_RELEASE.id;
+
+    if (release && !prepared.release) {
+      const extra = {
+        ...{ __sentry_release: window.SENTRY_RELEASE.id },
+        ...prepared.extra,
+      };
+      prepared = {
+        release,
+        ...prepared,
+        extra,
       };
     }
-    const prepared = await super.prepareEvent(event, scope);
+
     return prepared;
   }
-}
-
-/**
- * The Sentry Cordova SDK Client.
- *
- * To use this SDK, call the {@link Sdk.create} function as early as possible
- * when loading the web page. To set context information or send manual events,
- * use the provided methods.
- *
- * @example
- * const { SentryClient } = require('@sentry/cordova');
- *
- * SentryClient.create({
- *   dsn: '__DSN__',
- *   // ...
- * });
- *
- * @example
- * SentryClient.setContext({
- *   extra: { battery: 0.7 },
- *   tags: { user_mode: 'admin' },
- *   user: { id: '4711' },
- * });
- *
- * @example
- * SentryClient.addBreadcrumb({
- *   message: 'My Breadcrumb',
- *   // ...
- * });
- *
- * @example
- * SentryClient.captureMessage('Hello, world!');
- * SentryClient.captureException(new Error('Good bye'));
- * SentryClient.captureEvent({
- *   message: 'Manual',
- *   stacktrace: [
- *     // ...
- *   ],
- * });
- *
- * @see CordovaOptions for documentation on configuration options.
- */
-// tslint:disable-next-line:variable-name
-export function create(options: CordovaOptions): void {
-  if (!getCurrentClient()) {
-    const client = new CordovaFrontend(options);
-    forget(client.install());
-    bindClient(client);
-  }
-}
-
-/**
- * TODO
- * @param breadcrumb
- */
-export function addBreadcrumb(breadcrumb: Breadcrumb): void {
-  shimAddBreadcrumb(breadcrumb);
-}
-
-/**
- * TODO
- * @param breadcrumb
- */
-export function setUserContext(user: User): void {
-  shimSetUserContext(user);
-}
-
-/**
- * TODO
- * @param breadcrumb
- */
-export function setRelease(release: string): void {
-  shimSetExtraContext({ __sentry_release: release });
-}
-
-/**
- * TODO
- * @param breadcrumb
- */
-export function setDist(dist: string): void {
-  shimSetExtraContext({ __sentry_dist: dist });
-}
-
-/**
- * TODO
- * @param breadcrumb
- */
-export function setVersion(version: string): void {
-  shimSetExtraContext({ __sentry_version: version });
 }

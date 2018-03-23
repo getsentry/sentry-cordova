@@ -10,13 +10,13 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@sentry/browser@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-0.4.1.tgz#34d206522e2b391564c943696857af657d7f54b8"
+"@sentry/browser@0.5.0-beta.0":
+  version "0.5.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-0.5.0-beta.0.tgz#16578d4460022b137ce9df7a6270873d7ee5460f"
   dependencies:
-    "@sentry/core" "0.4.1"
-    "@sentry/utils" "0.4.1"
-    raven-js "^3.23.1"
+    "@sentry/core" "0.5.0-beta.0"
+    "@sentry/shim" "0.5.0-beta.0"
+    raven-js "^3.23.3"
 
 "@sentry/cli@^1.30.1":
   version "1.30.1"
@@ -27,14 +27,16 @@
     progress "2.0.0"
     proxy-from-env "^1.0.0"
 
-"@sentry/core@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-0.4.1.tgz#45587c673ac848a0dddfc9a9ea99f19c6798ef9b"
-
-"@sentry/shim@../raven-js/packages/shim":
-  version "0.4.1"
+"@sentry/core@0.5.0-beta.0":
+  version "0.5.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-0.5.0-beta.0.tgz#d72400c3d8fdceed16677a5646af284e790f28ab"
   dependencies:
-    "@sentry/utils" "0.4.1"
+    "@sentry/shim" "0.5.0-beta.0"
+    "@sentry/utils" "0.5.0-beta.0"
+
+"@sentry/shim@0.5.0-beta.0":
+  version "0.5.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@sentry/shim/-/shim-0.5.0-beta.0.tgz#201dcb3a8a01b86bdd24627dc7bc5a9bfe067f38"
 
 "@sentry/typescript@^0.4.1":
   version "0.4.1"
@@ -42,9 +44,9 @@
   dependencies:
     tslint-config-prettier "^1.9.0"
 
-"@sentry/utils@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-0.4.1.tgz#96dffecce91ca2071436fce409c8edea8118a215"
+"@sentry/utils@0.5.0-beta.0":
+  version "0.5.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-0.5.0-beta.0.tgz#69ffedccc585d4d990331fb88eb384d779628741"
 
 "@sentry/wizard@^0.9.1":
   version "0.9.1"
@@ -2747,7 +2749,7 @@ randomatic@^1.1.3:
     is-number "^3.0.0"
     kind-of "^4.0.0"
 
-raven-js@^3.23.1, raven-js@^3.23.3:
+raven-js@^3.23.3:
   version "3.23.3"
   resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.23.3.tgz#6174f506c7362eb8bb72b291af5f22edb44ef165"
 

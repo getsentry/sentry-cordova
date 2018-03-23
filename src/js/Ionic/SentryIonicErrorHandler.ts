@@ -1,8 +1,8 @@
 class SentryIonicErrorHandler extends IonicErrorHandler {
-  public handleError(error) {
+  public handleError(error: any) {
     super.handleError(error);
     try {
-      Sentry.getSharedClient().captureException(error.originalError || error);
+      captureException(error.originalError || error);
     } catch (e) {
       console.error(e);
     }

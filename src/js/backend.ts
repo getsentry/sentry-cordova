@@ -3,7 +3,6 @@ import { BrowserBackend, BrowserOptions } from '@sentry/browser';
 
 import { normalizeData } from './normalize';
 
-const CORDOVA_DEVICE_RDY_TIMEOUT = 10000;
 const PLUGIN_NAME = 'Sentry';
 
 declare var window: any;
@@ -18,9 +17,6 @@ function isCordova(): boolean {
  * @see CordovaFrontend for more information.
  */
 export interface CordovaOptions extends Options, BrowserOptions {
-  // TODO
-  deviceReadyTimeout?: number;
-
   autoBreadcrumbs?: boolean;
   instrument?: boolean;
 }
@@ -43,25 +39,15 @@ export class CordovaBackend implements Backend {
   /**
    * @inheritDoc
    */
-  public async install(): Promise<boolean> {
-    await this.browserBackend.install();
+  public install(): boolean {
+    this.browserBackend.install();
 
-    return new Promise<boolean>((resolve, reject) => {
-      if (isCordova()) {
-        const timeout =
-          this.frontend.getOptions().deviceReadyTimeout ||
-          CORDOVA_DEVICE_RDY_TIMEOUT;
-        const deviceReadyTimeout = setTimeout(() => {
-          reject(`deviceready wasn't called for ${timeout} ms`);
-        }, timeout);
-        this.deviceReadyCallback = () =>
-          this.runInstall(resolve, reject, deviceReadyTimeout);
-        document.addEventListener('deviceready', this.deviceReadyCallback);
-      } else {
-        // We are in a browser
-        this.runInstall(resolve, reject);
-      }
-    }).catch(reason => Promise.reject(reason));
+    if (isCordova()) {
+      this.deviceReadyCallback = () => this.runNativeInstall();
+      document.addEventListener('deviceready', this.deviceReadyCallback);
+    }
+
+    return true;
   }
 
   /**
@@ -109,25 +95,16 @@ export class CordovaBackend implements Backend {
         // This is our fallback to the browser implementation
         return (this.browserBackend as any)[action](...args);
       }
-      throw e;
+      console.error(e);
     });
   }
 
-  private runInstall(
-    resolve: (value?: boolean | PromiseLike<boolean>) => void,
-    reject: (reason?: any) => void,
-    deviceReadyTimeout?: NodeJS.Timer,
-  ): void {
-    if (deviceReadyTimeout) {
-      document.removeEventListener('deviceready', this.deviceReadyCallback);
-      clearTimeout(deviceReadyTimeout);
-    }
+  private runNativeInstall(): void {
+    document.removeEventListener('deviceready', this.deviceReadyCallback);
     this.nativeCall(
       'install',
       this.frontend.getDSN(),
       this.frontend.getOptions(),
-    )
-      .then(resolve)
-      .catch(reject);
+    );
   }
 }
