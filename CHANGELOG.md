@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.8.3
+
+* Fix missing source of ios/android
+
 ## v0.8.2
 
 * Bump to `sentry-cocoa` `3.12.2`
