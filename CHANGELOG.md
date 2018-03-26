@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.8.1
+
+* Bump to `sentry-cocoa` `3.12.1`, fix build
+
 ## v0.8.0 - Warning, breaking changes
 
 * We are using the new version of `@sentry/core` & `@sentry/browser`
