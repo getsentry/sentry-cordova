@@ -43,7 +43,6 @@ export class CordovaFrontend extends FrontendBase<
     scope: Scope,
   ): Promise<void> {
     super.addBreadcrumb(breadcrumb, scope);
-    // TODO: addBreadcrumb should return breadcrumb
     this.getBackend().nativeCall('addBreadcrumb', breadcrumb);
   }
 

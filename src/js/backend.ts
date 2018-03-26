@@ -1,4 +1,4 @@
-import { Backend, Frontend, Options, SentryEvent } from '@sentry/core';
+import { Backend, Frontend, SentryEvent } from '@sentry/core';
 import { BrowserBackend, BrowserOptions } from '@sentry/browser';
 
 import { normalizeData } from './normalize';
@@ -12,7 +12,7 @@ declare var document: any;
  * Configuration options for the Sentry Cordova SDK.
  * @see CordovaFrontend for more information.
  */
-export interface CordovaOptions extends Options, BrowserOptions {
+export interface CordovaOptions extends BrowserOptions {
   autoBreadcrumbs?: boolean;
   instrument?: boolean;
 }

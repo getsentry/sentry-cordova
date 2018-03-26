@@ -13,7 +13,7 @@ Installation
 
 Start by adding Sentry and then linking it::
 
-    $ cordova plugin add @sentry/cordova
+    $ cordova plugin add sentry-cordova
 
 Our new `Sentry Wizard <https://github.com/getsentry/sentry-wizard>`_ will help you to
 configure your project.  We also add a build step to your Xcode project to upload debug
