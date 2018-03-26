@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.8.2
+
+* Bump to `sentry-cocoa` `3.12.2`
+
 ## v0.8.1
 
 * Bump to `sentry-cocoa` `3.12.1`, fix build
