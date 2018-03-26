@@ -47,7 +47,7 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
                   @"integrations": @[@"sentry-cocoa"]};
 }
 
-- (void)send:(CDVInvokedUrlCommand *)command {
+- (void)sendEvent:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         BOOL shouldSend = NO;
         NSDictionary *jsonEvent = [command.arguments objectAtIndex:0];
@@ -76,7 +76,7 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
     }];
 }
 
-- (void)captureBreadcrumb:(CDVInvokedUrlCommand *)command {
+- (void)addBreadcrumb:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         NSDictionary *jsonBreadcrumb = [command.arguments objectAtIndex:0];
         SentryBreadcrumb *breadcrumb = [SentryJavaScriptBridgeHelper createSentryBreadcrumbFromJavaScriptBreadcrumb:jsonBreadcrumb];
@@ -85,6 +85,7 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }
+
 
 - (void)setUserContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
@@ -126,18 +127,6 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 - (void)clearContext:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         [SentryClient.sharedClient clearContext];
-    }];
-}
-
-- (void)getContext:(CDVInvokedUrlCommand *)command {
-    [self.commandDelegate runInBackground:^{
-        NSDictionary *context = @{
-                                  @"extra": SentryClient.sharedClient.extra,
-                                  @"tags": SentryClient.sharedClient.tags,
-                                  @"user": [SentryClient.sharedClient.user serialize]
-                                };
-        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:context];
-        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }
 

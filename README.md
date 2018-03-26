@@ -8,22 +8,38 @@
 
 [![Travis](https://img.shields.io/travis/getsentry/sentry-cordova.svg?maxAge=2592000)](https://travis-ci.org/getsentry/sentry-cordova)
 [![codecov](https://codecov.io/gh/getsentry/sentry-cordova/branch/master/graph/badge.svg)](https://codecov.io/gh/getsentry/sentry-cordova)
-[![npm version](https://img.shields.io/npm/v/@sentry/cordova.svg)](https://www.npmjs.com/package/@sentry/cordova)
-[![npm dm](https://img.shields.io/npm/dm/@sentry/cordova.svg)](https://www.npmjs.com/package/@sentry/cordova)
-[![npm dt](https://img.shields.io/npm/dt/@sentry/cordova.svg)](https://www.npmjs.com/package/@sentry/cordova)
+[![npm version](https://img.shields.io/npm/v/sentry-cordova.svg)](https://www.npmjs.com/package/sentry-cordova)
+[![npm dm](https://img.shields.io/npm/dm/sentry-cordova.svg)](https://www.npmjs.com/package/sentry-cordova)
+[![npm dt](https://img.shields.io/npm/dt/sentry-cordova.svg)](https://www.npmjs.com/package/sentry-cordova)
 
 [![deps](https://david-dm.org/getsentry/sentry-cordova/status.svg)](https://david-dm.org/getsentry/sentry-cordova?view=list)
 [![deps dev](https://david-dm.org/getsentry/sentry-cordova/dev-status.svg)](https://david-dm.org/getsentry/sentry-cordova?type=dev&view=list)
 [![deps peer](https://david-dm.org/getsentry/sentry-cordova/peer-status.svg)](https://david-dm.org/getsentry/sentry-cordova?type=peer&view=list)
 
 ## Usage
+
+### Cordova in `index.html` `onDeviceReady` function:
+
 ```javascript
-Sentry.create('___DSN___')
-    .use(SentryCordova, {sentryBrowser: SentryBrowser})
-    .install();
+onDeviceReady: function() {
+    ...
+    var Sentry = cordova.require("sentry-cordova.Sentry");
+    Sentry.create({ dsn: '___DSN___' });
+    ...
+}
+```
+
+### Ionic in you `app.module.ts`:
+
+```javascript
+...
+import * as Sentry from 'sentry-cordova';
+...
+Sentry.create({ dsn: '___DSN___' });
 ```
 
 ## Documentation
-- [Installation](https://docs.sentry.io/clients/cordova/#installation)
-- [Using Sentry with Ionic](https://docs.sentry.io/clients/cordova/ionic/)
-- [Documentation](https://docs.sentry.io/clients/cordova/)
+
+* [Installation](https://docs.sentry.io/clients/cordova/#installation)
+* [Using Sentry with Ionic](https://docs.sentry.io/clients/cordova/ionic/)
+* [Documentation](https://docs.sentry.io/clients/cordova/)

@@ -2,9 +2,10 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="sentry-cordova" version="0.7.0">
     <name>Sentry</name>
-    <description></description>
+    <author>Sentry</author>
+    <description>Official Sentry SDK for Cordova</description>
     <license>MIT</license>
-    <keywords></keywords>
+    <keywords>ecosystem:cordova,cordova-android,cordova-ios,android,ios,sentry,debugging,errors,exceptions,logging</keywords>
     <repo>https://github.com/getsentry/sentry-cordova.git</repo>
     <issue>https://github.com/getsentry/sentry-cordova/issues</issue>
 
@@ -18,11 +19,9 @@
         <engine name="cordova-ios" version=">=4.4.0" />
     </engines>
 
-    <js-module src="www/SentryCordova.js" name="SentryCordova">
-        <runs/>
-    </js-module>
-    <js-module src="www/SentryCordova.bundle.js" name="SentryCordovaBundle">
-        <runs/>
+    <!-- TODO use min version -->
+    <js-module src="dist/js/sentry-cordova.bundle.min.js" name="Sentry">
+        <clobbers target="Sentry" />
     </js-module>
 
     <!-- android -->
@@ -37,6 +36,8 @@
       <source-file src="src/android/io/sentry/SentryCordova.java" target-dir="src/io/sentry/" />
 
       <framework src="io.sentry:sentry-android:1+" />
+
+      <resource-file src="sentry.properties" target="sentry.properties" />
     </platform>
 
     <!-- ios -->
@@ -54,6 +55,7 @@
 
         <framework src="src/ios/Carthage/Build/iOS/Sentry.framework" custom="true" embed="true" />
 
+        <resource-file src="sentry.properties" target="sentry.properties" />
     </platform>
 
     <!-- browser -->

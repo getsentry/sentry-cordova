@@ -1,11 +1,5 @@
-
-# Ignore all cocoa Frameworks except iOS
-src/ios/Carthage/Build/Mac
-src/ios/Carthage/Build/tvOS
-src/ios/Carthage/Build/watchOS
-src/ios/Carthage/Build/.sentry-cocoa.version
-
-coverage
-docs
-.github
-.vscode
+*
+!/dist/**/*
+!/src/ios/Carthage/Build/iOS/**/*
+!/scripts/**/*
+!plugin.xml

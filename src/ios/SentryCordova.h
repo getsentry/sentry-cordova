@@ -4,8 +4,8 @@
 }
 
 - (void)install:(CDVInvokedUrlCommand *)command;
-- (void)send:(CDVInvokedUrlCommand *)command;
-- (void)captureBreadcrumb:(CDVInvokedUrlCommand *)command;
+- (void)sendEvent:(CDVInvokedUrlCommand *)command;
+- (void)addBreadcrumb:(CDVInvokedUrlCommand *)command;
 - (void)setUserContext:(CDVInvokedUrlCommand *)command;
 - (void)setTagsContext:(CDVInvokedUrlCommand *)command;
 - (void)setExtraContext:(CDVInvokedUrlCommand *)command;
