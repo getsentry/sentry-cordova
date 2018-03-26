@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="sentry-cordova" version="0.8.1">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="sentry-cordova" version="0.8.2">
     <name>Sentry</name>
     <author>Sentry</author>
     <description>Official Sentry SDK for Cordova</description>
