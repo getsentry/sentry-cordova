@@ -2,6 +2,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="sentry-cordova" version="0.7.0">
     <name>Sentry</name>
+    <author>Sentry</author>
     <description>Official Sentry SDK for Cordova</description>
     <license>MIT</license>
     <keywords>ecosystem:cordova,cordova-android,cordova-ios,android,ios,sentry,debugging,errors,exceptions,logging</keywords>
@@ -19,7 +20,7 @@
     </engines>
 
     <!-- TODO use min version -->
-    <js-module src="dist/js/sentry-cordova.bundle.js" name="Sentry">
+    <js-module src="dist/js/sentry-cordova.bundle.min.js" name="Sentry">
         <clobbers target="Sentry" />
     </js-module>
 

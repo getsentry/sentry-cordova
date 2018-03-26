@@ -18,15 +18,23 @@
 
 ## Usage
 
-### Cordova:
+### Cordova in `index.html` `onDeviceReady` function:
 
 ```javascript
-Sentry.create({ dsn: '___DSN___' });
+onDeviceReady: function() {
+    ...
+    var Sentry = cordova.require("sentry-cordova.Sentry");
+    Sentry.create({ dsn: '___DSN___' });
+    ...
+}
 ```
 
-### Ionic:
+### Ionic in you `app.module.ts`:
 
 ```javascript
+...
+import * as Sentry from 'sentry-cordova';
+...
 Sentry.create({ dsn: '___DSN___' });
 ```
 

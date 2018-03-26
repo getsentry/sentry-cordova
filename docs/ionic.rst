@@ -44,8 +44,8 @@ To setup Sentry in your codebase add this to your ``app.module.ts``:
 
     Sentry.create({ '___DSN___' });
 
-In order to also use the Ionic provided ``IonicErrorHandler`` we need to add the following
-to ``app.module.ts``:
+In order to also use the Ionic provided ``IonicErrorHandler`` we need to add
+``SentryIonicErrorHandler``:
 
 .. code-block:: javascript
 
@@ -64,7 +64,7 @@ to ``app.module.ts``:
     }
 
 
-Then change the ``@NgModule{providers:[]}`` to following:
+Then change the ``@NgModule{providers:[]}`` in ``app.module.ts`` to:
 
 .. code-block:: javascript
 

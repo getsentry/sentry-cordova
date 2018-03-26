@@ -6,7 +6,10 @@
   "repository": "git://github.com/getsentry/sentry-cordova.git",
   "cordova": {
     "id": "sentry-cordova",
-    "platforms": ["android", "ios"]
+    "platforms": [
+      "android",
+      "ios"
+    ]
   },
   "keywords": [
     "ecosystem:cordova",
@@ -23,32 +26,32 @@
     "@sentry/browser": "0.5.0-beta.0",
     "@sentry/core": "0.5.0-beta.0",
     "@sentry/shim": "0.5.0-beta.0",
-    "@sentry/wizard": "^0.9.1"
+    "@sentry/wizard": "^0.9.3"
   },
   "devDependencies": {
-    "@sentry/typescript": "^0.4.1",
+    "@sentry/typescript": "^0.5.0-beta.0",
     "@types/cordova": "0.0.34",
-    "@types/jest": "^22.2.0",
-    "@types/node": "^9.4.7",
+    "@types/jest": "^22.2.2",
+    "@types/node": "^9.6.0",
     "codecov": "^3.0.0",
-    "jest": "^23.0.0-alpha.0",
+    "jest": "^22.4.3",
     "npm-run-all": "^4.1.2",
     "prettier": "^1.11.1",
     "prettier-check": "^2.0.0",
-    "raven-js": "^3.23.3",
-    "replace-in-file": "^3.2.0",
+    "raven-js": "^3.24.0",
+    "replace-in-file": "^3.4.0",
     "rimraf": "^2.6.2",
-    "rollup": "^0.57.0",
+    "rollup": "^0.57.1",
     "rollup-plugin-commonjs": "^9.1.0",
-    "rollup-plugin-node-resolve": "^3.2.0",
+    "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-shim": "^1.0.0",
     "rollup-plugin-uglify": "^3.0.0",
-    "ts-jest": "^22.4.1",
+    "ts-jest": "^22.4.2",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.10.0",
     "tslint-eslint-rules": "^5.1.0",
     "typescript": "^2.7.2",
-    "vrsource-tslint-rules": "^5.8.1"
+    "vrsource-tslint-rules": "^5.8.2"
   },
   "scripts": {
     "build:bundle": "run-s build:typescript && rollup --config",
@@ -65,10 +68,8 @@
     "fix": "run-s fix:tslint fix:prettier",
     "fix:prettier": "prettier --write \"{src,test}/**/*.ts\"",
     "fix:tslint": "tslint --fix -t stylish -p .",
-    "preversion:changelog":
-      "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
-    "version":
-      "npm run preversion:changelog && node ./scripts/version-bump.js && git add -A",
+    "preversion:changelog": "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
+    "version": "npm run preversion:changelog && node ./scripts/version-bump.js && git add -A",
     "preversion": "yarn test",
     "postversion": "git push && git push --tags"
   },
@@ -83,7 +84,13 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ],
     "modulePathIgnorePatterns": [],
     "testPathIgnorePatterns": [
       "/node_modules/",
