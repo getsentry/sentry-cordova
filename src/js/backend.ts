@@ -102,7 +102,7 @@ export class CordovaBackend implements Backend {
     if (this.frontend.getDSN()) {
       this.nativeCall(
         'install',
-        this.frontend.getDSN()!.toString(),
+        this.frontend.getDSN()!.toString(true),
         this.frontend.getOptions(),
       );
     }
