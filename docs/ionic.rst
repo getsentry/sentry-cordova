@@ -42,7 +42,7 @@ To setup Sentry in your codebase add this to your ``app.module.ts``:
 
     import * as Sentry from 'sentry-cordova';
 
-    Sentry.create({ '___DSN___' });
+    Sentry.create({ dsn: '___DSN___' });
 
 In order to also use the Ionic provided ``IonicErrorHandler`` we need to add
 ``SentryIonicErrorHandler``:
