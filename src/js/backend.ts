@@ -93,6 +93,8 @@ export class CordovaBackend implements Backend {
       ) {
         // This is our fallback to the browser implementation
         return (this.browserBackend as any)[action](...args);
+      } else {
+        console.error(e);
       }
     });
   }

@@ -7,10 +7,7 @@
   "repository": "git://github.com/getsentry/sentry-cordova.git",
   "cordova": {
     "id": "sentry-cordova",
-    "platforms": [
-      "android",
-      "ios"
-    ]
+    "platforms": ["android", "ios"]
   },
   "keywords": [
     "ecosystem:cordova",
@@ -55,13 +52,14 @@
     "vrsource-tslint-rules": "^5.8.2"
   },
   "scripts": {
-    "build:bundle": "run-s build:typescript && rollup --config",
-    "build:typescript": "run-s clean && tsc -p tsconfig.build.json",
-    "build": "npm-run-all clean build:typescript build:bundle",
+    "build:bundle": "rollup --config",
+    "build:typescript": "tsc -p tsconfig.build.json",
+    "build": "run-s clean build:typescript build:bundle",
     "clean": "rimraf dist",
-    "test:browser": "run-s build:bundle && jest",
+    "jest": "jest",
+    "test:browser": "run-s build jest",
     "test:watch": "jest --watch --notify",
-    "test": "npm-run-all test:browser",
+    "test": "run-s test:browser",
     "codecov": "codecov",
     "lint": "run-s lint:prettier lint:tslint",
     "lint:prettier": "prettier-check \"{src,test}/**/*.ts\"",
@@ -69,9 +67,11 @@
     "fix": "run-s fix:tslint fix:prettier",
     "fix:prettier": "prettier --write \"{src,test}/**/*.ts\"",
     "fix:tslint": "tslint --fix -t stylish -p .",
-    "preversion:changelog": "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
-    "version": "npm run preversion:changelog && node ./scripts/version-bump.js && git add -A",
-    "preversion": "yarn test",
+    "preversion:changelog":
+      "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
+    "version": "npm run preversion:changelog && git add -A",
+    "version:bump": "node ./scripts/version-bump.js",
+    "preversion": "run-s version:bump test",
     "postversion": "git push && git push --tags"
   },
   "jest": {
@@ -85,13 +85,7 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ],
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json"],
     "modulePathIgnorePatterns": [],
     "testPathIgnorePatterns": [
       "/node_modules/",
