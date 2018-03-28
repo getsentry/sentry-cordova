@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.8.4
+
+* Fix private DSN
+
 ## v0.8.3
 
 * Fix missing source of ios/android
