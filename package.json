@@ -1,13 +1,16 @@
 {
   "name": "sentry-cordova",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "main": "dist/js/sentry-cordova.js",
   "types": "dist/js/sentry-cordova.d.ts",
   "license": "MIT",
   "repository": "git://github.com/getsentry/sentry-cordova.git",
   "cordova": {
     "id": "sentry-cordova",
-    "platforms": ["android", "ios"]
+    "platforms": [
+      "android",
+      "ios"
+    ]
   },
   "keywords": [
     "ecosystem:cordova",
@@ -67,8 +70,7 @@
     "fix": "run-s fix:tslint fix:prettier",
     "fix:prettier": "prettier --write \"{src,test}/**/*.ts\"",
     "fix:tslint": "tslint --fix -t stylish -p .",
-    "preversion:changelog":
-      "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
+    "preversion:changelog": "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
     "version": "run-s preversion:changelog version:bump test",
     "version:bump": "node ./scripts/version-bump.js",
     "postversion": "git add -A && git push && git push --tags"
@@ -84,7 +86,13 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ],
     "modulePathIgnorePatterns": [],
     "testPathIgnorePatterns": [
       "/node_modules/",
