@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.8.5
+
+* Fix internal console.error endless loop
+
 ## v0.8.4
 
 * Fix private DSN
