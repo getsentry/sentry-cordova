@@ -36,7 +36,7 @@ Add this to you `index.js`:
     onDeviceReady: function() {
         ...
         var Sentry = cordova.require("sentry-cordova.Sentry");
-        Sentry.init({ dsn: '___DSN___' });
+        Sentry.init({ dsn: '___PUBLIC_DSN___' });
         ...
     }
 
@@ -74,7 +74,7 @@ You can disable this by passing options into the ``init`` function:
 
     .. sourcecode:: javascript
 
-        Sentry.init({ dsn: '___DSN___', autoBreadcrumbs: false, instrument: false });
+        Sentry.init({ dsn: '___PUBLIC_DSN___', autoBreadcrumbs: false, instrument: false });
 
 
 *   context handling:
