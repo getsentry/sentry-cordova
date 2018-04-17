@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.9.1
+
+* Fix release script
+
 ## v0.9.0 - Warning, breaking changes
 
 * Breaking change: Renamed create to init
