@@ -1,10 +1,10 @@
-import { createAndBind } from '@sentry/core';
+import { initAndBind } from '@sentry/core';
 import { CordovaOptions } from './backend';
 import { CordovaFrontend } from './frontend';
 import { setExtraContext as shimSetExtraContext } from '@sentry/shim';
 
-export { addBreadcrumb, setUserContext } from '@sentry/core';
 export {
+  addBreadcrumb,
   captureEvent,
   captureException,
   captureMessage,
@@ -13,10 +13,11 @@ export {
   pushScope,
   setExtraContext,
   setTagsContext,
+  setUserContext,
 } from '@sentry/shim';
 
 export function create(options: CordovaOptions): void {
-  createAndBind(CordovaFrontend, options);
+  initAndBind(CordovaFrontend, options);
 }
 
 export function setRelease(release: string): void {

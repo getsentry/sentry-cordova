@@ -1,4 +1,5 @@
-import { Backend, Frontend, SentryEvent } from '@sentry/core';
+import { Breadcrumb, Context, SentryEvent } from '@sentry/shim';
+import { Backend, Frontend } from '@sentry/core';
 import { BrowserBackend, BrowserOptions } from '@sentry/browser';
 
 import { normalizeData } from './normalize';
@@ -112,5 +113,29 @@ export class CordovaBackend implements Backend {
 
   private isCordova(): boolean {
     return window.cordova !== undefined || window.Cordova !== undefined;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public storeBreadcrumb(breadcrumb: Breadcrumb): boolean {
+    this.nativeCall('addBreadcrumb', breadcrumb);
+    return true;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public storeContext(context: Context): boolean {
+    if (context.extra) {
+      this.nativeCall('setExtraContext', context.extra);
+    }
+    if (context.tags) {
+      this.nativeCall('setTagsContext', context.tags);
+    }
+    if (context.user) {
+      this.nativeCall('setUserContext', context.user);
+    }
+    return true;
   }
 }

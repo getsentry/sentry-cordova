@@ -1,10 +1,5 @@
-import {
-  Breadcrumb,
-  FrontendBase,
-  Scope,
-  SdkInfo,
-  SentryEvent,
-} from '@sentry/core';
+import { Breadcrumb, SdkInfo, SentryEvent } from '@sentry/shim';
+import { FrontendBase, Scope } from '@sentry/core';
 
 import { CordovaBackend, CordovaOptions } from './backend';
 
