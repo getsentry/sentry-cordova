@@ -16,7 +16,7 @@ export {
   setUserContext,
 } from '@sentry/shim';
 
-export function create(options: CordovaOptions): void {
+export function init(options: CordovaOptions): void {
   initAndBind(CordovaFrontend, options);
 }
 

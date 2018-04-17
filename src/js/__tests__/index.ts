@@ -1,5 +1,5 @@
 import { BrowserBackend } from '@sentry/browser';
-import { SentryEvent } from '@sentry/core';
+import { SentryEvent } from '@sentry/shim';
 import { CordovaOptions } from '../backend';
 import { CordovaFrontend } from '../frontend';
 import {
@@ -8,7 +8,7 @@ import {
   captureException,
   captureMessage,
   clearScope,
-  create,
+  init,
   popScope,
   pushScope,
   setDist,
@@ -64,7 +64,7 @@ describe('SentryCordova', () => {
         done();
       });
 
-      create(defaultOptions);
+      init(defaultOptions);
     });
   });
 
@@ -94,7 +94,7 @@ describe('SentryCordova', () => {
           }
         },
       );
-      create(defaultOptions);
+      init(defaultOptions);
       captureException(new Error('yo'));
     });
 
@@ -145,7 +145,7 @@ describe('SentryCordova', () => {
           params[0](false);
         }
       });
-      create(defaultOptions);
+      init(defaultOptions);
       captureMessage('bread');
     });
   });

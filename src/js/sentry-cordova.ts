@@ -1,10 +1,10 @@
 export { CordovaFrontend } from './frontend';
 export {
   addBreadcrumb,
-  create,
   captureEvent,
   captureException,
   captureMessage,
+  init,
   popScope,
   pushScope,
   setDist,

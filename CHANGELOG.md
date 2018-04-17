@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.0 - Warning, breaking changes
+
+* Breaking change: Renamed create to init
+* Update dependencies
+* Fixed #47
+
 ## v0.8.5
 
 * Fix internal console.error endless loop

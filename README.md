@@ -24,7 +24,7 @@
 onDeviceReady: function() {
     ...
     var Sentry = cordova.require("sentry-cordova.Sentry");
-    Sentry.create({ dsn: '___DSN___' });
+    Sentry.init({ dsn: '___DSN___' });
     ...
 }
 ```
@@ -35,7 +35,7 @@ onDeviceReady: function() {
 ...
 import * as Sentry from 'sentry-cordova';
 ...
-Sentry.create({ dsn: '___DSN___' });
+Sentry.init({ dsn: '___DSN___' });
 ```
 
 ## Documentation
