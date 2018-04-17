@@ -72,8 +72,8 @@
     "fix:tslint": "tslint --fix -t stylish -p .",
     "preversion:changelog": "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
     "version": "run-s preversion:changelog version:bump test",
-    "version:bump": "node ./scripts/version-bump.js",
-    "postversion": "git add -A && git push && git push --tags"
+    "version:bump": "node ./scripts/version-bump.js && git add -A",
+    "postversion": "git push && git push --tags"
   },
   "jest": {
     "globals": {
