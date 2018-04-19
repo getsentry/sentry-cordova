@@ -49,11 +49,8 @@ module.exports = function(ctx) {
 
   // Adding files to include
   let includes = [];
-  fs.readdir(buildPath, (error, files) => {
-    if (error) {
-      console.error('Could not list files of build directory: ', buildPath);
-    }
-
+  try {
+    let files = fs.readdirSync(buildPath);
     files.forEach((file, index) => {
       let f = path.basename(file);
       let [name, ext1, ext2] = f.split('.');
@@ -65,7 +62,9 @@ module.exports = function(ctx) {
         }
       }
     });
-  });
+  } catch (e) {
+    console.error('Could not list files of build directory: ', buildPath);
+  }
 
   const algorithm = 'sha1';
   let allHash = '';
