@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.10.0
+
+* Use unminified version of bundle
+* Bundle and compile in one step
+
 ## v0.9.1
 
 * Fix release script

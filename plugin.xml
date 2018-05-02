@@ -19,8 +19,7 @@
         <engine name="cordova-ios" version=">=4.4.0" />
     </engines>
 
-    <!-- TODO use min version -->
-    <js-module src="dist/js/sentry-cordova.bundle.min.js" name="Sentry">
+    <js-module src="dist/js/sentry-cordova.bundle.js" name="Sentry">
         <clobbers target="Sentry" />
     </js-module>
 
