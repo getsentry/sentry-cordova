@@ -16,6 +16,8 @@
 [![deps dev](https://david-dm.org/getsentry/sentry-cordova/dev-status.svg)](https://david-dm.org/getsentry/sentry-cordova?type=dev&view=list)
 [![deps peer](https://david-dm.org/getsentry/sentry-cordova/peer-status.svg)](https://david-dm.org/getsentry/sentry-cordova?type=peer&view=list)
 
+**This is a beta release**
+
 ## Usage
 
 ### Cordova in `index.html` `onDeviceReady` function:
