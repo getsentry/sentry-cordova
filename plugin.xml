@@ -35,8 +35,6 @@
       <source-file src="src/android/io/sentry/SentryCordova.java" target-dir="src/io/sentry/" />
 
       <framework src="io.sentry:sentry-android:1+" />
-
-      <resource-file src="sentry.properties" target="sentry.properties" />
     </platform>
 
     <!-- ios -->
@@ -53,8 +51,6 @@
         <!-- We don't have a resource-file here since this adds it to Xcode project -->
 
         <framework src="src/ios/Carthage/Build/iOS/Sentry.framework" custom="true" embed="true" />
-
-        <resource-file src="sentry.properties" target="sentry.properties" />
     </platform>
 
     <!-- browser -->
@@ -71,11 +67,9 @@
         </config-file>
     </platform> -->
 
-    <hook type="before_plugin_install" src="scripts/before_plugin_install_uninstall.js" />
-    <hook type="before_plugin_uninstall" src="scripts/before_plugin_install_uninstall.js" />
+    <hook type="after_plugin_add" src="scripts/plugin_add_rm.js" />
+    <hook type="after_platform_add" src="scripts/plugin_add_rm.js" />
+    <hook type="before_plugin_rm" src="scripts/plugin_add_rm.js" />
 
-    <hook type="after_plugin_install" src="scripts/after_plugin_install_uninstall.js" />
-    <hook type="after_plugin_uninstall" src="scripts/after_plugin_install_uninstall.js" />
-
-    <hook type="after_prepare" src="scripts/after_prepare.js" />
+    <hook type="after_build" src="scripts/after_build.js" />
 </plugin>

@@ -1,11 +1,16 @@
 module.exports = function(ctx) {
+  console.log(
+    `Sentry: running ${
+      ctx.hook
+    } - set SENTRY_SKIP_AUTO_RELEASE=true to skip this`,
+  );
   const SentryCli = require('@sentry/cli');
   const path = ctx.requireCordovaModule('path');
   const fs = ctx.requireCordovaModule('fs');
   const crypto = require('crypto');
 
   if (process.env.SENTRY_SKIP_AUTO_RELEASE) {
-    console.log('Skipping Sentry auto release');
+    console.log('Sentry: Skipping Sentry auto release');
     return;
   }
 
@@ -16,55 +21,59 @@ module.exports = function(ctx) {
       .digest('hex');
   }
 
-  const buildPath = path.join(ctx.opts.paths[0], 'build');
+  // TODO iterate through all paths
+  const buildPath = ctx.opts.paths[0];
   if (!fs.existsSync(buildPath)) {
-    console.error('Sentry: build path does not exist');
+    console.error(`Sentry: build path does not exist ${buildPath}`);
     console.error('This is not an Ionic project, please check out:');
     console.error('https://docs.sentry.io/clients/javascript/sourcemaps/');
-    console.error('to find out how to correctly upload sourcemaps for your project.');
+    console.error(
+      'to find out how to correctly upload sourcemaps for your project.',
+    );
     return;
   }
 
-  const configFile = path.join(
-    buildPath,
-    '..',
-    '..',
-    ctx.opts.platforms[0] === 'android' ? '..' : '',
-    'sentry.properties'
-  );
+  const configFile = path.join('sentry.properties');
 
   if (!fs.existsSync(configFile)) {
-    console.error(
-      'Sentry: sentry.properties does not exist, please run `sentry-wizard -i cordova`'
-    );
+    console.error('Sentry: sentry.properties does not exist in project root!`');
     process.exit(1);
     return;
   }
 
-  const indexHtml = path.join(buildPath, '..', 'index.html');
+  const indexHtml = path.join(buildPath, 'index.html');
   if (!fs.existsSync(configFile)) {
     console.error('Sentry: index.html does not exist');
     return;
   }
 
-  // Adding files to include
-  let includes = [];
-  fs.readdir(buildPath, (error, files) => {
-    if (error) {
-      console.error('Could not list files of build directory: ', buildPath);
-    }
-
-    files.forEach((file, index) => {
-      let f = path.basename(file);
-      let [name, ext1, ext2] = f.split('.');
-      // we only want js source files and the according sourcemaps (no css etc.)
-      if (ext1 === 'js' || (ext1 === 'js' && ext2 === 'map')) {
-        // ignore sw-toolbox file
-        if (name !== 'sw-toolbox') {
-          includes.push(path.join(buildPath, f));
-        }
+  function walk(dir) {
+    let results = [];
+    let list = fs.readdirSync(dir);
+    list.forEach(file => {
+      file = dir + '/' + file;
+      let stat = fs.statSync(file);
+      if (stat && stat.isDirectory()) {
+        results = results.concat(walk(file));
+      } else {
+        results.push(file);
       }
     });
+    return results;
+  }
+
+  // Adding files to include
+  let includes = [];
+  walk(buildPath).forEach((file, index) => {
+    let f = path.basename(file);
+    let [name, ext1, ext2] = f.split('.');
+    // we only want js source files and the according sourcemaps (no css etc.)
+    if (ext1 === 'js' || (ext1 === 'js' && ext2 === 'map')) {
+      // ignore sw-toolbox file
+      if (name !== 'sw-toolbox') {
+        includes.push(file);
+      }
+    }
   });
 
   const algorithm = 'sha1';
@@ -94,12 +103,19 @@ module.exports = function(ctx) {
   fs.writeFileSync(indexHtml, contents.replace(regex, replaceWith));
 
   // This is allowed to fail because it's ionic specific
-  const projectRootIndexHtml = path.join(ctx.opts.projectRoot, 'src', 'index.html');
+  const projectRootIndexHtml = path.join(
+    ctx.opts.projectRoot,
+    'src',
+    'index.html',
+  );
   if (fs.existsSync(projectRootIndexHtml)) {
     contents = fs.readFileSync(projectRootIndexHtml, {
       encoding: 'utf-8',
     });
-    fs.writeFileSync(projectRootIndexHtml, contents.replace(regex, replaceWith));
+    fs.writeFileSync(
+      projectRootIndexHtml,
+      contents.replace(regex, replaceWith),
+    );
   }
 
   const ignore = ['node_modules'];
@@ -112,7 +128,7 @@ module.exports = function(ctx) {
       sentryCli.releases.uploadSourceMaps(release, {
         include: includes,
         ignore: ignore,
-      })
+      }),
     )
     .then(() => sentryCli.releases.finalize(release));
 };

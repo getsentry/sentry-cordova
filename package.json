@@ -27,7 +27,7 @@
     "@sentry/browser": "0.5.2",
     "@sentry/core": "0.5.2",
     "@sentry/shim": "0.5.2",
-    "@sentry/wizard": "^0.9.7"
+    "@sentry/wizard": "0.10.0-2"
   },
   "devDependencies": {
     "@sentry/typescript": "^0.5.2",
