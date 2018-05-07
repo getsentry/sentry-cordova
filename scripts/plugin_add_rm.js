@@ -1,26 +1,32 @@
 module.exports = function(ctx) {
+  console.log(
+    `Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`,
+  );
   const wizard = require('@sentry/wizard');
   const tty = require('tty');
+  const fs = ctx.requireCordovaModule('fs');
 
   let uninstall = false;
 
   if (process.env.SENTRY_SKIP_WIZARD) {
-    console.log('Skipping Sentry Wizard');
+    console.log('Sentry: Skipping Sentry Wizard');
     return;
   }
 
+  const fromProps = 'sentry.properties';
   if (process.stdin.isTTY) {
-    let platform = ['ios', 'android'];
-    if (ctx.opts && ctx.opts.plugin && ctx.opts.plugin.platform) {
-      platform = [ctx.opts.plugin.platform];
-    }
-    if (ctx.hook === 'before_plugin_uninstall') {
+    if (ctx.hook === 'before_plugin_rm') {
       uninstall = true;
+      if (uninstall && fs.existsSync(fromProps)) {
+        console.log(`Sentry: removing ${fromProps}`);
+        fs.unlinkSync(fromProps);
+      }
     }
     return wizard.run({
       quiet: false,
       integration: 'cordova',
-      platform: platform,
+      skipConnect: fs.existsSync(fromProps),
+      quiet: fs.existsSync(fromProps),
       uninstall: uninstall,
     });
   } else {
