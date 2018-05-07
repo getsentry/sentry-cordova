@@ -29,7 +29,7 @@ export class CordovaFrontend extends FrontendBase<
   protected getSdkInfo(): SdkInfo {
     return {
       name: 'sentry-cordova',
-      version: '0.9.1',
+      version: '0.10.0',
     };
   }
 
