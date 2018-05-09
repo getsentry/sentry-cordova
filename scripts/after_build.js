@@ -2,7 +2,7 @@ module.exports = function(ctx) {
   console.log(
     `Sentry: running ${
       ctx.hook
-    } - set SENTRY_SKIP_AUTO_RELEASE=true to skip this`,
+    } - set SENTRY_SKIP_AUTO_RELEASE=true to skip this`
   );
   const SentryCli = require('@sentry/cli');
   const path = ctx.requireCordovaModule('path');
@@ -51,7 +51,7 @@ module.exports = function(ctx) {
       console.error('This is not an Ionic project, please check out:');
       console.error('https://docs.sentry.io/clients/javascript/sourcemaps/');
       console.error(
-        'to find out how to correctly upload sourcemaps for your project.',
+        'to find out how to correctly upload sourcemaps for your project.'
       );
       return;
     }
@@ -106,7 +106,7 @@ module.exports = function(ctx) {
     const projectRootIndexHtml = path.join(
       ctx.opts.projectRoot,
       'src',
-      'index.html',
+      'index.html'
     );
     if (fs.existsSync(projectRootIndexHtml)) {
       contents = fs.readFileSync(projectRootIndexHtml, {
@@ -114,7 +114,7 @@ module.exports = function(ctx) {
       });
       fs.writeFileSync(
         projectRootIndexHtml,
-        contents.replace(regex, replaceWith),
+        contents.replace(regex, replaceWith)
       );
     }
 
@@ -125,7 +125,7 @@ module.exports = function(ctx) {
         sentryCli.releases.uploadSourceMaps(release, {
           include: includes,
           ignore: ignore,
-        }),
+        })
       )
       .then(() => sentryCli.releases.finalize(release));
   });
