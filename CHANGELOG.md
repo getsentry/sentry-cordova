@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.2
+
+* Fix es5 syntax in build script
+
 ## v0.10.1
 
 * Fix es5 syntax in build script

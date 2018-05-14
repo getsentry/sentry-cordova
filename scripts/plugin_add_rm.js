@@ -1,6 +1,6 @@
 module.exports = function(ctx) {
   console.log(
-    `Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`,
+    `Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`
   );
   const wizard = require('@sentry/wizard');
   const tty = require('tty');
