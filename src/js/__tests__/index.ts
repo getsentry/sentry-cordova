@@ -13,14 +13,13 @@ import {
   setDist,
   setRelease,
   setVersion,
-} from '../sdk';
+} from '../sentry-cordova';
 
 const dsn = 'https://1e7e9e1f2a51437a802724a538b7051d@sentry.io/304324';
 
 const defaultOptions: CordovaOptions = {
-  autoBreadcrumbs: false,
   dsn,
-  instrument: false,
+  integrations: [],
 };
 
 let timeout: NodeJS.Timer;
@@ -35,6 +34,7 @@ function callDeviceReady(): void {
 describe('SentryCordova', () => {
   beforeEach(() => {
     (window as any).Cordova = {};
+    (window as any).__SENTRY__ = {};
     (window as any).SENTRY_RELEASE = {};
   });
 
@@ -149,11 +149,13 @@ describe('SentryCordova', () => {
       expect.assertions(2);
 
       callDeviceReady();
+      const hub = Hub.getGlobal();
 
-      Hub.getGlobal().pushScope(
+      hub.pushScope(
         new CordovaClient({
           afterSend: (event: SentryEvent) => {
             expect(event.message).toBe('knife');
+            // console.log(event.breadcrumbs);
             expect(event.breadcrumbs![0].message).toBe('bread');
             done();
           },
@@ -163,7 +165,7 @@ describe('SentryCordova', () => {
 
       addBreadcrumb({ message: 'bread' });
       captureMessage('knife');
-      Hub.getGlobal().popScope();
+      hub.popScope();
     });
   });
 

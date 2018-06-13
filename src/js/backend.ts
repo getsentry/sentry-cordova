@@ -14,10 +14,7 @@ declare var document: any;
  * Configuration options for the Sentry Cordova SDK.
  * @see CordovaFrontend for more information.
  */
-export interface CordovaOptions extends BrowserOptions {
-  autoBreadcrumbs?: boolean;
-  instrument?: boolean;
-}
+export interface CordovaOptions extends BrowserOptions {}
 
 /** The Sentry Cordova SDK Backend. */
 export class CordovaBackend implements Backend {
@@ -120,14 +117,8 @@ export class CordovaBackend implements Backend {
    * @inheritDoc
    */
   public storeScope(scope: Scope): void {
-    if (scope.getExtra()) {
-      this.nativeCall('setExtraContext', scope.getExtra());
-    }
-    if (scope.getTags()) {
-      this.nativeCall('setTagsContext', scope.getTags());
-    }
-    if (scope.getUser()) {
-      this.nativeCall('setUserContext', scope.getUser());
-    }
+    this.nativeCall('setExtraContext', scope.getExtra());
+    this.nativeCall('setTagsContext', scope.getTags());
+    this.nativeCall('setUserContext', scope.getUser());
   }
 }

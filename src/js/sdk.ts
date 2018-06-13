@@ -1,21 +1,12 @@
+import { getDefaultIntegrations } from '@sentry/browser';
 import { initAndBind } from '@sentry/core';
 import { CordovaOptions } from './backend';
 import { CordovaClient } from './client';
 import { Scope } from '@sentry/hub';
 import { configureScope } from '@sentry/minimal';
 
-export {
-  addBreadcrumb,
-  captureEvent,
-  captureException,
-  captureMessage,
-  configureScope,
-} from '@sentry/minimal';
-
-export { Hub, Scope } from '@sentry/hub';
-
 export function init(options: CordovaOptions): void {
-  initAndBind(CordovaClient, options);
+  initAndBind(CordovaClient, options, getDefaultIntegrations());
 }
 
 export function setRelease(release: string): void {
