@@ -1,20 +1,17 @@
-import { SdkInfo, SentryEvent } from '@sentry/shim';
-import { FrontendBase, Scope } from '@sentry/core';
+import { BaseClient, Scope } from '@sentry/core';
+import { SdkInfo, SentryEvent } from '@sentry/types';
 
 import { CordovaBackend, CordovaOptions } from './backend';
 
 declare var window: any;
 
 /**
- * The Sentry Cordova SDK Frontend.
+ * The Sentry Cordova SDK Client.
  *
  * @see CordovaOptions for documentation on configuration options.
  * @see SentryClient for usage documentation.
  */
-export class CordovaFrontend extends FrontendBase<
-  CordovaBackend,
-  CordovaOptions
-> {
+export class CordovaClient extends BaseClient<CordovaBackend, CordovaOptions> {
   /**
    * Creates a new Cordova SDK instance.
    * @param options Configuration options for this SDK.
@@ -38,25 +35,22 @@ export class CordovaFrontend extends FrontendBase<
    */
   protected async prepareEvent(
     event: SentryEvent,
-    scope: Scope,
+    scope?: Scope
   ): Promise<SentryEvent> {
-    let prepared = await super.prepareEvent(event, scope);
-
     // We add SENTRY_RELEASE from window
     const release = window.SENTRY_RELEASE && window.SENTRY_RELEASE.id;
 
-    if (release && !prepared.release) {
-      const extra = {
-        ...{ __sentry_release: window.SENTRY_RELEASE.id },
-        ...prepared.extra,
-      };
-      prepared = {
+    if (release && !event.release) {
+      if (scope) {
+        const release = window.SENTRY_RELEASE && window.SENTRY_RELEASE.id;
+        scope.setExtra('__sentry_release', release);
+      }
+      event = {
         release,
-        ...prepared,
-        extra,
+        ...event,
       };
     }
 
-    return prepared;
+    return await super.prepareEvent(event, scope);
   }
 }

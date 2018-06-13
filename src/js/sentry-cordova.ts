@@ -1,16 +1,14 @@
-export { CordovaFrontend } from './frontend';
+export { CordovaOptions } from './backend';
+export { CordovaClient } from './client';
 export {
   addBreadcrumb,
   captureEvent,
   captureException,
   captureMessage,
+  configureScope,
   init,
-  popScope,
-  pushScope,
   setDist,
-  setUserContext,
-  setExtraContext,
   setRelease,
-  setTagsContext,
   setVersion,
 } from './sdk';
+export { Hub, Scope } from '@sentry/hub';

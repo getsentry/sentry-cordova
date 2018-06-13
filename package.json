@@ -26,7 +26,9 @@
   "dependencies": {
     "@sentry/browser": "0.5.2",
     "@sentry/core": "0.5.2",
-    "@sentry/shim": "0.5.2",
+    "@sentry/hub": "0.5.2",
+    "@sentry/minimal": "0.5.2",
+    "@sentry/types": "0.5.2",
     "@sentry/wizard": "^0.10.0"
   },
   "devDependencies": {
