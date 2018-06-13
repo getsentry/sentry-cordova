@@ -10,7 +10,6 @@ import {
   configureScope,
   init,
   Hub,
-  Scope,
   setDist,
   setRelease,
   setVersion,
