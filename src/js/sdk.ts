@@ -1,4 +1,4 @@
-import { getDefaultIntegrations } from '@sentry/browser';
+import { Integrations } from '@sentry/browser';
 import { initAndBind } from '@sentry/core';
 import { CordovaOptions } from './backend';
 import { CordovaClient } from './client';
@@ -6,7 +6,13 @@ import { Scope } from '@sentry/hub';
 import { configureScope } from '@sentry/minimal';
 
 export function init(options: CordovaOptions): void {
-  initAndBind(CordovaClient, options, getDefaultIntegrations());
+  initAndBind(CordovaClient, options, [
+    new Integrations.OnError(),
+    new Integrations.OnUnhandledRejection(),
+    new Integrations.FunctionToString(),
+    new Integrations.TryCatch(),
+    new Integrations.Breadcrumbs(),
+  ]);
 }
 
 export function setRelease(release: string): void {

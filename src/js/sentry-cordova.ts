@@ -1,13 +1,29 @@
-export { CordovaOptions } from './backend';
-export { CordovaClient } from './client';
-export { init, setDist, setRelease, setVersion } from './sdk';
-
-export { Hub, Scope } from '@sentry/hub';
+export {
+  Breadcrumb,
+  Request,
+  SdkInfo,
+  SentryEvent,
+  SentryException,
+  Severity,
+  StackFrame,
+  Stacktrace,
+  Thread,
+  User,
+} from '@sentry/types';
 
 export {
   addBreadcrumb,
-  captureEvent,
-  captureException,
   captureMessage,
+  captureException,
+  captureEvent,
   configureScope,
 } from '@sentry/minimal';
+
+export { getDefaultHub, getHubFromCarrier, Hub, Scope } from '@sentry/hub';
+
+export { CordovaBackend, CordovaOptions } from './backend';
+export { CordovaClient } from './client';
+export { init, setDist, setRelease, setVersion } from './sdk';
+
+// import * as Integrations from './integrations';
+// export { Integrations };
