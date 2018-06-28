@@ -2,6 +2,7 @@ branches:
   only:
     - master
 
+install: true
 sudo: false
 language: node_js
 node_js: '8'
@@ -14,6 +15,7 @@ before_install:
 matrix:
   include:
     - script:
+      - yarn
       - yarn build
       - yarn test
       - yarn codecov
