@@ -1,17 +1,20 @@
-import { Integrations } from '@sentry/browser';
+import { Integrations as BrowserIntegrations } from '@sentry/browser';
 import { initAndBind } from '@sentry/core';
 import { CordovaOptions } from './backend';
 import { CordovaClient } from './client';
+import { Cordova, Release } from './integrations';
 import { Scope } from '@sentry/hub';
 import { configureScope } from '@sentry/minimal';
 
 export function init(options: CordovaOptions): void {
   initAndBind(CordovaClient, options, [
-    new Integrations.OnError(),
-    new Integrations.OnUnhandledRejection(),
-    new Integrations.FunctionToString(),
-    new Integrations.TryCatch(),
-    new Integrations.Breadcrumbs(),
+    new BrowserIntegrations.OnError(),
+    new BrowserIntegrations.OnUnhandledRejection(),
+    new BrowserIntegrations.FunctionToString(),
+    new BrowserIntegrations.TryCatch(),
+    new BrowserIntegrations.Breadcrumbs(),
+    new Cordova(),
+    new Release(),
   ]);
 }
 
@@ -24,11 +27,5 @@ export function setRelease(release: string): void {
 export function setDist(dist: string): void {
   configureScope((scope: Scope) => {
     scope.setExtra('__sentry_dist', dist);
-  });
-}
-
-export function setVersion(version: string): void {
-  configureScope((scope: Scope) => {
-    scope.setExtra('__sentry_version', version);
   });
 }

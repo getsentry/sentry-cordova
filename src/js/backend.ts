@@ -1,9 +1,7 @@
 import { BrowserBackend, BrowserOptions } from '@sentry/browser';
 import { Backend } from '@sentry/core';
 import { Scope } from '@sentry/hub';
-import { Breadcrumb, SentryEvent } from '@sentry/types';
-
-import { normalizeData } from './normalize';
+import { Breadcrumb, SentryEvent, SentryResponse, Status } from '@sentry/types';
 
 const PLUGIN_NAME = 'Sentry';
 
@@ -58,11 +56,18 @@ export class CordovaBackend implements Backend {
   /**
    * @inheritDoc
    */
-  public async sendEvent(event: SentryEvent): Promise<number> {
-    const mergedEvent = {
-      ...normalizeData(event),
+  public async sendEvent(event: SentryEvent): Promise<SentryResponse> {
+    const response = await this.nativeCall('sendEvent', event);
+    // This is already a SentryResponse from @sentry/browser
+    if (response.status) {
+      return response;
+    }
+    // Otherwise this is from native response
+    return {
+      code: 200,
+      status: Status.fromHttpCode(200),
+      event_id: event.event_id,
     };
-    return this.nativeCall('sendEvent', mergedEvent);
   }
 
   // CORDOVA --------------------

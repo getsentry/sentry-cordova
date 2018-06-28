@@ -1,5 +1,6 @@
 export {
   Breadcrumb,
+  Integration,
   Request,
   SdkInfo,
   SentryEvent,
@@ -23,7 +24,7 @@ export { getDefaultHub, getHubFromCarrier, Hub, Scope } from '@sentry/hub';
 
 export { CordovaBackend, CordovaOptions } from './backend';
 export { CordovaClient } from './client';
-export { init, setDist, setRelease, setVersion } from './sdk';
+export { init, setDist, setRelease } from './sdk';
 
-// import * as Integrations from './integrations';
-// export { Integrations };
+import * as Integrations from './integrations';
+export { Integrations };
