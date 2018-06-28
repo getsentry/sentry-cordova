@@ -49,10 +49,11 @@ In order to also use the Ionic provided ``IonicErrorHandler`` we need to add
 
 .. code-block:: javascript
 
-    import * as Sentry from 'sentry-cordova';
     import { IonicErrorHandler } from 'ionic-angular';
 
-    export class SentryIonicErrorHandler extends IonicErrorHandler {
+    import * as Sentry from 'sentry-cordova';
+
+    class SentryIonicErrorHandler extends IonicErrorHandler {
       handleError(error) {
         super.handleError(error);
         try {
