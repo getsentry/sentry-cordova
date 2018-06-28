@@ -2,6 +2,8 @@
 
 ## v0.11.0 - Warning, breaking changes
 
+* Using `@sentry/*` `4.0.0-beta` packages
+* Fixes setting version on android #54
 * Breaking change:
 
 Replaced functions `setUserContext` `setTagsContext` `setExtraContext` with:
