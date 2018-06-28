@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.11.0 - Warning, breaking changes
+
+* Breaking change:
+
+Replaced functions `setUserContext` `setTagsContext` `setExtraContext` with:
+
+```
+Sentry.configureScope(scope => {
+  scope.setUser({ id: '123', email: 'test@sentry.io', username: 'sentry' });
+  scope.setTag('cordova', 'true');
+  scope.setExtra('myData', ['1', 2, '3']);
+});
+```
+
 ## v0.10.2
 
 * Fix es5 syntax in build script

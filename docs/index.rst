@@ -69,21 +69,15 @@ Note that we will track unhandled errors and promises by default.
         Sentry.addBreadcrumb({ message: 'message' });
 
 
-Note that we will track some breadcrumbs by default.
-You can disable this by passing options into the ``init`` function:
-
-    .. sourcecode:: javascript
-
-        Sentry.init({ dsn: '___PUBLIC_DSN___', autoBreadcrumbs: false, instrument: false });
-
-
 *   context handling:
 
     .. sourcecode:: javascript
 
-        Sentry.setUserContext({ id: '123', email: 'test@sentry.io', username: 'sentry' });
-        Sentry.setTagsContext({ cordova: true });
-        Sentry.setExtraContext({ myData: ['1', 2, '3'] });
+        Sentry.configureScope(scope => {
+          scope.setUser({ id: '123', email: 'test@sentry.io', username: 'sentry' });
+          scope.setTag('cordova', 'true');
+          scope.setExtra('myData', ['1', 2, '3']);
+        });
 
 
 iOS Specifics

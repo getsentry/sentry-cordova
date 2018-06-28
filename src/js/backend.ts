@@ -1,8 +1,7 @@
-import { Breadcrumb, Context, SentryEvent } from '@sentry/shim';
-import { Backend, Frontend } from '@sentry/core';
 import { BrowserBackend, BrowserOptions } from '@sentry/browser';
-
-import { normalizeData } from './normalize';
+import { Backend } from '@sentry/core';
+import { Scope } from '@sentry/hub';
+import { Breadcrumb, SentryEvent, SentryResponse, Status } from '@sentry/types';
 
 const PLUGIN_NAME = 'Sentry';
 
@@ -13,24 +12,17 @@ declare var document: any;
  * Configuration options for the Sentry Cordova SDK.
  * @see CordovaFrontend for more information.
  */
-export interface CordovaOptions extends BrowserOptions {
-  autoBreadcrumbs?: boolean;
-  instrument?: boolean;
-}
+export interface CordovaOptions extends BrowserOptions {}
 
 /** The Sentry Cordova SDK Backend. */
 export class CordovaBackend implements Backend {
-  /** Handle to the SDK frontend for callbacks. */
-  private readonly frontend: Frontend<CordovaOptions>;
-
   private browserBackend: BrowserBackend;
 
   private deviceReadyCallback: any;
 
   /** Creates a new cordova backend instance. */
-  public constructor(frontend: Frontend<CordovaOptions>) {
-    this.frontend = frontend;
-    this.browserBackend = new BrowserBackend(this.frontend);
+  public constructor(private readonly options: CordovaOptions = {}) {
+    this.browserBackend = new BrowserBackend(options);
   }
 
   /**
@@ -64,11 +56,18 @@ export class CordovaBackend implements Backend {
   /**
    * @inheritDoc
    */
-  public async sendEvent(event: SentryEvent): Promise<number> {
-    const mergedEvent = {
-      ...normalizeData(event),
+  public async sendEvent(event: SentryEvent): Promise<SentryResponse> {
+    const response = await this.nativeCall('sendEvent', event);
+    // This is already a SentryResponse from @sentry/browser
+    if (response.status) {
+      return response;
+    }
+    // Otherwise this is from native response
+    return {
+      code: 200,
+      status: Status.fromHttpCode(200),
+      event_id: event.event_id,
     };
-    return this.nativeCall('sendEvent', mergedEvent);
   }
 
   // CORDOVA --------------------
@@ -84,7 +83,7 @@ export class CordovaBackend implements Backend {
           reject,
           PLUGIN_NAME,
           action,
-          args,
+          args
         );
       }
     }).catch(e => {
@@ -102,12 +101,8 @@ export class CordovaBackend implements Backend {
 
   private runNativeInstall(): void {
     document.removeEventListener('deviceready', this.deviceReadyCallback);
-    if (this.frontend.getDSN()) {
-      this.nativeCall(
-        'install',
-        this.frontend.getDSN()!.toString(true),
-        this.frontend.getOptions(),
-      );
+    if (this.options.dsn) {
+      this.nativeCall('install', this.options.dsn, this.options);
     }
   }
 
@@ -126,16 +121,9 @@ export class CordovaBackend implements Backend {
   /**
    * @inheritDoc
    */
-  public storeContext(context: Context): boolean {
-    if (context.extra) {
-      this.nativeCall('setExtraContext', context.extra);
-    }
-    if (context.tags) {
-      this.nativeCall('setTagsContext', context.tags);
-    }
-    if (context.user) {
-      this.nativeCall('setUserContext', context.user);
-    }
-    return true;
+  public storeScope(scope: Scope): void {
+    this.nativeCall('setExtraContext', scope.getExtra());
+    this.nativeCall('setTagsContext', scope.getTags());
+    this.nativeCall('setUserContext', scope.getUser());
   }
 }
