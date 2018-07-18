@@ -1,16 +1,10 @@
 module.exports = function(ctx) {
-  if (ctx && ctx.opts && ctx.opts.plugins && ctx.opts.plugins.length) {
-    let match = false;
-    ctx.opts.plugins.map(plugin => {
-      if (plugin.match(/sentry-cordova/)) {
-        match = true;
-      }
-    });
-    if (!match) {
-      // We want to return if we don't add/remove sentry-cordova
+  try {
+    if (!ctx.opts.plugins.some(plugin => plugin.includes('sentry-cordova'))) {
       return;
     }
-  }
+  } catch (e) {}
+
   console.log(
     `Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`
   );
