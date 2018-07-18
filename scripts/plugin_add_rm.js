@@ -1,4 +1,13 @@
 module.exports = function(ctx) {
+  if (
+    ctx &&
+    ctx.opts &&
+    ctx.opts.plugin &&
+    ctx.opts.plugin.id !== 'sentry-cordova'
+  ) {
+    // if we don't add/remove sentry, we should do nothing
+    return;
+  }
   console.log(
     `Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`
   );
