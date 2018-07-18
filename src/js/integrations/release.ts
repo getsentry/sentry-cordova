@@ -15,7 +15,7 @@ export class Release implements Integration {
    * @inheritDoc
    */
   public install(): void {
-    getDefaultHub().addEventProcessor(() => (event: SentryEvent) => {
+    getDefaultHub().addEventProcessor(async (event: SentryEvent) => {
       // __sentry_release & __sentry_dist will be picked up by our native integration.
       // It should live in extra, native will pic it up there and set it in the event.
       if (event.extra && event.extra.__sentry_release && !event.release) {
@@ -32,6 +32,7 @@ export class Release implements Integration {
           __sentry_release: release,
         };
       }
+      return event;
     });
   }
 }

@@ -13,8 +13,6 @@ export class Cordova implements Integration {
    * @inheritDoc
    */
   public install(): void {
-    getDefaultHub().addEventProcessor(() => (event: SentryEvent) => {
-      normalizeData(event);
-    });
+    getDefaultHub().addEventProcessor((event: SentryEvent) => normalizeData(event));
   }
 }
