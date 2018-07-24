@@ -63,34 +63,20 @@ export class CordovaBackend implements Backend {
       return response;
     }
     // Otherwise this is from native response
-    return {
-      code: 200,
-      status: Status.fromHttpCode(200),
-      event_id: event.event_id,
-    };
+    return { status: Status.Success };
   }
 
   // CORDOVA --------------------
   public nativeCall(action: string, ...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
-      const exec =
-        window && (window as any).Cordova && (window as any).Cordova.exec;
+      const exec = window && (window as any).Cordova && (window as any).Cordova.exec;
       if (!exec) {
         reject('Cordova.exec not available');
       } else {
-        (window as any).Cordova.exec(
-          resolve,
-          reject,
-          PLUGIN_NAME,
-          action,
-          args
-        );
+        (window as any).Cordova.exec(resolve, reject, PLUGIN_NAME, action, args);
       }
     }).catch(e => {
-      if (
-        (e === 'not implemented' || e === 'Cordova.exec not available') &&
-        (this.browserBackend as any)[action]
-      ) {
+      if ((e === 'not implemented' || e === 'Cordova.exec not available') && (this.browserBackend as any)[action]) {
         // This is our fallback to the browser implementation
         return (this.browserBackend as any)[action](...args);
       } else {

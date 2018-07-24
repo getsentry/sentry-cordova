@@ -71,13 +71,7 @@ describe('SentryCordova', () => {
       callDeviceReady();
 
       (window as any).Cordova.exec = jest.fn(
-        (
-          resolve: (result: any) => void,
-          reject: (error: any) => void,
-          plugin: string,
-          action: string,
-          value: any
-        ) => {
+        (resolve: (result: any) => void, reject: (error: any) => void, plugin: string, action: string, value: any) => {
           if (action === 'sendEvent') {
             const event = value[0]; // this is an event
             expect(event.exception.values[0].type).toBe('Error');
@@ -205,9 +199,7 @@ describe('SentryCordova', () => {
         ...defaultOptions,
         integrations: () => [new Integrations.Cordova()],
         afterSend: (event: SentryEvent) => {
-          expect(
-            event.exception!.values[0].stacktrace!.frames![1].filename
-          ).toContain('app://');
+          expect(event.exception!.values[0].stacktrace!.frames![1].filename).toContain('app://');
           done();
         },
       });

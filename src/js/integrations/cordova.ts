@@ -1,6 +1,6 @@
 import { Integration, SentryEvent } from '@sentry/types';
 import { getDefaultHub } from '@sentry/hub';
-import { normalizeData } from './normalize';
+import { normalizeData } from '../normalize';
 
 /** Default Breadcrumbs instrumentations */
 export class Cordova implements Integration {
