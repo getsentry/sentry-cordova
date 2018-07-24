@@ -1,5 +1,3 @@
-import { BrowserBackend } from '@sentry/browser';
-
 import {
   addBreadcrumb,
   captureEvent,
@@ -11,6 +9,8 @@ import {
   init,
   Integrations,
   getDefaultHub,
+  SDK_NAME,
+  SDK_VERSION,
   SentryEvent,
   setDist,
   setRelease,
@@ -20,7 +20,6 @@ const dsn = 'https://1e7e9e1f2a51437a802724a538b7051d@sentry.io/304324';
 
 const defaultOptions: CordovaOptions = {
   dsn,
-  integrations: () => [],
 };
 
 let timeout: NodeJS.Timer;
@@ -85,7 +84,7 @@ describe('SentryCordova', () => {
     });
 
     test('send with browser fallback', done => {
-      expect.assertions(1);
+      expect.assertions(3);
       callDeviceReady();
 
       (window as any).Cordova.exec = jest.fn((...params: any[]) => {
@@ -97,17 +96,17 @@ describe('SentryCordova', () => {
         }
       });
 
-      const spy1 = jest.spyOn(BrowserBackend.prototype, 'sendEvent');
+      init({
+        ...defaultOptions,
+        shouldSend: (event: SentryEvent) => {
+          expect(event.sdk!.name).toEqual(SDK_NAME);
+          expect(event.sdk!.version).toEqual(SDK_VERSION);
+          expect(event.sdk!.packages).toHaveLength(2);
+          done();
+          return false;
+        },
+      });
       getDefaultHub().pushScope();
-      getDefaultHub().bindClient(
-        new CordovaClient({
-          afterSend: (_: SentryEvent) => {
-            expect(spy1).toHaveBeenCalledTimes(1);
-            done();
-          },
-          dsn,
-        })
-      );
       captureMessage('hey');
       getDefaultHub().popScope();
     });
