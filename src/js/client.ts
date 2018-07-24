@@ -1,6 +1,4 @@
 import { BaseClient } from '@sentry/core';
-import { SdkInfo } from '@sentry/types';
-
 import { CordovaBackend, CordovaOptions } from './backend';
 
 /**
@@ -16,15 +14,5 @@ export class CordovaClient extends BaseClient<CordovaBackend, CordovaOptions> {
    */
   public constructor(options: CordovaOptions) {
     super(CordovaBackend, options);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public getSdkInfo(): SdkInfo {
-    return {
-      name: 'sentry-cordova',
-      version: '0.11.0',
-    };
   }
 }

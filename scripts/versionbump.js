@@ -2,7 +2,7 @@ const replace = require('replace-in-file');
 const pjson = require('../package.json');
 
 replace({
-  files: ['./src/ios/SentryCordova.m', './src/js/client.ts'],
+  files: ['./src/ios/SentryCordova.m', './src/js/version.ts'],
   from: /\d+\.\d+.\d+/g,
   to: pjson.version,
 })

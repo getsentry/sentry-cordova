@@ -57,51 +57,30 @@ export class CordovaBackend implements Backend {
    * @inheritDoc
    */
   public async sendEvent(event: SentryEvent): Promise<SentryResponse> {
-    const response = await this.nativeCall('sendEvent', event);
-    // This is already a SentryResponse from @sentry/browser
-    if (response.status) {
-      return response;
+    try {
+      await this.nativeCall('sendEvent', event);
+      // Otherwise this is from native response
+      return { status: Status.Success };
+    } catch (e) {
+      return this.browserBackend.sendEvent(event);
     }
-    // Otherwise this is from native response
-    return {
-      code: 200,
-      status: Status.fromHttpCode(200),
-      event_id: event.event_id,
-    };
   }
 
   // CORDOVA --------------------
   public nativeCall(action: string, ...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
-      const exec =
-        window && (window as any).Cordova && (window as any).Cordova.exec;
+      const exec = window && (window as any).Cordova && (window as any).Cordova.exec;
       if (!exec) {
         reject('Cordova.exec not available');
       } else {
-        (window as any).Cordova.exec(
-          resolve,
-          reject,
-          PLUGIN_NAME,
-          action,
-          args
-        );
-      }
-    }).catch(e => {
-      if (
-        (e === 'not implemented' || e === 'Cordova.exec not available') &&
-        (this.browserBackend as any)[action]
-      ) {
-        // This is our fallback to the browser implementation
-        return (this.browserBackend as any)[action](...args);
-      } else {
-        // TODO log error on unpatched console
+        (window as any).Cordova.exec(resolve, reject, PLUGIN_NAME, action, args);
       }
     });
   }
 
   private runNativeInstall(): void {
     document.removeEventListener('deviceready', this.deviceReadyCallback);
-    if (this.options.dsn) {
+    if (this.options.dsn && this.options.enabled !== false) {
       this.nativeCall('install', this.options.dsn, this.options);
     }
   }
