@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.12.0
+
+* Fixed #66
+
 ## v0.11.0 - Warning, breaking changes
 
 * Using `@sentry/*` `4.0.0-beta` packages
@@ -61,11 +65,10 @@ Sentry.configureScope(scope => {
 
 ## v0.8.0 - Warning, breaking changes
 
-* We are using the new version of `@sentry/core` & `@sentry/browser`
-  installation and setup is now different. Please see https://docs.sentry.io/
-  for more information.
-* We also renamed to package from `@sentry/cordova` to `sentry-cordova` since
-  cordova has problems dealing with namespaced packages.
+* We are using the new version of `@sentry/core` & `@sentry/browser` installation and setup is now different. Please see
+  https://docs.sentry.io/ for more information.
+* We also renamed to package from `@sentry/cordova` to `sentry-cordova` since cordova has problems dealing with
+  namespaced packages.
 
 ## v0.7.0
 
@@ -83,8 +86,7 @@ Sentry.configureScope(scope => {
 
 ## v0.5.2
 
-* Require cordova 7.0.0 and cordova-ios 4.4.0 since we need to support embed
-  framework s
+* Require cordova 7.0.0 and cordova-ios 4.4.0 since we need to support embed framework s
 
 ## v0.5.1
 
