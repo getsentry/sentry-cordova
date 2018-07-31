@@ -79,7 +79,7 @@
     "postversion": "git push && git push --tags"
   },
   "jest": {
-    "testEnvironment": "node",
+    "testEnvironment": "jsdom",
     "globals": {
       "ts-jest": {
         "tsConfigFile": "./tsconfig.json"
