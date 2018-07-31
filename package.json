@@ -80,6 +80,7 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "testURL": "http://localhost/",
     "globals": {
       "ts-jest": {
         "tsConfigFile": "./tsconfig.json"
