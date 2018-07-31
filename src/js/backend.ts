@@ -93,7 +93,10 @@ export class CordovaBackend implements Backend {
    * @inheritDoc
    */
   public storeBreadcrumb(breadcrumb: Breadcrumb): boolean {
-    this.nativeCall('addBreadcrumb', breadcrumb);
+    this.nativeCall('addBreadcrumb', breadcrumb).catch(() => {
+      // We do nothing since all breadcrumbs are attached in the event.
+      // This only applies to android.
+    });
     return true;
   }
 
@@ -101,8 +104,17 @@ export class CordovaBackend implements Backend {
    * @inheritDoc
    */
   public storeScope(scope: Scope): void {
-    this.nativeCall('setExtraContext', scope.getExtra());
-    this.nativeCall('setTagsContext', scope.getTags());
-    this.nativeCall('setUserContext', scope.getUser());
+    this.nativeCall('setExtraContext', scope.getExtra()).catch(() => {
+      // We do nothing since scope is handled and attached to the event.
+      // This only applies to android.
+    });
+    this.nativeCall('setTagsContext', scope.getTags()).catch(() => {
+      // We do nothing since scope is handled and attached to the event.
+      // This only applies to android.
+    });
+    this.nativeCall('setUserContext', scope.getUser()).catch(() => {
+      // We do nothing since scope is handled and attached to the event.
+      // This only applies to android.
+    });
   }
 }

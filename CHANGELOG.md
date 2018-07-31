@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.12.1
+
+* Fixed #72
+* Using `@sentry/*` `4.0.0-beta.12` packages
+
 ## v0.12.0
 
 * Fixed #66
