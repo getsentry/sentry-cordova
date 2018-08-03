@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -eux
 
 brew update > /dev/null
 brew outdated carthage || brew upgrade carthage
