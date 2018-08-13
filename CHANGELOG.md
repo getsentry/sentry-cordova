@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.12.2
+
+* Remove sourcemap from plugins Fixed #76
+
 ## v0.12.1
 
 * Fixed #72
