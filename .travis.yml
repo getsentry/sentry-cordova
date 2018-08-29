@@ -1,6 +1,7 @@
 branches:
   only:
     - master
+    - /^release\/.+$/
 
 install: true
 sudo: false
@@ -21,7 +22,6 @@ matrix:
       - yarn codecov
 
     - language: objective-c
-      if: type NOT pull_request
       osx_image: xcode9.2
       script: .travis/deploy.sh
       after_success:
