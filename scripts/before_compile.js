@@ -88,7 +88,12 @@ module.exports = function(ctx) {
     const shasum2 = crypto.createHash(algorithm);
     shasum2.update(allHash);
     const fileHash = shasum2.digest('hex');
-    const release = fileHash.slice(0, 20);
+
+    let release = fileHash.slice(0, 20);
+    // if the environment variable SENTRY_RELEASE_STRING is set this will be used instead of the filehash slice
+    if (process.env.SENTRY_RELEASE_STRING) {
+        release = process.env.SENTRY_RELEASE_STRING;
+    }
 
     const regex = /<head>(?:[\s\S]*(<!-- sentry-cordova -->))?/g;
     let contents = fs.readFileSync(indexHtml, {
