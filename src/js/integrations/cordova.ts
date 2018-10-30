@@ -1,5 +1,5 @@
 import { Integration, SentryEvent } from '@sentry/types';
-import { getDefaultHub } from '@sentry/hub';
+import { addGlobalEventProcessor, getCurrentHub } from '@sentry/core';
 import { normalizeData } from '../normalize';
 
 /** Default Breadcrumbs instrumentations */
@@ -7,12 +7,23 @@ export class Cordova implements Integration {
   /**
    * @inheritDoc
    */
-  public name: string = 'Cordova';
+  public name: string = Cordova.id;
 
   /**
    * @inheritDoc
    */
-  public install(): void {
-    getDefaultHub().addEventProcessor((event: SentryEvent) => normalizeData(event));
+  public static id: string = 'Cordova';
+
+  /**
+   * @inheritDoc
+   */
+  public setupOnce(): void {
+    addGlobalEventProcessor(async (event: SentryEvent) => {
+      const self = getCurrentHub().getIntegration(Cordova);
+      if (self) {
+        return normalizeData(event);
+      }
+      return event;
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { BrowserBackend, BrowserOptions } from '@sentry/browser';
-import { Backend } from '@sentry/core';
+import { BaseBackend } from '@sentry/core';
 import { Scope } from '@sentry/hub';
 import { Breadcrumb, SentryEvent, SentryResponse, Status } from '@sentry/types';
 
@@ -15,13 +15,14 @@ declare var document: any;
 export interface CordovaOptions extends BrowserOptions {}
 
 /** The Sentry Cordova SDK Backend. */
-export class CordovaBackend implements Backend {
+export class CordovaBackend extends BaseBackend<BrowserOptions> {
   private browserBackend: BrowserBackend;
 
   private deviceReadyCallback: any;
 
   /** Creates a new cordova backend instance. */
-  public constructor(private readonly options: CordovaOptions = {}) {
+  public constructor(options: CordovaOptions = {}) {
+    super(options);
     this.browserBackend = new BrowserBackend(options);
   }
 
@@ -104,15 +105,15 @@ export class CordovaBackend implements Backend {
    * @inheritDoc
    */
   public storeScope(scope: Scope): void {
-    this.nativeCall('setExtraContext', scope.getExtra()).catch(() => {
+    this.nativeCall('setExtraContext', (scope as any).extra).catch(() => {
       // We do nothing since scope is handled and attached to the event.
       // This only applies to android.
     });
-    this.nativeCall('setTagsContext', scope.getTags()).catch(() => {
+    this.nativeCall('setTagsContext', (scope as any).tags).catch(() => {
       // We do nothing since scope is handled and attached to the event.
       // This only applies to android.
     });
-    this.nativeCall('setUserContext', scope.getUser()).catch(() => {
+    this.nativeCall('setUserContext', (scope as any).user).catch(() => {
       // We do nothing since scope is handled and attached to the event.
       // This only applies to android.
     });

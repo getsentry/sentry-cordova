@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as path from 'path';
 
 describe('JS conversion check', () => {
   test('Do not require @sentry/browser', () => {
