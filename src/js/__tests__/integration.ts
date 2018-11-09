@@ -33,13 +33,12 @@ function callDeviceReady(): void {
 
 describe('SentryCordova', () => {
   beforeEach(() => {
+    getCurrentHub().pushScope();
     (window as any).Cordova = {};
-    (window as any).SENTRY_RELEASE = {};
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.resetAllMocks();
+    getCurrentHub().popScope();
     jest.clearAllTimers();
     clearTimeout(timeout);
   });
@@ -85,6 +84,11 @@ describe('SentryCordova', () => {
         }
       );
 
+      getCurrentHub().bindClient(
+        new CordovaClient({
+          ...defaultOptions,
+        })
+      );
       captureException(new Error('yo'));
     });
 
@@ -101,19 +105,19 @@ describe('SentryCordova', () => {
         }
       });
 
-      init({
-        ...defaultOptions,
-        beforeSend: (event: SentryEvent) => {
-          expect(event.sdk!.name).toEqual(SDK_NAME);
-          expect(event.sdk!.version).toEqual(SDK_VERSION);
-          done();
-          return null;
-        },
-      });
+      getCurrentHub().bindClient(
+        new CordovaClient({
+          ...defaultOptions,
+          beforeSend: (event: SentryEvent) => {
+            expect(event.sdk!.name).toEqual(SDK_NAME);
+            expect(event.sdk!.version).toEqual(SDK_VERSION);
+            done();
+            return null;
+          },
+        })
+      );
 
-      getCurrentHub().pushScope();
       captureMessage('hey');
-      getCurrentHub().popScope();
     });
 
     test('message', done => {
@@ -136,7 +140,12 @@ describe('SentryCordova', () => {
           params[0](false);
         }
       });
-      init(defaultOptions);
+
+      getCurrentHub().bindClient(
+        new CordovaClient({
+          ...defaultOptions,
+        })
+      );
       captureMessage('bread');
     });
   });
@@ -153,15 +162,17 @@ describe('SentryCordova', () => {
       });
 
       callDeviceReady();
-      init({
-        ...defaultOptions,
-        beforeSend: (event: SentryEvent) => {
-          expect(event.message).toBe('knife');
-          expect(event.breadcrumbs![0].message).toBe('bread');
-          done();
-          return null;
-        },
-      });
+      getCurrentHub().bindClient(
+        new CordovaClient({
+          ...defaultOptions,
+          beforeSend: (event: SentryEvent) => {
+            expect(event.message).toBe('knife');
+            expect(event.breadcrumbs![0].message).toBe('bread');
+            done();
+            return null;
+          },
+        })
+      );
       addBreadcrumb({ message: 'bread' });
       captureMessage('knife');
     });
@@ -179,63 +190,45 @@ describe('SentryCordova', () => {
       callDeviceReady();
     });
 
-    test('setRelease from window', done => {
-      expect.assertions(1);
-
-      init({
-        ...defaultOptions,
-        integrations: [new Integrations.Release()],
-        beforeSend: (event: SentryEvent) => {
-          expect((event.extra! as any).__sentry_release).toBe('abc');
-          done();
-          return null;
-        },
-      });
-
-      (window as any).SENTRY_RELEASE = {};
-      (window as any).SENTRY_RELEASE.id = 'abc';
-
-      captureMessage('knife');
-    });
-
-    test('cordova integration', done => {
-      expect.assertions(1);
-
-      init({
-        ...defaultOptions,
-        integrations: () => [new Integrations.Cordova()],
-        beforeSend: (event: SentryEvent) => {
-          expect(event.exception!.values![0].stacktrace!.frames![1].filename).toContain('app://');
-          done();
-          return null;
-        },
-      });
-      captureException(new Error('yo'));
-    });
-
     test('setRelease from window but event should be stronger', done => {
-      expect.hasAssertions();
+      expect.assertions(1);
 
-      init({
-        ...defaultOptions,
-        integrations: () => [new Integrations.Release()],
-        beforeSend: (event: SentryEvent) => {
-          expect(event.release).toBe('xyz');
-          done();
-          return null;
-        },
-      });
+      getCurrentHub().bindClient(
+        new CordovaClient({
+          ...defaultOptions,
+          integrations: () => [new Integrations.Release()],
+          beforeSend: (event: SentryEvent) => {
+            expect(event.release).toBe('xyz');
+            done();
+            return null;
+          },
+        })
+      );
 
       (window as any).SENTRY_RELEASE = {};
       (window as any).SENTRY_RELEASE.id = 'abc';
 
       captureEvent({ message: 'test', release: 'xyz' });
-      getCurrentHub().popScope();
+    });
+
+    test('cordova integration', done => {
+      expect.assertions(1);
+      getCurrentHub().bindClient(
+        new CordovaClient({
+          ...defaultOptions,
+          integrations: () => [new Integrations.Cordova()],
+          beforeSend: (event: SentryEvent) => {
+            expect(event.exception!.values![0].stacktrace!.frames![1].filename).toContain('app://');
+            done();
+            return null;
+          },
+        })
+      );
+      captureException(new Error('yo'));
     });
 
     test('setRelease/setDist', done => {
       expect.assertions(2);
-      getCurrentHub().pushScope();
       getCurrentHub().bindClient(
         new CordovaClient({
           beforeSend: (event: SentryEvent) => {
@@ -250,12 +243,10 @@ describe('SentryCordova', () => {
       setRelease('xxx');
       setDist('dist');
       captureMessage('knife');
-      getCurrentHub().popScope();
     });
 
     test('setRelease setDist on prefilled event', done => {
       expect.assertions(4);
-      getCurrentHub().pushScope();
       getCurrentHub().bindClient(
         new CordovaClient({
           beforeSend: (event: SentryEvent) => {
@@ -272,24 +263,25 @@ describe('SentryCordova', () => {
       setRelease('xxx');
       setDist('dist');
       captureEvent({ dist: '1', release: 'b' });
-      getCurrentHub().popScope();
     });
 
     test('setRelease setDist on empty event', done => {
       expect.assertions(4);
 
-      init({
-        ...defaultOptions,
-        integrations: () => [new Integrations.Release()],
-        beforeSend: (event: SentryEvent) => {
-          expect((event.extra! as any).__sentry_release).toBe('xxx');
-          expect((event.extra! as any).__sentry_dist).toBe('dist');
-          expect(event.dist).toBe('dist');
-          expect(event.release).toBe('xxx');
-          done();
-          return null;
-        },
-      });
+      getCurrentHub().bindClient(
+        new CordovaClient({
+          ...defaultOptions,
+          integrations: () => [new Integrations.Release()],
+          beforeSend: (event: SentryEvent) => {
+            expect((event.extra! as any).__sentry_release).toBe('xxx');
+            expect((event.extra! as any).__sentry_dist).toBe('dist');
+            expect(event.dist).toBe('dist');
+            expect(event.release).toBe('xxx');
+            done();
+            return null;
+          },
+        })
+      );
 
       setRelease('xxx');
       setDist('dist');
@@ -298,7 +290,6 @@ describe('SentryCordova', () => {
 
     test('setTagsContext', async done => {
       expect.assertions(1);
-      getCurrentHub().pushScope();
       getCurrentHub().bindClient(
         new CordovaClient({
           beforeSend: (event: SentryEvent) => {
@@ -311,12 +302,10 @@ describe('SentryCordova', () => {
       );
       configureScope(scope => scope.setTag('jest', 'yo'));
       captureMessage('knife');
-      getCurrentHub().popScope();
     });
 
     test('setUserContext', async done => {
       expect.assertions(1);
-      getCurrentHub().pushScope();
       getCurrentHub().bindClient(
         new CordovaClient({
           beforeSend: (event: SentryEvent) => {
@@ -329,12 +318,10 @@ describe('SentryCordova', () => {
       );
       configureScope(scope => scope.setUser({ id: '4433' }));
       captureMessage('knife');
-      getCurrentHub().popScope();
     });
 
     test('setUserContext', async done => {
       expect.assertions(1);
-      getCurrentHub().pushScope();
       getCurrentHub().bindClient(
         new CordovaClient({
           beforeSend: (event: SentryEvent) => {
@@ -347,16 +334,14 @@ describe('SentryCordova', () => {
       );
       configureScope(scope => scope.setExtra('id', '44335'));
       captureMessage('knife');
-      getCurrentHub().popScope();
     });
 
     test('clearScope', async done => {
       expect.assertions(1);
-      getCurrentHub().pushScope();
       getCurrentHub().bindClient(
         new CordovaClient({
           beforeSend: (event: SentryEvent) => {
-            expect((event.extra as any).id).toBeUndefined();
+            expect(event.extra).toBeUndefined();
             done();
             return null;
           },
@@ -366,7 +351,6 @@ describe('SentryCordova', () => {
       configureScope(scope => scope.setExtra('id', '44335'));
       configureScope(scope => scope.clear());
       captureMessage('knife');
-      getCurrentHub().popScope();
     });
   });
 });

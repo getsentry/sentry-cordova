@@ -24,11 +24,11 @@
   ],
   "description": "Official Sentry SDK for Cordova",
   "dependencies": {
-    "@sentry/browser": "~4.2.3",
-    "@sentry/core": "~4.2.3",
-    "@sentry/minimal": "~4.2.3",
-    "@sentry/types": "~4.2.3",
-    "@sentry/utils": "~4.2.3",
+    "@sentry/browser": "~4.3.0",
+    "@sentry/core": "~4.3.0",
+    "@sentry/minimal": "~4.3.0",
+    "@sentry/types": "~4.3.0",
+    "@sentry/utils": "~4.3.0",
     "@sentry/wizard": "^0.12.1"
   },
   "devDependencies": {
@@ -62,9 +62,8 @@
     "build": "run-s clean build:typescript build:bundle",
     "clean": "rimraf dist coverage",
     "jest": "jest",
-    "test:browser": "run-s build jest",
     "test:watch": "jest --watch",
-    "test": "run-s test:browser",
+    "test": "jest",
     "codecov": "codecov",
     "lint": "run-s lint:prettier lint:tslint",
     "lint:prettier": "prettier-check \"{src,test}/**/*.ts\"",
