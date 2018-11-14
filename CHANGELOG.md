@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.0
+
+* Using `@sentry/*` `~4.3.0` packages
+
 ## v0.12.3
 
 * Fixed #81
