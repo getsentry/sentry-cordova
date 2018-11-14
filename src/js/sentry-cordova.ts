@@ -1,20 +1,31 @@
 export {
   Breadcrumb,
-  Integration,
   Request,
   SdkInfo,
   SentryEvent,
   SentryException,
+  SentryResponse,
   Severity,
   StackFrame,
   Stacktrace,
+  Status,
   Thread,
   User,
 } from '@sentry/types';
 
-export { addBreadcrumb, captureMessage, captureException, captureEvent, configureScope } from '@sentry/minimal';
-
-export { getDefaultHub, getHubFromCarrier, Hub, Scope } from '@sentry/hub';
+export {
+  addGlobalEventProcessor,
+  addBreadcrumb,
+  captureException,
+  captureEvent,
+  captureMessage,
+  configureScope,
+  withScope,
+  getHubFromCarrier,
+  getCurrentHub,
+  Hub,
+  Scope,
+} from '@sentry/core';
 
 export { CordovaBackend, CordovaOptions } from './backend';
 export { CordovaClient } from './client';
