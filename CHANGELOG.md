@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.1
+
+* Fix `level` parameter
+
 ## v0.13.0
 
 * Using `@sentry/*` `~4.3.0` packages

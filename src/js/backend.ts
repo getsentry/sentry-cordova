@@ -1,7 +1,7 @@
 import { BrowserBackend, BrowserOptions } from '@sentry/browser';
 import { BaseBackend } from '@sentry/core';
 import { Scope } from '@sentry/hub';
-import { Breadcrumb, SentryEvent, SentryResponse, Status } from '@sentry/types';
+import { Breadcrumb, SentryEvent, SentryEventHint, SentryResponse, Severity, Status } from '@sentry/types';
 
 const PLUGIN_NAME = 'Sentry';
 
@@ -43,15 +43,19 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   /**
    * @inheritDoc
    */
-  public async eventFromException(exception: any): Promise<SentryEvent> {
-    return this.browserBackend.eventFromException(exception);
+  public async eventFromException(exception: any, hint?: SentryEventHint): Promise<SentryEvent> {
+    return this.browserBackend.eventFromException(exception, hint);
   }
 
   /**
    * @inheritDoc
    */
-  public async eventFromMessage(message: string): Promise<SentryEvent> {
-    return this.browserBackend.eventFromMessage(message);
+  public async eventFromMessage(
+    message: string,
+    level: Severity = Severity.Info,
+    hint?: SentryEventHint
+  ): Promise<SentryEvent> {
+    return this.browserBackend.eventFromMessage(message, level, hint);
   }
 
   /**

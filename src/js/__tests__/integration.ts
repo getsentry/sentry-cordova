@@ -14,6 +14,7 @@ import {
   SentryEvent,
   setDist,
   setRelease,
+  Severity,
 } from '../sentry-cordova';
 
 const dsn = 'https://123@sentry.io/123';
@@ -147,6 +148,33 @@ describe('SentryCordova', () => {
         })
       );
       captureMessage('bread');
+    });
+
+    test('message warning', done => {
+      expect.assertions(1);
+      callDeviceReady();
+
+      (window as any).Cordova.exec = jest.fn((...params: any[]) => {
+        // params[0] == resolve
+        // params[1] == reject
+        // params[3] == function send/install .....
+        if (params[3] === 'sendEvent') {
+          params[1]('not implemented');
+        }
+      });
+
+      getCurrentHub().bindClient(
+        new CordovaClient({
+          ...defaultOptions,
+          beforeSend: (event: SentryEvent) => {
+            expect(event.level).toBe('warning');
+            done();
+            return null;
+          },
+        })
+      );
+
+      captureMessage('hey', Severity.Warning);
     });
   });
 
