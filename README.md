@@ -31,7 +31,7 @@ onDeviceReady: function() {
 }
 ```
 
-### Ionic in you `app.module.ts`:
+### Ionic in your `app.module.ts`:
 
 ```javascript
 ...
