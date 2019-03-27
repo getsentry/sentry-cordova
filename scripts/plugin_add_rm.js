@@ -9,8 +9,7 @@ module.exports = function(ctx) {
     `Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`
   );
   const wizard = require('@sentry/wizard');
-  const tty = require('tty');
-  const fs = ctx.requireCordovaModule('fs');
+  const fs = require('fs');
 
   let uninstall = false;
 
