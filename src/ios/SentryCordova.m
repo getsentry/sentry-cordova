@@ -2,7 +2,7 @@
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
-NSString *const SentryCordovaVersionString = @"0.13.1";
+NSString *const SentryCordovaVersionString = @"0.14.0";
 NSString *const SentryCordovaSdkName = @"sentry-cordova";
 
 @implementation SentryCordova
