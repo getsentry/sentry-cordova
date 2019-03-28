@@ -5,8 +5,8 @@ module.exports = function(ctx) {
     } - set SENTRY_SKIP_AUTO_RELEASE=true to skip this`
   );
   const SentryCli = require('@sentry/cli');
-  const path = ctx.requireCordovaModule('path');
-  const fs = ctx.requireCordovaModule('fs');
+  const path = require('path');
+  const fs = require('fs');
   const crypto = require('crypto');
 
   if (process.env.SENTRY_SKIP_AUTO_RELEASE) {
