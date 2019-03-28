@@ -24,11 +24,11 @@
   ],
   "description": "Official Sentry SDK for Cordova",
   "dependencies": {
-    "@sentry/browser": "~4.3.0",
-    "@sentry/core": "~4.3.0",
-    "@sentry/minimal": "~4.3.0",
-    "@sentry/types": "~4.3.0",
-    "@sentry/utils": "~4.3.0",
+    "@sentry/browser": "~4.6.6",
+    "@sentry/core": "~4.6.6",
+    "@sentry/minimal": "~4.6.5",
+    "@sentry/types": "~4.5.3",
+    "@sentry/utils": "~4.6.5",
     "@sentry/wizard": "^0.12.1"
   },
   "devDependencies": {
