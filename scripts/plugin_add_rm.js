@@ -5,18 +5,19 @@ module.exports = function(ctx) {
     }
   } catch (e) {}
 
-  console.log(
-    `Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`
-  );
-  const wizard = require('@sentry/wizard');
-  const fs = require('fs');
-
-  let uninstall = false;
+  console.log(`Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`);
 
   if (process.env.SENTRY_SKIP_WIZARD) {
     console.log('Sentry: Skipping Sentry Wizard');
     return;
   }
+
+  // do `require` if we're not skipping sentry wizard
+  const wizard = require('@sentry/wizard');
+  const tty = require('tty');
+  const fs = require('fs');
+
+  let uninstall = false;
 
   const fromProps = 'sentry.properties';
   if (process.stdin.isTTY) {
@@ -41,9 +42,7 @@ module.exports = function(ctx) {
     console.error('***********************************************');
     console.error(`You've run this command with the ionic prefix`);
     console.error(`either run it without 'ionic' or do run:`);
-    uninstall
-      ? console.error('$ sentry-wizard --uninstall')
-      : console.error('$ sentry-wizard');
+    uninstall ? console.error('$ sentry-wizard --uninstall') : console.error('$ sentry-wizard');
     console.error('See: https://github.com/getsentry/sentry-wizard');
     console.error('***********************************************');
     console.error('***********************************************');
