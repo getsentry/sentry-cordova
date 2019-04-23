@@ -2,7 +2,7 @@ import { BrowserOptions } from '@sentry/browser';
 import { BrowserBackend } from '@sentry/browser/dist/backend';
 import { BaseBackend } from '@sentry/core';
 import { Breadcrumb, Event, EventHint, Scope, Severity } from '@sentry/types';
-import { getGlobalObject, logger, SyncPromise } from '@sentry/utils';
+import { forget, getGlobalObject, logger, SyncPromise } from '@sentry/utils';
 
 const PLUGIN_NAME = 'Sentry';
 
@@ -25,11 +25,11 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   private readonly _deviceReadyCallback?: () => void;
 
   /** Creates a new cordova backend instance. */
-  public constructor(options: CordovaOptions = {}) {
-    super(options);
-    this._browserBackend = new BrowserBackend(options);
+  public constructor(protected readonly _options: CordovaOptions = {}) {
+    super(_options);
+    this._browserBackend = new BrowserBackend(_options);
 
-    if (this._isCordova() && !options.enableNative) {
+    if (this._isCordova() && _options.enableNative !== false) {
       this._deviceReadyCallback = () => {
         this._runNativeInstall();
       };
@@ -40,18 +40,14 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   /**
    * @inheritDoc
    */
-  public async eventFromException(exception: any, hint?: EventHint): SyncPromise<Event> {
+  public eventFromException(exception: any, hint?: EventHint): SyncPromise<Event> {
     return this._browserBackend.eventFromException(exception, hint);
   }
 
   /**
    * @inheritDoc
    */
-  public async eventFromMessage(
-    message: string,
-    level: Severity = Severity.Info,
-    hint?: EventHint
-  ): SyncPromise<Event> {
+  public eventFromMessage(message: string, level: Severity = Severity.Info, hint?: EventHint): SyncPromise<Event> {
     return this._browserBackend.eventFromMessage(message, level, hint);
   }
 
@@ -59,11 +55,10 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
    * @inheritDoc
    */
   public sendEvent(event: Event): void {
-    try {
-      this._nativeCall('sendEvent', event);
-    } catch (e) {
+    this._nativeCall('sendEvent', event).catch(e => {
+      logger.warn(e);
       this._browserBackend.sendEvent(event);
-    }
+    });
   }
 
   // CORDOVA --------------------
@@ -72,8 +67,13 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
    * @param action name of the action
    * @param args Arguments
    */
-  private _nativeCall(action: string, ...args: any[]): void {
-    new Promise<any>((resolve, reject) => {
+  private async _nativeCall(action: string, ...args: any[]): Promise<void> {
+    return new Promise<any>((resolve, reject) => {
+      if (this._options.enableNative === false) {
+        reject('enableNative = false, using browser transport');
+        return;
+      }
+
       const _window = getGlobalObject<any>();
       // tslint:disable-next-line: no-unsafe-any
       const exec = _window && _window.Cordova && _window.Cordova.exec;
@@ -87,8 +87,6 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
           reject('Cordova.exec not available');
         }
       }
-    }).catch(e => {
-      logger.error(e);
     });
   }
 
@@ -99,7 +97,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
     if (this._deviceReadyCallback) {
       getGlobalObject<Window>().document.removeEventListener('deviceready', this._deviceReadyCallback);
       if (this._options.dsn && this._options.enabled !== false) {
-        this._nativeCall('install', this._options.dsn, this._options);
+        forget(this._nativeCall('install', this._options.dsn, this._options));
       }
     }
   }
@@ -116,7 +114,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
    * @inheritDoc
    */
   public storeBreadcrumb(breadcrumb: Breadcrumb): boolean {
-    this._nativeCall('addBreadcrumb', breadcrumb);
+    forget(this._nativeCall('addBreadcrumb', breadcrumb));
     return true;
   }
 
@@ -124,8 +122,8 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
    * @inheritDoc
    */
   public storeScope(scope: Scope): void {
-    this._nativeCall('setExtraContext', (scope as any).extra);
-    this._nativeCall('setTagsContext', (scope as any).tags);
-    this._nativeCall('setUserContext', (scope as any).user);
+    forget(this._nativeCall('setExtraContext', (scope as any).extra));
+    forget(this._nativeCall('setTagsContext', (scope as any).tags));
+    forget(this._nativeCall('setUserContext', (scope as any).user));
   }
 }

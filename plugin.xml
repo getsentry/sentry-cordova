@@ -55,16 +55,9 @@
 
     <!-- browser -->
     <!-- <platform name="browser">
-        <js-module src="www/Cordova.js" name="Sentry">
+        <js-module src="dist/js/sentry-cordova.bundle.js" name="Sentry">
             <clobbers target="Sentry" />
         </js-module>
-        <config-file target="config.xml" parent="/*">
-            <feature name="Sentry">
-                <param name="browser-package" value="SentryPluginBrowser"/>
-                <param name="onload" value="true" />
-            </feature>
-            <plugin name="SentryCordova" value="SentryCordova"/>
-        </config-file>
     </platform> -->
 
     <hook type="after_plugin_add" src="scripts/plugin_add_rm.js" />
