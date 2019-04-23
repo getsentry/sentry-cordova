@@ -1,5 +1,8 @@
 const PATH_STRIP_RE = /^.*\/[^\.]+(\.app|CodePush|.*(?=\/))/;
 
+/**
+ *  Normalize url in stacktrace
+ */
 export function normalizeUrl(url: string, pathStripRe: RegExp): string {
   return `app://${url.replace(/^file\:\/\//, '').replace(pathStripRe, '')}`;
 }

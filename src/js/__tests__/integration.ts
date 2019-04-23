@@ -4,14 +4,14 @@ import {
   captureException,
   captureMessage,
   configureScope,
-  CordovaOptions,
   CordovaClient,
+  CordovaOptions,
+  Event,
+  getCurrentHub,
   init,
   Integrations,
-  getCurrentHub,
   SDK_NAME,
   SDK_VERSION,
-  SentryEvent,
   setDist,
   setRelease,
   Severity,
@@ -109,7 +109,7 @@ describe('SentryCordova', () => {
       getCurrentHub().bindClient(
         new CordovaClient({
           ...defaultOptions,
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect(event.sdk!.name).toEqual(SDK_NAME);
             expect(event.sdk!.version).toEqual(SDK_VERSION);
             done();
@@ -166,7 +166,7 @@ describe('SentryCordova', () => {
       getCurrentHub().bindClient(
         new CordovaClient({
           ...defaultOptions,
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect(event.level).toBe('warning');
             done();
             return null;
@@ -193,7 +193,7 @@ describe('SentryCordova', () => {
       getCurrentHub().bindClient(
         new CordovaClient({
           ...defaultOptions,
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect(event.message).toBe('knife');
             expect(event.breadcrumbs![0].message).toBe('bread');
             done();
@@ -225,7 +225,7 @@ describe('SentryCordova', () => {
         new CordovaClient({
           ...defaultOptions,
           integrations: () => [new Integrations.Release()],
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect(event.release).toBe('xyz');
             done();
             return null;
@@ -245,7 +245,7 @@ describe('SentryCordova', () => {
         new CordovaClient({
           ...defaultOptions,
           integrations: () => [new Integrations.Cordova()],
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect(event.exception!.values![0].stacktrace!.frames![1].filename).toContain('app://');
             done();
             return null;
@@ -259,7 +259,7 @@ describe('SentryCordova', () => {
       expect.assertions(2);
       getCurrentHub().bindClient(
         new CordovaClient({
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect((event.extra! as any).__sentry_release).toBe('xxx');
             expect((event.extra! as any).__sentry_dist).toBe('dist');
             done();
@@ -277,7 +277,7 @@ describe('SentryCordova', () => {
       expect.assertions(4);
       getCurrentHub().bindClient(
         new CordovaClient({
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect((event.extra! as any).__sentry_release).toBe('xxx');
             expect((event.extra! as any).__sentry_dist).toBe('dist');
             expect(event.dist).toBe('1');
@@ -300,7 +300,7 @@ describe('SentryCordova', () => {
         new CordovaClient({
           ...defaultOptions,
           integrations: () => [new Integrations.Release()],
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect((event.extra! as any).__sentry_release).toBe('xxx');
             expect((event.extra! as any).__sentry_dist).toBe('dist');
             expect(event.dist).toBe('dist');
@@ -320,7 +320,7 @@ describe('SentryCordova', () => {
       expect.assertions(1);
       getCurrentHub().bindClient(
         new CordovaClient({
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect(event.tags).toEqual({ jest: 'yo' });
             done();
             return null;
@@ -336,7 +336,7 @@ describe('SentryCordova', () => {
       expect.assertions(1);
       getCurrentHub().bindClient(
         new CordovaClient({
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect(event.user).toEqual({ id: '4433' });
             done();
             return null;
@@ -352,7 +352,7 @@ describe('SentryCordova', () => {
       expect.assertions(1);
       getCurrentHub().bindClient(
         new CordovaClient({
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect((event.extra as any).id).toBe('44335');
             done();
             return null;
@@ -368,7 +368,7 @@ describe('SentryCordova', () => {
       expect.assertions(1);
       getCurrentHub().bindClient(
         new CordovaClient({
-          beforeSend: (event: SentryEvent) => {
+          beforeSend: (event: Event) => {
             expect(event.extra).toBeUndefined();
             done();
             return null;
