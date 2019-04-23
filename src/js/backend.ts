@@ -1,107 +1,120 @@
-import { BrowserBackend, BrowserOptions } from '@sentry/browser';
+import { BrowserOptions } from '@sentry/browser';
+import { BrowserBackend } from '@sentry/browser/dist/backend';
 import { BaseBackend } from '@sentry/core';
-import { Scope } from '@sentry/hub';
-import { Breadcrumb, SentryEvent, SentryEventHint, SentryResponse, Severity, Status } from '@sentry/types';
+import { Breadcrumb, Event, EventHint, Scope, Severity } from '@sentry/types';
+import { forget, getGlobalObject, logger, SyncPromise } from '@sentry/utils';
 
 const PLUGIN_NAME = 'Sentry';
-
-declare var window: any;
-declare var document: any;
 
 /**
  * Configuration options for the Sentry Cordova SDK.
  * @see CordovaFrontend for more information.
  */
-export interface CordovaOptions extends BrowserOptions {}
+export interface CordovaOptions extends BrowserOptions {
+  /**
+   * Enables crash reporting for native crashes.
+   * Defaults to `true`.
+   */
+  enableNative?: boolean;
+}
 
 /** The Sentry Cordova SDK Backend. */
 export class CordovaBackend extends BaseBackend<BrowserOptions> {
-  private browserBackend: BrowserBackend;
+  private readonly _browserBackend: BrowserBackend;
 
-  private deviceReadyCallback: any;
+  private readonly _deviceReadyCallback?: () => void;
 
   /** Creates a new cordova backend instance. */
-  public constructor(options: CordovaOptions = {}) {
-    super(options);
-    this.browserBackend = new BrowserBackend(options);
-  }
+  public constructor(protected readonly _options: CordovaOptions = {}) {
+    super(_options);
+    this._browserBackend = new BrowserBackend(_options);
 
-  /**
-   * @inheritDoc
-   */
-  public install(): boolean {
-    this.browserBackend.install();
-
-    if (this.isCordova()) {
-      this.deviceReadyCallback = () => this.runNativeInstall();
-      document.addEventListener('deviceready', this.deviceReadyCallback);
+    if (this._isCordova() && _options.enableNative !== false) {
+      this._deviceReadyCallback = () => {
+        this._runNativeInstall();
+      };
+      getGlobalObject<Window>().document.addEventListener('deviceready', this._deviceReadyCallback);
     }
-
-    return true;
   }
 
   /**
    * @inheritDoc
    */
-  public async eventFromException(exception: any, hint?: SentryEventHint): Promise<SentryEvent> {
-    return this.browserBackend.eventFromException(exception, hint);
+  public eventFromException(exception: any, hint?: EventHint): SyncPromise<Event> {
+    return this._browserBackend.eventFromException(exception, hint);
   }
 
   /**
    * @inheritDoc
    */
-  public async eventFromMessage(
-    message: string,
-    level: Severity = Severity.Info,
-    hint?: SentryEventHint
-  ): Promise<SentryEvent> {
-    return this.browserBackend.eventFromMessage(message, level, hint);
+  public eventFromMessage(message: string, level: Severity = Severity.Info, hint?: EventHint): SyncPromise<Event> {
+    return this._browserBackend.eventFromMessage(message, level, hint);
   }
 
   /**
    * @inheritDoc
    */
-  public async sendEvent(event: SentryEvent): Promise<SentryResponse> {
-    try {
-      await this.nativeCall('sendEvent', event);
-      // Otherwise this is from native response
-      return { status: Status.Success };
-    } catch (e) {
-      return this.browserBackend.sendEvent(event);
-    }
+  public sendEvent(event: Event): void {
+    this._nativeCall('sendEvent', event).catch(e => {
+      logger.warn(e);
+      this._browserBackend.sendEvent(event);
+    });
   }
 
   // CORDOVA --------------------
-  public nativeCall(action: string, ...args: any[]): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const exec = window && (window as any).Cordova && (window as any).Cordova.exec;
+  /**
+   * Uses exec to call cordova functions
+   * @param action name of the action
+   * @param args Arguments
+   */
+  private async _nativeCall(action: string, ...args: any[]): Promise<void> {
+    return new Promise<any>((resolve, reject) => {
+      if (this._options.enableNative === false) {
+        reject('enableNative = false, using browser transport');
+        return;
+      }
+
+      const _window = getGlobalObject<any>();
+      // tslint:disable-next-line: no-unsafe-any
+      const exec = _window && _window.Cordova && _window.Cordova.exec;
       if (!exec) {
         reject('Cordova.exec not available');
       } else {
-        (window as any).Cordova.exec(resolve, reject, PLUGIN_NAME, action, args);
+        try {
+          // tslint:disable-next-line: no-unsafe-any
+          _window.Cordova.exec(resolve, reject, PLUGIN_NAME, action, args);
+        } catch (e) {
+          reject('Cordova.exec not available');
+        }
       }
     });
   }
 
-  private runNativeInstall(): void {
-    document.removeEventListener('deviceready', this.deviceReadyCallback);
-    if (this.options.dsn && this.options.enabled !== false) {
-      this.nativeCall('install', this.options.dsn, this.options);
+  /**
+   * Calling into native install function
+   */
+  private _runNativeInstall(): void {
+    if (this._deviceReadyCallback) {
+      getGlobalObject<Window>().document.removeEventListener('deviceready', this._deviceReadyCallback);
+      if (this._options.dsn && this._options.enabled !== false) {
+        forget(this._nativeCall('install', this._options.dsn, this._options));
+      }
     }
   }
 
-  private isCordova(): boolean {
-    return window.cordova !== undefined || window.Cordova !== undefined;
+  /**
+   * Has cordova on window?
+   */
+  private _isCordova(): boolean {
+    // tslint:disable-next-line: no-unsafe-any
+    return getGlobalObject<any>().cordova !== undefined || getGlobalObject<any>().Cordova !== undefined;
   }
 
   /**
    * @inheritDoc
    */
   public storeBreadcrumb(breadcrumb: Breadcrumb): boolean {
-    this.nativeCall('addBreadcrumb', breadcrumb).catch(() => {
-      // We do nothing since all breadcrumbs are attached in the event.
-      // This only applies to android.
-    });
+    forget(this._nativeCall('addBreadcrumb', breadcrumb));
     return true;
   }
 
@@ -109,17 +122,8 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
    * @inheritDoc
    */
   public storeScope(scope: Scope): void {
-    this.nativeCall('setExtraContext', (scope as any).extra).catch(() => {
-      // We do nothing since scope is handled and attached to the event.
-      // This only applies to android.
-    });
-    this.nativeCall('setTagsContext', (scope as any).tags).catch(() => {
-      // We do nothing since scope is handled and attached to the event.
-      // This only applies to android.
-    });
-    this.nativeCall('setUserContext', (scope as any).user).catch(() => {
-      // We do nothing since scope is handled and attached to the event.
-      // This only applies to android.
-    });
+    forget(this._nativeCall('setExtraContext', (scope as any).extra));
+    forget(this._nativeCall('setTagsContext', (scope as any).tags));
+    forget(this._nativeCall('setUserContext', (scope as any).user));
   }
 }

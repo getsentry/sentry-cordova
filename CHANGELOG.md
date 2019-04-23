@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Bump `@sentry/*` `5.1.0`
+- Fix #65
+
 ## v0.14.0
 
 - Bump `@sentry/*` `4.6.6`

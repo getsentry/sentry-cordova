@@ -1,5 +1,7 @@
 import { BaseClient, Scope } from '@sentry/core';
-import { SentryEvent, SentryEventHint } from '@sentry/types';
+import { Event, EventHint } from '@sentry/types';
+import { SyncPromise } from '@sentry/utils';
+
 import { CordovaBackend, CordovaOptions } from './backend';
 import { SDK_NAME, SDK_VERSION } from './version';
 
@@ -21,7 +23,7 @@ export class CordovaClient extends BaseClient<CordovaBackend, CordovaOptions> {
   /**
    * @inheritDoc
    */
-  protected async prepareEvent(event: SentryEvent, scope?: Scope, hint?: SentryEventHint): Promise<SentryEvent | null> {
+  protected _prepareEvent(event: Event, scope?: Scope, hint?: EventHint): SyncPromise<Event | null> {
     event.platform = event.platform || 'javascript';
     event.sdk = {
       ...event.sdk,
@@ -36,6 +38,6 @@ export class CordovaClient extends BaseClient<CordovaBackend, CordovaOptions> {
       version: SDK_VERSION,
     };
 
-    return super.prepareEvent(event, scope, hint);
+    return super._prepareEvent(event, scope, hint);
   }
 }

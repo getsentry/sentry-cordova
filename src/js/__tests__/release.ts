@@ -1,11 +1,4 @@
-import {
-  captureMessage,
-  CordovaOptions,
-  CordovaClient,
-  Integrations,
-  getCurrentHub,
-  SentryEvent,
-} from '../sentry-cordova';
+import { captureMessage, CordovaClient, CordovaOptions, Event, getCurrentHub, Integrations } from '../sentry-cordova';
 
 const dsn = 'https://123@sentry.io/123';
 
@@ -49,7 +42,7 @@ describe('General', () => {
       new CordovaClient({
         ...defaultOptions,
         integrations: [new Integrations.Release()],
-        beforeSend: (event: SentryEvent) => {
+        beforeSend: (event: Event) => {
           expect((event.extra as any).__sentry_release).toBe('abc');
           done();
           return null;
