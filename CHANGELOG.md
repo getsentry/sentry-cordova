@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.15.0
 
 - Bump `@sentry/*` `5.1.0`
 - Fix #65
