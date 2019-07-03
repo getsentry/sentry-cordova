@@ -66,9 +66,9 @@ module.exports = function(ctx) {
     let includes = [];
     walk(buildPath).forEach((file, index) => {
       let f = path.basename(file);
-      let [name, ext1, ext2] = f.split('.');
+      let [ext2, ext1, name] = f.split('.').reverse();
       // we only want js source files and the according sourcemaps (no css etc.)
-      if (ext1 === 'js' || (ext1 === 'js' && ext2 === 'map')) {
+      if (ext2 === 'js' || (ext1 === 'js' && ext2 === 'map')) {
         // ignore sw-toolbox file
         if (name !== 'sw-toolbox') {
           includes.push(file);
