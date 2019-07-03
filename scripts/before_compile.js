@@ -57,7 +57,7 @@ module.exports = function(ctx) {
     }
 
     const indexHtml = path.join(buildPath, 'index.html');
-    if (!fs.existsSync(configFile)) {
+    if (!fs.existsSync(indexHtml)) {
       console.error('Sentry: index.html does not exist');
       return;
     }
