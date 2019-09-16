@@ -49,29 +49,22 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 
 - (void)sendEvent:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
-        BOOL shouldSend = NO;
         NSDictionary *jsonEvent = [command.arguments objectAtIndex:0];
-        SentryEvent *event = [SentryJavaScriptBridgeHelper createSentryEventFromJavaScriptEvent:jsonEvent];
-        if (event.exceptions) {
-#if DEBUG
-            // We want to send the exception instead of storing it because in debug
-            // the app does not crash it will restart
-            shouldSend = YES;
-#else
-            [SentryClient.sharedClient storeEvent:event];
-#endif
-        } else {
-            shouldSend = YES;
-        }
+        if ([NSJSONSerialization isValidJSONObject:jsonEvent]) {
+            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonEvent
+                                                               options:0
+                                                                 error:nil];
 
-        if (shouldSend && SentryClient.sharedClient != nil) {
-            [SentryClient.sharedClient sendEvent:event withCompletionHandler:^(NSError * _Nullable error) {
-                CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[event serialize]];
-                if (error != nil) {
-                    result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:NO];
-                }
-                [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-            }];
+            SentryEvent *sentryEvent = [[SentryEvent alloc] initWithJSON:jsonData];
+            if (SentryClient.sharedClient != nil) {
+                [SentryClient.sharedClient sendEvent:sentryEvent withCompletionHandler:^(NSError * _Nullable error) {
+                    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+                    if (error != nil) {
+                        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:NO];
+                    }
+                    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+                }];
+            }
         }
     }];
 }

@@ -7,6 +7,10 @@ export function normalizeUrl(url: string, pathStripRe: RegExp): string {
   return `app://${url.replace(/^file\:\/\//, '').replace(pathStripRe, '')}`;
 }
 
+/**
+ * Normalizes the stacktrace
+ * @param data
+ */
 export function normalizeData(data: any): any {
   if (data.culprit) {
     data.culprit = normalizeUrl(data.culprit, PATH_STRIP_RE);

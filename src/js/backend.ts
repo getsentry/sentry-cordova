@@ -1,7 +1,7 @@
 import { BrowserOptions } from '@sentry/browser';
 import { BrowserBackend } from '@sentry/browser/dist/backend';
-import { BaseBackend } from '@sentry/core';
-import { Breadcrumb, Event, EventHint, Scope, Severity } from '@sentry/types';
+import { BaseBackend, getCurrentHub } from '@sentry/core';
+import { Event, EventHint, Severity } from '@sentry/types';
 import { forget, getGlobalObject, logger, SyncPromise } from '@sentry/utils';
 
 const PLUGIN_NAME = 'Sentry';
@@ -99,6 +99,17 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
       if (this._options.dsn && this._options.enabled !== false) {
         forget(this._nativeCall('install', this._options.dsn, this._options));
       }
+      // tslint:disable:no-unsafe-any
+      const scope = getCurrentHub().getScope();
+      if (scope) {
+        scope.addScopeListener(internalScope => {
+          forget(this._nativeCall('setExtraContext', (internalScope as any)._extra));
+          forget(this._nativeCall('setTagsContext', (internalScope as any)._tags));
+          forget(this._nativeCall('setUserContext', (internalScope as any)._user));
+          forget(this._nativeCall('addBreadcrumb', (internalScope as any)._breadcrumbs.pop()));
+        });
+      }
+      // tslint:enable:no-unsafe-any
     }
   }
 
@@ -108,22 +119,5 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   private _isCordova(): boolean {
     // tslint:disable-next-line: no-unsafe-any
     return getGlobalObject<any>().cordova !== undefined || getGlobalObject<any>().Cordova !== undefined;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public storeBreadcrumb(breadcrumb: Breadcrumb): boolean {
-    forget(this._nativeCall('addBreadcrumb', breadcrumb));
-    return true;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public storeScope(scope: Scope): void {
-    forget(this._nativeCall('setExtraContext', (scope as any).extra));
-    forget(this._nativeCall('setTagsContext', (scope as any).tags));
-    forget(this._nativeCall('setUserContext', (scope as any).user));
   }
 }

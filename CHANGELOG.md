@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.16.0
+
+- Bump `@sentry/*` `~5.6.0`
+- Bump `sentry-cocoa` `4.4.0`
+- Use raw payload to send on iOS
+
 ## v0.15.0
 
 - Bump `@sentry/*` `5.1.0`
