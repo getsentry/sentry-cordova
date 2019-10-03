@@ -45,7 +45,10 @@ module.exports = function(ctx) {
   const ignore = ['node_modules'];
   const sentryCli = new SentryCli(configFile);
 
-  const allReleases = ctx.opts.paths.map(buildPath => {
+  const projectRoot = ctx.opts.projectRoot || '';
+  const buildPaths = ctx.opts.platforms.map(p => path.join(projectRoot, 'platforms', p, 'www'));
+
+  const allReleases = buildPaths.map(buildPath => {
     if (!fs.existsSync(buildPath)) {
       console.error(`Sentry: build path does not exist ${buildPath}`);
       console.error('This is not an Ionic project, please check out:');
