@@ -1,3 +1,5 @@
+const platforms = require('cordova-lib').cordova_platforms
+
 module.exports = function(ctx) {
   console.log(
     `Sentry: running ${
@@ -45,8 +47,9 @@ module.exports = function(ctx) {
   const ignore = ['node_modules'];
   const sentryCli = new SentryCli(configFile);
 
-  const projectRoot = ctx.opts.projectRoot || '';
-  const buildPaths = ctx.opts.platforms.map(p => path.join(projectRoot, 'platforms', p, 'www'));
+  const buildPaths = ctx.opts.paths || ctx.opts.platforms.map(p => {
+    return platforms.getPlatformApi(p).getPlatformInfo().locations.www;
+  });
 
   const allReleases = buildPaths.map(buildPath => {
     if (!fs.existsSync(buildPath)) {
