@@ -103,10 +103,22 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
       const scope = getCurrentHub().getScope();
       if (scope) {
         scope.addScopeListener(internalScope => {
-          forget(this._nativeCall('setExtraContext', (internalScope as any)._extra));
-          forget(this._nativeCall('setTagsContext', (internalScope as any)._tags));
-          forget(this._nativeCall('setUserContext', (internalScope as any)._user));
-          forget(this._nativeCall('addBreadcrumb', (internalScope as any)._breadcrumbs.pop()));
+          this._nativeCall('setExtraContext', (internalScope as any)._extra).catch(() => {
+            // We do nothing since scope is handled and attached to the event.
+            // This only applies to android.
+          });
+          this._nativeCall('setTagsContext', (internalScope as any)._tags).catch(() => {
+            // We do nothing since scope is handled and attached to the event.
+            // This only applies to android.
+          });
+          this._nativeCall('setUserContext', (internalScope as any)._user).catch(() => {
+            // We do nothing since scope is handled and attached to the event.
+            // This only applies to android.
+          });
+          this._nativeCall('addBreadcrumb', (internalScope as any)._breadcrumbs.pop()).catch(() => {
+            // We do nothing since scope is handled and attached to the event.
+            // This only applies to android.
+          });
         });
       }
       // tslint:enable:no-unsafe-any
