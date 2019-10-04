@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.16.1
+
+- Fix #147
+
 ## v0.16.0
 
 - Bump `@sentry/*` `~5.6.0`

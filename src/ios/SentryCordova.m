@@ -72,10 +72,12 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 - (void)addBreadcrumb:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         NSDictionary *jsonBreadcrumb = [command.arguments objectAtIndex:0];
-        SentryBreadcrumb *breadcrumb = [SentryJavaScriptBridgeHelper createSentryBreadcrumbFromJavaScriptBreadcrumb:jsonBreadcrumb];
-        [SentryClient.sharedClient.breadcrumbs addBreadcrumb:breadcrumb];
-        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[breadcrumb serialize]];
-        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+        if ([jsonBreadcrumb isKindOfClass:NSDictionary.class]) {
+          SentryBreadcrumb *breadcrumb = [SentryJavaScriptBridgeHelper createSentryBreadcrumbFromJavaScriptBreadcrumb:jsonBreadcrumb];
+          [SentryClient.sharedClient.breadcrumbs addBreadcrumb:breadcrumb];
+          CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[breadcrumb serialize]];
+          [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+        }
     }];
 }
 
