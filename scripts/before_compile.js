@@ -52,7 +52,7 @@ module.exports = function(ctx) {
     if (!fs.existsSync(buildPath)) {
       console.error(`Sentry: build path does not exist ${buildPath}`);
       console.error('This is not an Ionic project, please check out:');
-      console.error('https://docs.sentry.io/clients/javascript/sourcemaps/');
+      console.error('https://docs.sentry.io/platforms/javascript/sourcemaps/');
       console.error(
         'to find out how to correctly upload sourcemaps for your project.'
       );
