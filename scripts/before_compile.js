@@ -1,5 +1,3 @@
-const platforms = require('cordova-lib').cordova_platforms
-
 module.exports = function(ctx) {
   console.log(
     `Sentry: running ${
@@ -48,7 +46,9 @@ module.exports = function(ctx) {
   const sentryCli = new SentryCli(configFile);
 
   const buildPaths = ctx.opts.paths || ctx.opts.platforms.map(p => {
-    return platforms.getPlatformApi(p).getPlatformInfo().locations.www;
+    const PlatformApi = require(`platforms/${p}/cordova/Api.js`);
+    const platformApi = new PlatformApi();
+    return platformApi.getPlatformInfo().locations.www;
   });
 
   const allReleases = buildPaths.map(buildPath => {
