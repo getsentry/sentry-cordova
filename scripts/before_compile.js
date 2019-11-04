@@ -46,7 +46,8 @@ module.exports = function(ctx) {
   const sentryCli = new SentryCli(configFile);
 
   const buildPaths = ctx.opts.paths || ctx.opts.platforms.map(p => {
-    const PlatformApi = require(`platforms/${p}/cordova/Api.js`);
+    const apiPath = path.join('platforms', p, 'cordova', 'Api.js');
+    const PlatformApi = require(apiPath);
     const platformApi = new PlatformApi();
     return platformApi.getPlatformInfo().locations.www;
   });
