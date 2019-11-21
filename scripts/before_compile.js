@@ -1,7 +1,7 @@
-module.exports = function (ctx) {
+module.exports = function(ctx) {
   console.log(
     `Sentry: running ${
-    ctx.hook
+      ctx.hook
     } - set SENTRY_SKIP_AUTO_RELEASE=true to skip this`
   );
   const SentryCli = require('@sentry/cli');
@@ -46,17 +46,11 @@ module.exports = function (ctx) {
   const sentryCli = new SentryCli(configFile);
 
   const buildPaths = ctx.opts.paths || ctx.opts.platforms.map(p => {
-    // `require` needs absolute file path to prevent "Cannot find module", and
-    // working directory is set to project root by upstream tools.
-    const apiPath = path.join(process.cwd(), 'platforms', p, 'cordova', 'Api.js');
-    if (!fs.existsSync(apiPath)) {
-      console.error(`Sentry: unable to locate build path for platform '${p}'`);
-      return
-    }
+    const apiPath = path.join('platforms', p, 'cordova', 'Api.js');
     const PlatformApi = require(apiPath);
     const platformApi = new PlatformApi();
     return platformApi.getPlatformInfo().locations.www;
-  }).filter(x => x);
+  });
 
   const allReleases = buildPaths.map(buildPath => {
     if (!fs.existsSync(buildPath)) {
@@ -105,52 +99,52 @@ module.exports = function (ctx) {
     let release = Promise.resolve(fileHash.slice(0, 20));
     // if the environment variable SENTRY_RELEASE_STRING is set this will be used instead of the filehash slice
     if (process.env.SENTRY_RELEASE_STRING) {
-      release = Promise.resolve(process.env.SENTRY_RELEASE_STRING);
+        release = Promise.resolve(process.env.SENTRY_RELEASE_STRING);
     } else if (process.env.SENTRY_RELEASE_PROPOSE_VERSION) {
-      release = sentryCli.releases.proposeVersion();
+        release = sentryCli.releases.proposeVersion();
     }
 
     return release.then(
-      release => {
-        const regex = /<head>(?:[\s\S]*(<!-- sentry-cordova -->))?/g;
-        let contents = fs.readFileSync(indexHtml, {
-          encoding: 'utf-8',
-        });
-        const releaseSentry = `
+        release => {
+            const regex = /<head>(?:[\s\S]*(<!-- sentry-cordova -->))?/g;
+            let contents = fs.readFileSync(indexHtml, {
+                encoding: 'utf-8',
+            });
+            const releaseSentry = `
     <script>
     (function(w){var i=w.SENTRY_RELEASE=w.SENTRY_RELEASE||{};i.id='${release}';})(this);
     </script>
     <!-- sentry-cordova -->`;
-        const replaceWith = `<head>${releaseSentry}`;
-        fs.writeFileSync(indexHtml, contents.replace(regex, replaceWith));
+            const replaceWith = `<head>${releaseSentry}`;
+            fs.writeFileSync(indexHtml, contents.replace(regex, replaceWith));
 
-        // This is allowed to fail because it's ionic specific
-        const projectRootIndexHtml = path.join(
-          ctx.opts.projectRoot,
-          'src',
-          'index.html'
-        );
-        if (fs.existsSync(projectRootIndexHtml)) {
-          contents = fs.readFileSync(projectRootIndexHtml, {
-            encoding: 'utf-8',
-          });
-          fs.writeFileSync(
-            projectRootIndexHtml,
-            contents.replace(regex, replaceWith)
-          );
+            // This is allowed to fail because it's ionic specific
+            const projectRootIndexHtml = path.join(
+                ctx.opts.projectRoot,
+                'src',
+                'index.html'
+            );
+            if (fs.existsSync(projectRootIndexHtml)) {
+                contents = fs.readFileSync(projectRootIndexHtml, {
+                    encoding: 'utf-8',
+                });
+                fs.writeFileSync(
+                    projectRootIndexHtml,
+                    contents.replace(regex, replaceWith)
+                );
+            }
+
+            console.log(`Uploading assets release: '${release}' path: ${buildPath}`);
+            return sentryCli.releases
+                .new(release)
+                .then(() =>
+                    sentryCli.releases.uploadSourceMaps(release, {
+                        include: includes,
+                        ignore: ignore,
+                    })
+                )
+                .then(() => sentryCli.releases.finalize(release));
         }
-
-        console.log(`Uploading assets release: '${release}' path: ${buildPath}`);
-        return sentryCli.releases
-          .new(release)
-          .then(() =>
-            sentryCli.releases.uploadSourceMaps(release, {
-              include: includes,
-              ignore: ignore,
-            })
-          )
-          .then(() => sentryCli.releases.finalize(release));
-      }
     )
   });
 
