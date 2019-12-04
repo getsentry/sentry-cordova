@@ -45,8 +45,18 @@ module.exports = function(ctx) {
   const ignore = ['node_modules'];
   const sentryCli = new SentryCli(configFile);
 
-  const projectRoot = ctx.opts.projectRoot || '';
-  const buildPaths = ctx.opts.platforms.map(p => path.join(projectRoot, 'platforms', p, 'www'));
+  const buildPaths = ctx.opts.paths || ctx.opts.platforms.map(p => {
+    // `require` needs absolute file path to prevent "Cannot find module", and
+    // working directory is set to project root by upstream tools.
+    const apiPath = path.join(process.cwd(), 'platforms', p, 'cordova', 'Api.js');
+    if (!fs.existsSync(apiPath)) {
+      console.error(`Sentry: unable to locate build path for platform '${p}'`);
+      return
+    }
+    const PlatformApi = require(apiPath);
+    const platformApi = new PlatformApi();
+    return platformApi.getPlatformInfo().locations.www;
+  }).filter(x => x);
 
   const allReleases = buildPaths.map(buildPath => {
     if (!fs.existsSync(buildPath)) {
