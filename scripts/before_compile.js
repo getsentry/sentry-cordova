@@ -38,7 +38,7 @@ module.exports = function(ctx) {
 
   const configFile = path.join('sentry.properties');
   if (!fs.existsSync(configFile)) {
-    console.error('Sentry: sentry.properties does not exist in project root!`');
+    console.error('Sentry: sentry.properties does not exist in project root! ' + ctx.opts.projectRoot);
     process.exit(1);
     return;
   }
