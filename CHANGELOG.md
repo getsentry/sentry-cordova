@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.17.0
+
+- feat: Add `SENTRY_ANDROID_SDK_VERSION` to configure Android SDK version
+- fix: Replicate cordova prepare functionality for getting platform path
+
 ## v0.16.2
 
 - Fix #146
