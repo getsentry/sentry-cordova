@@ -40,6 +40,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   /**
    * @inheritDoc
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
   public eventFromException(exception: any, hint?: EventHint): SyncPromise<Event> {
     return this._browserBackend.eventFromException(exception, hint);
   }
@@ -67,21 +68,24 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
    * @param action name of the action
    * @param args Arguments
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async _nativeCall(action: string, ...args: any[]): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return new Promise<any>((resolve, reject) => {
       if (this._options.enableNative === false) {
         reject('enableNative = false, using browser transport');
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const _window = getGlobalObject<any>();
-      // tslint:disable-next-line: no-unsafe-any
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const exec = _window && _window.Cordova && _window.Cordova.exec;
       if (!exec) {
         reject('Cordova.exec not available');
       } else {
         try {
-          // tslint:disable-next-line: no-unsafe-any
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           _window.Cordova.exec(resolve, reject, PLUGIN_NAME, action, args);
         } catch (e) {
           reject('Cordova.exec not available');
@@ -99,7 +103,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
       if (this._options.dsn && this._options.enabled !== false) {
         forget(this._nativeCall('install', this._options.dsn, this._options));
       }
-      // tslint:disable:no-unsafe-any
+      /* eslint-disable  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
       const scope = getCurrentHub().getScope();
       if (scope) {
         scope.addScopeListener(internalScope => {
@@ -121,7 +125,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
           });
         });
       }
-      // tslint:enable:no-unsafe-any
+      /* eslint-enable  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
     }
   }
 
@@ -129,7 +133,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
    * Has cordova on window?
    */
   private _isCordova(): boolean {
-    // tslint:disable-next-line: no-unsafe-any
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
     return getGlobalObject<any>().cordova !== undefined || getGlobalObject<any>().Cordova !== undefined;
   }
 }

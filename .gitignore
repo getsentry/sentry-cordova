@@ -63,6 +63,8 @@ __pycache__
 .cache
 wheelhouse
 dist
-yarn.lock
 package-lock.json
 .rpt2_cache
+
+# Eslint
+.eslintcache

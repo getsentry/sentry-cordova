@@ -1,5 +1,7 @@
 # Changelog
 
+- build(internal): Switch to eslint
+
 ## v0.17.0
 
 - feat: Add `SENTRY_ANDROID_SDK_VERSION` to configure Android SDK version
