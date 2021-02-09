@@ -14,7 +14,8 @@ import android.util.Log;
 
 import java.util.Date;
 
-import io.sentry.android.AndroidSentryClientFactory;
+import io.sentry.android.core.SentryAndroid;
+import io.sentry.Sentry;
 
 public class SentryCordova extends CordovaPlugin {
   private static final String TAG = "Sentry";
@@ -27,7 +28,10 @@ public class SentryCordova extends CordovaPlugin {
   public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
     if(action.equals("install")) {
       String dsn = args.getString(0);
-      Sentry.init(dsn, new AndroidSentryClientFactory(this.cordova.getActivity().getApplicationContext()));
+
+      SentryAndroid.init(this.cordova.getActivity().getApplicationContext(), options -> {
+        options.setDsn(dsn);
+      });
       // We need to return false here to not create the captureBreadcrumb hook
       callbackContext.sendPluginResult(new PluginResult(Status.OK, false));
     } else {
