@@ -32,11 +32,13 @@
     "@sentry/wizard": "^1.0.0"
   },
   "devDependencies": {
-    "@sentry/typescript": "^5.3.0",
+    "@sentry-internal/eslint-config-sdk": "5.21.0",
+    "@sentry-internal/typescript": "5.21.0",
     "@types/cordova": "0.0.34",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.5",
     "codecov": "^3.5.0",
+    "eslint": "7.6.0",
     "jest": "^24.9.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.18.2",
@@ -48,13 +50,8 @@
     "rollup-plugin-node-resolve": "^4.2.3",
     "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-typescript2": "^0.21.0",
-    "snyk": "^1.235.0",
     "ts-jest": "^24.1.0",
-    "tslint": "^5.20.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.6.3",
-    "vrsource-tslint-rules": "^6.0.0"
+    "typescript": "^3.6.3"
   },
   "scripts": {
     "build:bundle": "rollup --config",
@@ -65,17 +62,15 @@
     "test:watch": "jest --watch",
     "test": "jest",
     "codecov": "codecov",
-    "lint": "run-s lint:prettier lint:tslint",
-    "lint:prettier": "prettier-check \"{src,test}/**/*.ts\"",
-    "lint:tslint": "tslint -t stylish -p .",
-    "fix": "run-s fix:tslint fix:prettier",
+    "lint": "run-s lint:prettier lint:eslint",
+    "lint:prettier": "prettier --check \"{src,test}/**/*.ts\"",
+    "lint:eslint": "eslint . --cache --format stylish",
+    "fix": "run-s fix:eslint fix:prettier",
     "fix:prettier": "prettier --write \"{src,test}/**/*.ts\"",
-    "fix:tslint": "tslint --fix -t stylish -p .",
+    "fix:eslint": "eslint . --format stylish --fix",
     "preversion:changelog": "grep -q -F \"## v$npm_package_version\" CHANGELOG.md",
     "version:all": "run-s preversion:changelog version:bump test",
-    "version:bump": "node ./scripts/versionbump.js && git add -A",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "version:bump": "node ./scripts/versionbump.js && git add -A"
   },
   "jest": {
     "testEnvironment": "jsdom",
@@ -104,6 +99,5 @@
       "\\.d\\.(jsx?|tsx?)$",
       "\\.no-jest\\.(jsx?|tsx?)$"
     ]
-  },
-  "snyk": true
+  }
 }

@@ -8,12 +8,12 @@ export class Cordova implements Integration {
   /**
    * @inheritDoc
    */
-  public name: string = Cordova.id;
+  public static id: string = 'Cordova';
 
   /**
    * @inheritDoc
    */
-  public static id: string = 'Cordova';
+  public name: string = Cordova.id;
 
   /**
    * @inheritDoc

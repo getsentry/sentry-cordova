@@ -7,11 +7,12 @@ export class Release implements Integration {
   /**
    * @inheritDoc
    */
-  public name: string = Release.id;
+  public static id: string = 'Release';
+
   /**
    * @inheritDoc
    */
-  public static id: string = 'Release';
+  public name: string = Release.id;
 
   /**
    * @inheritDoc
@@ -23,6 +24,7 @@ export class Release implements Integration {
         return event;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const window: any = getGlobalObject<any>();
       // __sentry_release & __sentry_dist will be picked up by our native integration.
       // It should live in extra, native will pic it up there and set it in the event.
@@ -33,7 +35,7 @@ export class Release implements Integration {
         event.dist = `${event.extra.__sentry_dist}`;
       }
 
-      // tslint:disable-next-line: no-unsafe-any
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const release = window.SENTRY_RELEASE && window.SENTRY_RELEASE.id;
       if (release && !event.release) {
         event.release = release as string;
