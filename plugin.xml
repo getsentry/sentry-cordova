@@ -35,6 +35,11 @@
           </feature>
       </config-file>
 
+       <config-file target="AndroidManifest.xml" parent="/manifest/application">
+          <meta-data android:name="io.sentry.auto-init" android:value="false" />
+      </config-file>
+
+
       <source-file src="src/android/io/sentry/SentryCordova.java" target-dir="src/io/sentry/" />
 
       <framework src="io.sentry:sentry-android:$SENTRY_ANDROID_SDK_VERSION" />
