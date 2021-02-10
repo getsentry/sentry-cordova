@@ -2,6 +2,7 @@
 
 - build(internal): Switch to eslint
 - build(android): Bump Android SDK to v4.1.0 (#187)
+- feat: Add global error handler wrapper method for Ionic (#190)
 
 ## v0.17.0
 
