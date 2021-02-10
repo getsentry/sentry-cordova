@@ -36,3 +36,5 @@ export { SDK_NAME, SDK_VERSION } from './version';
 import * as Integrations from './integrations';
 export { Integrations };
 export { BrowserIntegrations };
+
+export { withSentryIonicErrorHandler } from './Ionic/SentryIonicErrorHandler';
