@@ -15,7 +15,6 @@ import android.util.Log;
 import java.util.Date;
 
 import io.sentry.android.core.SentryAndroid;
-import io.sentry.Sentry;
 
 public class SentryCordova extends CordovaPlugin {
   private static final String TAG = "Sentry";
