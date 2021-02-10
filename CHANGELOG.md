@@ -1,7 +1,7 @@
 # Changelog
 
 - build(internal): Switch to eslint
-- build(android): Bump Android SDK to v4.1.0
+- build(android): Bump Android SDK to v4.1.0 (#187)
 
 ## v0.17.0
 
