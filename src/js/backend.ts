@@ -1,10 +1,11 @@
 import { BrowserOptions } from '@sentry/browser';
 import { BrowserBackend } from '@sentry/browser/dist/backend';
-import { BaseBackend, getCurrentHub } from '@sentry/core';
-import { Event, EventHint, Severity } from '@sentry/types';
-import { forget, getGlobalObject, logger, SyncPromise } from '@sentry/utils';
+import { BaseBackend, NoopTransport } from '@sentry/core';
+import { Event, EventHint, Severity, Transport } from '@sentry/types';
+import { forget, getGlobalObject, SyncPromise } from '@sentry/utils';
 
-const PLUGIN_NAME = 'Sentry';
+import { CordovaTransport } from './transports/cordova';
+import { NATIVE } from './wrapper';
 
 /**
  * Configuration options for the Sentry Cordova SDK.
@@ -31,7 +32,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
 
     if (this._isCordova() && _options.enableNative !== false) {
       this._deviceReadyCallback = () => {
-        this._runNativeInstall();
+        this._startOnNative();
       };
       getGlobalObject<Window>().document.addEventListener('deviceready', this._deviceReadyCallback);
     }
@@ -55,77 +56,35 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   /**
    * @inheritDoc
    */
-  public sendEvent(event: Event): void {
-    this._nativeCall('sendEvent', event).catch(e => {
-      logger.warn(e);
-      this._browserBackend.sendEvent(event);
-    });
+  protected _setupTransport(): Transport {
+    if (!this._options.dsn) {
+      // We return the noop transport here in case there is no Dsn.
+      return new NoopTransport();
+    }
+
+    const transportOptions = {
+      ...this._options.transportOptions,
+      dsn: this._options.dsn,
+    };
+
+    if (this._options.transport) {
+      return new this._options.transport(transportOptions);
+    }
+
+    // @ts-ignore TODO: Need new JS version bump that uses PromiseLike instead of Promise otherwise this will error
+    return new CordovaTransport(transportOptions);
   }
 
   // CORDOVA --------------------
-  /**
-   * Uses exec to call cordova functions
-   * @param action name of the action
-   * @param args Arguments
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async _nativeCall(action: string, ...args: any[]): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new Promise<any>((resolve, reject) => {
-      if (this._options.enableNative === false) {
-        reject('enableNative = false, using browser transport');
-        return;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const _window = getGlobalObject<any>();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const exec = _window && _window.Cordova && _window.Cordova.exec;
-      if (!exec) {
-        reject('Cordova.exec not available');
-      } else {
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          _window.Cordova.exec(resolve, reject, PLUGIN_NAME, action, args);
-        } catch (e) {
-          reject('Cordova.exec not available');
-        }
-      }
-    });
-  }
 
   /**
    * Calling into native install function
    */
-  private _runNativeInstall(): void {
+  private _startOnNative(): void {
     if (this._deviceReadyCallback) {
       getGlobalObject<Window>().document.removeEventListener('deviceready', this._deviceReadyCallback);
-      if (this._options.dsn && this._options.enabled !== false) {
-        forget(this._nativeCall('install', this._options.dsn, this._options));
-      }
-      /* eslint-disable  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
-      const scope = getCurrentHub().getScope();
-      if (scope) {
-        scope.addScopeListener(internalScope => {
-          this._nativeCall('setExtraContext', (internalScope as any)._extra).catch(() => {
-            // We do nothing since scope is handled and attached to the event.
-            // This only applies to android.
-          });
-          this._nativeCall('setTagsContext', (internalScope as any)._tags).catch(() => {
-            // We do nothing since scope is handled and attached to the event.
-            // This only applies to android.
-          });
-          this._nativeCall('setUserContext', (internalScope as any)._user).catch(() => {
-            // We do nothing since scope is handled and attached to the event.
-            // This only applies to android.
-          });
-          this._nativeCall('addBreadcrumb', (internalScope as any)._breadcrumbs.pop()).catch(() => {
-            // We do nothing since scope is handled and attached to the event.
-            // This only applies to android.
-          });
-        });
-      }
-      /* eslint-enable  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
+
+      forget(NATIVE.startWithOptions(this._options));
     }
   }
 

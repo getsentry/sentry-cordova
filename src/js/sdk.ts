@@ -10,10 +10,13 @@ import { Cordova, Release } from './integrations';
 /**
  * Inits the SDK
  */
-export function init(options: CordovaOptions): void {
-  if (options.defaultIntegrations === undefined) {
-    options.defaultIntegrations = [...defaultIntegrations, new Cordova(), new Release()];
-  }
+export function init(_options: CordovaOptions): void {
+  const options = {
+    enableNative: true,
+    defaultIntegrations: [...defaultIntegrations, new Cordova(), new Release()],
+    ..._options,
+  };
+
   initAndBind(CordovaClient, options);
 }
 

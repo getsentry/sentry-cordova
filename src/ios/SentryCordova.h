@@ -3,7 +3,7 @@
 @interface SentryCordova : CDVPlugin {
 }
 
-- (void)install:(CDVInvokedUrlCommand *)command;
+- (void)startWithOptions:(CDVInvokedUrlCommand *)command;
 - (void)sendEvent:(CDVInvokedUrlCommand *)command;
 - (void)addBreadcrumb:(CDVInvokedUrlCommand *)command;
 - (void)setUserContext:(CDVInvokedUrlCommand *)command;

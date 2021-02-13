@@ -26,6 +26,7 @@
   "dependencies": {
     "@sentry/browser": "6.1.0",
     "@sentry/core": "6.1.0",
+    "@sentry/hub": "6.1.0",
     "@sentry/minimal": "6.1.0",
     "@sentry/types": "6.1.0",
     "@sentry/utils": "6.1.0",
