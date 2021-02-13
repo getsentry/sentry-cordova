@@ -201,7 +201,7 @@ export const NATIVE = {
 
   _NativeClientError: new SentryError('Native Client is not available.'),
 
-  enableNative: false,
+  enableNative: true,
   _nativeInitialized: false,
 
   /** Current platform that the SDK is running on, if detectable. Always `unknown` if `enableNative` = false */
