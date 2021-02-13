@@ -31,7 +31,10 @@ export class CordovaTransport implements Transport {
   // @ts-ignore TODO: Need new JS version bump that uses PromiseLike instead of Promise otherwise this will error
   public sendEvent(event: Event): PromiseLike<Response> {
     // @ts-ignore TODO: For temporary debug purposes, DONT FORGET TO REMOVE!
-    event.tags['isNativeTransportAvailable'] = `${NATIVE.isNativeTransportAvailable()}`;
+    event.tags = {
+      ...(event.tags ?? {}),
+      isNativeTransportAvailable: `${NATIVE.isNativeTransportAvailable()}`,
+    };
 
     if (NATIVE.isNativeTransportAvailable()) {
       if (!this._buffer.isReady()) {
