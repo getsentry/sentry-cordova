@@ -29,7 +29,7 @@
     "@sentry/minimal": "6.1.0",
     "@sentry/types": "6.1.0",
     "@sentry/utils": "6.1.0",
-    "@sentry/wizard": "^1.0.0"
+    "@sentry/wizard": "^1.1.4"
   },
   "devDependencies": {
     "@sentry-internal/eslint-config-sdk": "6.1.0",
