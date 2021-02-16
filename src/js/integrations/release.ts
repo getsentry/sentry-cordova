@@ -2,7 +2,7 @@ import { addGlobalEventProcessor, getCurrentHub } from '@sentry/core';
 import { Event, Integration } from '@sentry/types';
 import { getGlobalObject } from '@sentry/utils';
 
-/** Default Breadcrumbs instrumentations */
+/** Default Release instrumentation */
 export class Release implements Integration {
   /**
    * @inheritDoc
@@ -24,15 +24,27 @@ export class Release implements Integration {
         return event;
       }
 
+      const options = getCurrentHub()
+        .getClient()
+        ?.getOptions();
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const window: any = getGlobalObject<any>();
-      // __sentry_release & __sentry_dist will be picked up by our native integration.
-      // It should live in extra, native will pic it up there and set it in the event.
-      if (event.extra && event.extra.__sentry_release && !event.release) {
+
+      /*
+        __sentry_release and __sentry_dist is set by the user with setRelease and setDist. If this is used then this is the strongest.
+        Otherwise we check for the release and dist in the options passed on init, as this is stronger than the release/dist from the native build.
+      */
+      if (typeof event.extra?.__sentry_release === 'string') {
         event.release = `${event.extra.__sentry_release}`;
+      } else if (typeof options?.release === 'string') {
+        event.release = options.release;
       }
-      if (event.extra && event.extra.__sentry_dist && !event.dist) {
+
+      if (typeof event.extra?.__sentry_dist === 'string') {
         event.dist = `${event.extra.__sentry_dist}`;
+      } else if (typeof options?.dist === 'string') {
+        event.dist = options.dist;
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
