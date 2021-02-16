@@ -47,7 +47,11 @@ export const NATIVE = {
 
         return true;
       })
-      .catch(() => false);
+      .catch(() => {
+        this._nativeInitialized = false;
+
+        return false;
+      });
   },
 
   /**
