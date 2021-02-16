@@ -2,7 +2,7 @@ import { BrowserOptions } from '@sentry/browser';
 import { BrowserBackend } from '@sentry/browser/dist/backend';
 import { BaseBackend, NoopTransport } from '@sentry/core';
 import { Event, EventHint, Severity, Transport } from '@sentry/types';
-import { forget, getGlobalObject, SyncPromise } from '@sentry/utils';
+import { forget, getGlobalObject } from '@sentry/utils';
 
 import { CordovaTransport } from './transports/cordova';
 import { NATIVE } from './wrapper';
@@ -41,15 +41,14 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   /**
    * @inheritDoc
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-  public eventFromException(exception: any, hint?: EventHint): SyncPromise<Event> {
+  public eventFromException(exception: unknown, hint?: EventHint): PromiseLike<Event> {
     return this._browserBackend.eventFromException(exception, hint);
   }
 
   /**
    * @inheritDoc
    */
-  public eventFromMessage(message: string, level: Severity = Severity.Info, hint?: EventHint): SyncPromise<Event> {
+  public eventFromMessage(message: string, level: Severity = Severity.Info, hint?: EventHint): PromiseLike<Event> {
     return this._browserBackend.eventFromMessage(message, level, hint);
   }
 
@@ -71,7 +70,6 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
       return new this._options.transport(transportOptions);
     }
 
-    // @ts-ignore TODO: Need new JS version bump that uses PromiseLike instead of Promise otherwise this will error
     return new CordovaTransport(transportOptions);
   }
 

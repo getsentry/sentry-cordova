@@ -28,7 +28,6 @@ export class CordovaTransport implements Transport {
   /**
    * @inheritDoc
    */
-  // @ts-ignore TODO: Need new JS version bump that uses PromiseLike instead of Promise otherwise this will error
   public sendEvent(event: Event): PromiseLike<Response> {
     if (NATIVE.isNativeTransportAvailable()) {
       if (!this._buffer.isReady()) {
@@ -43,7 +42,6 @@ export class CordovaTransport implements Transport {
   /**
    * @inheritDoc
    */
-  // @ts-ignore TODO: Need new JS version bump that uses PromiseLike instead of Promise otherwise this will error
   public close(timeout?: number): PromiseLike<boolean> {
     return Promise.all([this._buffer.drain(timeout), this._fallbackTransport.close()]).then(responses =>
       responses.every(response => response)
