@@ -25,25 +25,26 @@ public class SentryCordova extends CordovaPlugin {
   }
 
   public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
-    switch(action) {
-      case "startWithOptions":
-        JSONObject jsonOptions = args.getJSONObject(0);
+      switch(action) {
+        case "startWithOptions":
+          JSONObject jsonOptions = args.getJSONObject(0);
+          
+          String dsn = jsonOptions.getString("dsn");
 
-        SentryAndroid.init(this.cordova.getActivity().getApplicationContext(), options -> {
-          options.setDsn(jsonOptions.getString("dsn"));
-        });
-        // We need to return false here to not create the captureBreadcrumb hook
-        callbackContext.sendPluginResult(new PluginResult(Status.OK, false));
-        break;
-      case "getPlatform":
-        callbackContext.sendPluginResult(new PluginResult(Status.OK, "android"));
-        break;
-      default:
-        callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
-        break;
-    }
+          SentryAndroid.init(this.cordova.getActivity().getApplicationContext(), options -> {
+            options.setDsn(dsn);
+          });
 
-    return true;
+          callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+          break;
+        case "getPlatform":
+          callbackContext.sendPluginResult(new PluginResult(Status.OK, "android"));
+          break;
+        default:
+          callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
+          break;
+      }
+
+      return true;
   }
-
 }
