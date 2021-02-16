@@ -1,14 +1,17 @@
 #import <Cordova/CDVPlugin.h>
 
-@interface SentryCordova : CDVPlugin {
+@interface SentryCordova : CDVPlugin
+{
 }
 
 - (void)startWithOptions:(CDVInvokedUrlCommand *)command;
-- (void)sendEvent:(CDVInvokedUrlCommand *)command;
+- (void)captureEnvelope:(CDVInvokedUrlCommand *)command;
 - (void)addBreadcrumb:(CDVInvokedUrlCommand *)command;
-- (void)setUserContext:(CDVInvokedUrlCommand *)command;
-- (void)setTagsContext:(CDVInvokedUrlCommand *)command;
-- (void)setExtraContext:(CDVInvokedUrlCommand *)command;
-- (void)clearContext:(CDVInvokedUrlCommand *)command;
+- (void)clearBreadcrumbs:(CDVInvokedUrlCommand *)command;
+- (void)setUser:(CDVInvokedUrlCommand *)command;
+- (void)setExtra:(CDVInvokedUrlCommand *)command;
+- (void)setContext:(CDVInvokedUrlCommand *)command;
+- (void)setTag:(CDVInvokedUrlCommand *)command;
+- (void)crash:(CDVInvokedUrlCommand *)command;
 
 @end

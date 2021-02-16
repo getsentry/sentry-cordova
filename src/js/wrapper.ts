@@ -1,10 +1,10 @@
 /* eslint-disable max-lines */
-import { getCurrentHub } from '@sentry/hub';
-import { Event, Response, Severity } from '@sentry/types';
+import { Breadcrumb, Event, Response, User } from '@sentry/types';
 import { getGlobalObject, logger, SentryError } from '@sentry/utils';
 
 import { CordovaOptions } from './backend';
 import { CordovaDevicePlatform } from './types';
+import { processLevel, serializeObject } from './utils';
 
 /**
  * Our internal interface for calling native functions
@@ -41,8 +41,6 @@ export const NATIVE = {
 
     return this._nativeCall('startWithOptions', filteredOptions)
       .then(() => {
-        this._setupScopeListeners();
-
         this._nativeInitialized = true;
 
         return true;
@@ -66,7 +64,7 @@ export const NATIVE = {
     }
 
     // Process and convert deprecated levels
-    event.level = event.level ? this._processLevel(event.level) : undefined;
+    event.level = event.level ? processLevel(event.level) : undefined;
 
     const header = {
       event_id: event.event_id,
@@ -123,50 +121,169 @@ export const NATIVE = {
   },
 
   /**
-   * Setups scope listeners
-   * Note: This only works on iOS.
-   * TODO: Update this to be an extended scope like on React Native
+   * Sets the user in the native scope.
+   * Passing null clears the user.
+   * @param key string
+   * @param value string
    */
-  _setupScopeListeners(): void {
-    /* eslint-disable  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
-    const scope = getCurrentHub().getScope();
-    if (scope) {
-      scope.addScopeListener(internalScope => {
-        this._nativeCall('setExtraContext', (internalScope as any)._extra).catch(() => {
-          // We do nothing since scope is handled and attached to the event.
-          // This only applies to android.
-        });
-        this._nativeCall('setTagsContext', (internalScope as any)._tags).catch(() => {
-          // We do nothing since scope is handled and attached to the event.
-          // This only applies to android.
-        });
-        this._nativeCall('setUserContext', (internalScope as any)._user).catch(() => {
-          // We do nothing since scope is handled and attached to the event.
-          // This only applies to android.
-        });
-        this._nativeCall('addBreadcrumb', (internalScope as any)._breadcrumbs.pop()).catch(() => {
-          // We do nothing since scope is handled and attached to the event.
-          // This only applies to android.
-        });
-      });
+  setUser(user: User | null): void {
+    if (!this.enableNative) {
+      return;
     }
-    /* eslint-enable  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
+    if (!this.isNativeClientAvailable()) {
+      throw this._NativeClientError;
+    }
+    if (this.platform === CordovaDevicePlatform.Android) {
+      // Not available on Android yet.
+      return;
+    }
+
+    // separate and serialze all non-default user keys.
+    let defaultUserKeys = null;
+    let otherUserKeys = null;
+    if (user) {
+      const { id, ip_address, email, username, ...otherKeys } = user;
+      defaultUserKeys = serializeObject({
+        email,
+        id,
+        ip_address,
+        username,
+      });
+      otherUserKeys = serializeObject(otherKeys);
+    }
+
+    void this._nativeCall('setUser', defaultUserKeys, otherUserKeys);
   },
 
   /**
-   * Convert js severity level which has critical and log to more widely supported levels.
-   * @param level
-   * @returns More widely supported Severity level strings
+   * Sets a tag in the native module.
+   * @param key string
+   * @param value string
    */
-  _processLevel(level: Severity): Severity {
-    if (level === Severity.Critical) {
-      return Severity.Fatal;
+  setTag(key: string, value: string): void {
+    if (!this.enableNative) {
+      return;
     }
-    if (level === Severity.Log) {
-      return Severity.Debug;
+    if (!this.isNativeClientAvailable()) {
+      throw this._NativeClientError;
+    }
+    if (this.platform === CordovaDevicePlatform.Android) {
+      // Not available on Android yet.
+      return;
     }
 
-    return level;
+    const stringifiedValue = typeof value === 'string' ? value : JSON.stringify(value);
+
+    void this._nativeCall('setTag', key, stringifiedValue);
+  },
+
+  /**
+   * Sets an extra in the native scope, will stringify
+   * extra value if it isn't already a string.
+   * @param key string
+   * @param extra any
+   */
+  setExtra(key: string, extra: unknown): void {
+    if (!this.enableNative) {
+      return;
+    }
+    if (!this.isNativeClientAvailable()) {
+      throw this._NativeClientError;
+    }
+    if (this.platform === CordovaDevicePlatform.Android) {
+      // Not available on Android yet.
+      return;
+    }
+
+    // we stringify the extra as native only takes in strings.
+    const stringifiedExtra = typeof extra === 'string' ? extra : JSON.stringify(extra);
+
+    void this._nativeCall('setExtra', key, stringifiedExtra);
+  },
+
+  /**
+   * Adds breadcrumb to the native scope.
+   * @param breadcrumb Breadcrumb
+   */
+  addBreadcrumb(breadcrumb: Breadcrumb): void {
+    if (!this.enableNative) {
+      return;
+    }
+    if (!this.isNativeClientAvailable()) {
+      throw this._NativeClientError;
+    }
+    if (this.platform === CordovaDevicePlatform.Android) {
+      // Not available on Android yet.
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    void this._nativeCall('addBreadcrumb', {
+      ...breadcrumb,
+      // Process and convert deprecated levels
+      level: breadcrumb.level ? processLevel(breadcrumb.level) : undefined,
+      data: breadcrumb.data ? serializeObject(breadcrumb.data) : undefined,
+    });
+  },
+
+  /**
+   * Clears breadcrumbs on the native scope.
+   */
+  clearBreadcrumbs(): void {
+    if (!this.enableNative) {
+      return;
+    }
+    if (!this.isNativeClientAvailable()) {
+      throw this._NativeClientError;
+    }
+    if (this.platform === CordovaDevicePlatform.Android) {
+      // Not available on Android yet.
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    void this._nativeCall('clearBreadcrumbs');
+  },
+
+  /**
+   * Sets context on the native scope. Not implemented in Android yet.
+   * @param key string
+   * @param context key-value map
+   */
+  setContext(key: string, context: { [key: string]: unknown } | null): void {
+    if (!this.enableNative) {
+      return;
+    }
+    if (!this.isNativeClientAvailable()) {
+      throw this._NativeClientError;
+    }
+    if (this.platform === CordovaDevicePlatform.Android) {
+      // Not available on Android yet.
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    void this._nativeCall('setContext', key, context !== null ? serializeObject(context) : null);
+  },
+
+  /**
+   * Triggers a native crash.
+   * Use this only for testing purposes.
+   */
+  crash(): void {
+    if (!this.enableNative) {
+      return;
+    }
+    if (!this.isNativeClientAvailable()) {
+      throw this._NativeClientError;
+    }
+    if (this.platform === CordovaDevicePlatform.Android) {
+      // Not available on Android yet.
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    void this._nativeCall('crash');
   },
 
   /**
