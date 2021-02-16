@@ -35,7 +35,10 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
         if (error != nil) {
             NSLog(@"%@", error);
             result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsBool:NO];
+        } else {
+          [SentrySDK startWithOptionsObject:sentryOptions];
         }
+
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }
