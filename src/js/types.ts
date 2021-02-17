@@ -1,5 +1,5 @@
-export enum CordovaDevicePlatform {
+export enum CordovaPlatformType {
   Ios = 'ios',
   Android = 'android',
-  Unknown = 'unknown',
+  Browser = 'browser',
 }

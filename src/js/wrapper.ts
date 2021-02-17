@@ -3,53 +3,70 @@ import { Breadcrumb, Event, Response, User } from '@sentry/types';
 import { getGlobalObject, logger, SentryError } from '@sentry/utils';
 
 import { CordovaOptions } from './backend';
-import { CordovaDevicePlatform } from './types';
-import { processLevel, serializeObject } from './utils';
+import { CordovaPlatformType } from './types';
+import { getPlatform, processLevel, serializeObject } from './utils';
 
 /**
  * Our internal interface for calling native functions
  */
 export const NATIVE = {
   PLUGIN_NAME: 'Sentry',
-  SUPPORTS_NATIVE_TRANSPORT: [CordovaDevicePlatform.Ios],
+  SUPPORTS_NATIVE_TRANSPORT: [CordovaPlatformType.Ios],
+  SUPPORTS_NATIVE_SCOPE_SYNC: [CordovaPlatformType.Ios],
+  SUPPORTS_NATIVE_SDK: [CordovaPlatformType.Android, CordovaPlatformType.Ios],
   /**
    * Starts native with the provided options.
    * @param options CordovaOptions
    */
   async startWithOptions(_options: CordovaOptions): Promise<boolean> {
-    const options = {
-      enableNative: true,
-      ..._options,
-    };
+    if (this.SUPPORTS_NATIVE_SDK.includes(getPlatform())) {
+      const options = {
+        enableNative: true,
+        ..._options,
+      };
 
-    this.enableNative = options.enableNative;
+      this.enableNative = options.enableNative;
 
-    if (!options.enableNative) {
-      return false;
-    }
-    if (!options.dsn) {
-      logger.warn(
-        'Warning: No DSN was provided. The Sentry SDK will be disabled. Native SDK will also not be initialized.'
-      );
-      return false;
-    }
-
-    // filter out all the options that would crash native.
-    /* eslint-disable @typescript-eslint/unbound-method,@typescript-eslint/no-unused-vars */
-    const { beforeSend, beforeBreadcrumb, integrations, defaultIntegrations, transport, ...filteredOptions } = options;
-    /* eslint-enable @typescript-eslint/unbound-method,@typescript-eslint/no-unused-vars */
-
-    return this._nativeCall('startWithOptions', filteredOptions)
-      .then(() => {
-        this._nativeInitialized = true;
-
-        return true;
-      })
-      .catch(() => {
-        this._nativeInitialized = false;
-
+      if (!options.enableNative) {
         return false;
-      });
+      }
+      if (!options.dsn) {
+        logger.warn(
+          'Warning: No DSN was provided. The Sentry SDK will be disabled. Native SDK will also not be initialized.'
+        );
+        return false;
+      }
+
+      // filter out all the options that would crash native.
+      /* eslint-disable @typescript-eslint/unbound-method,@typescript-eslint/no-unused-vars */
+      const {
+        beforeSend,
+        beforeBreadcrumb,
+        integrations,
+        defaultIntegrations,
+        transport,
+        ...filteredOptions
+      } = options;
+      /* eslint-enable @typescript-eslint/unbound-method,@typescript-eslint/no-unused-vars */
+
+      return this._nativeCall('startWithOptions', filteredOptions)
+        .then(() => {
+          this._nativeInitialized = true;
+
+          return true;
+        })
+        .catch(() => {
+          this._nativeInitialized = false;
+
+          logger.warn('Warning: Native SDK was not initialized.');
+
+          return false;
+        });
+    }
+
+    this._nativeInitialized = false;
+
+    return false;
   },
 
   /**
@@ -61,6 +78,9 @@ export const NATIVE = {
 
     if (!this.isNativeClientAvailable()) {
       throw this._NativeClientError;
+    }
+    if (!this.isNativeTransportAvailable()) {
+      throw this._NativeTransportError;
     }
 
     // Process and convert deprecated levels
@@ -127,14 +147,7 @@ export const NATIVE = {
    * @param value string
    */
   setUser(user: User | null): void {
-    if (!this.enableNative) {
-      return;
-    }
-    if (!this.isNativeClientAvailable()) {
-      throw this._NativeClientError;
-    }
-    if (this.platform === CordovaDevicePlatform.Android) {
-      // Not available on Android yet.
+    if (!this.isNativeScopeSyncAvailable()) {
       return;
     }
 
@@ -161,14 +174,7 @@ export const NATIVE = {
    * @param value string
    */
   setTag(key: string, value: string): void {
-    if (!this.enableNative) {
-      return;
-    }
-    if (!this.isNativeClientAvailable()) {
-      throw this._NativeClientError;
-    }
-    if (this.platform === CordovaDevicePlatform.Android) {
-      // Not available on Android yet.
+    if (!this.isNativeScopeSyncAvailable()) {
       return;
     }
 
@@ -184,17 +190,9 @@ export const NATIVE = {
    * @param extra any
    */
   setExtra(key: string, extra: unknown): void {
-    if (!this.enableNative) {
+    if (!this.isNativeScopeSyncAvailable()) {
       return;
     }
-    if (!this.isNativeClientAvailable()) {
-      throw this._NativeClientError;
-    }
-    if (this.platform === CordovaDevicePlatform.Android) {
-      // Not available on Android yet.
-      return;
-    }
-
     // we stringify the extra as native only takes in strings.
     const stringifiedExtra = typeof extra === 'string' ? extra : JSON.stringify(extra);
 
@@ -206,14 +204,7 @@ export const NATIVE = {
    * @param breadcrumb Breadcrumb
    */
   addBreadcrumb(breadcrumb: Breadcrumb): void {
-    if (!this.enableNative) {
-      return;
-    }
-    if (!this.isNativeClientAvailable()) {
-      throw this._NativeClientError;
-    }
-    if (this.platform === CordovaDevicePlatform.Android) {
-      // Not available on Android yet.
+    if (!this.isNativeScopeSyncAvailable()) {
       return;
     }
 
@@ -230,14 +221,7 @@ export const NATIVE = {
    * Clears breadcrumbs on the native scope.
    */
   clearBreadcrumbs(): void {
-    if (!this.enableNative) {
-      return;
-    }
-    if (!this.isNativeClientAvailable()) {
-      throw this._NativeClientError;
-    }
-    if (this.platform === CordovaDevicePlatform.Android) {
-      // Not available on Android yet.
+    if (!this.isNativeScopeSyncAvailable()) {
       return;
     }
 
@@ -251,14 +235,7 @@ export const NATIVE = {
    * @param context key-value map
    */
   setContext(key: string, context: { [key: string]: unknown } | null): void {
-    if (!this.enableNative) {
-      return;
-    }
-    if (!this.isNativeClientAvailable()) {
-      throw this._NativeClientError;
-    }
-    if (this.platform === CordovaDevicePlatform.Android) {
-      // Not available on Android yet.
+    if (!this.isNativeScopeSyncAvailable()) {
       return;
     }
 
@@ -277,10 +254,6 @@ export const NATIVE = {
     if (!this.isNativeClientAvailable()) {
       throw this._NativeClientError;
     }
-    if (this.platform === CordovaDevicePlatform.Android) {
-      // Not available on Android yet.
-      return;
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     void this._nativeCall('crash');
@@ -294,39 +267,25 @@ export const NATIVE = {
   },
 
   /**
-   * Returns whether the native transport is available. Only returns true after `getPlatform` has been called.
+   * Returns whether the native transport is available.
    */
   isNativeTransportAvailable(): boolean {
-    return this._didGetPlatform && this.SUPPORTS_NATIVE_TRANSPORT.includes(this.platform);
+    return this.isNativeClientAvailable() && this.SUPPORTS_NATIVE_TRANSPORT.includes(getPlatform());
   },
 
   /**
-   * Tries to get the platform if known, otherwise is 'unknown'.
-   * Cordova does not have a global method of getting the current platform like React Native, so we need to implement this ourselves.
+   * Returns whether native bridge supports scope sync.
    */
-  async getPlatform(): Promise<CordovaDevicePlatform> {
-    this.platform = CordovaDevicePlatform.Unknown;
-
-    try {
-      if (this.enableNative) {
-        this.platform = await this._nativeCall('getPlatform');
-      }
-    } catch (e) {
-      // Do nothing
-    }
-
-    this._didGetPlatform = true;
-
-    return this.platform;
+  isNativeScopeSyncAvailable(): boolean {
+    return this.isNativeClientAvailable() && this.SUPPORTS_NATIVE_SCOPE_SYNC.includes(getPlatform());
   },
 
   _NativeClientError: new SentryError('Native Client is not available.'),
+  _NativeTransportError: new SentryError('Native Transport is not available.'),
 
   enableNative: true,
   _nativeInitialized: false,
 
-  /** Current platform that the SDK is running on, if detectable. Always `unknown` if `enableNative` = false */
-  platform: CordovaDevicePlatform.Unknown,
   /** true if `getPlatform` has been called */
   _didGetPlatform: false,
 };

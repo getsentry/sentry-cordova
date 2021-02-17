@@ -11,16 +11,6 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
   NSLog(@"Sentry Cordova Plugin initialized");
 }
 
-- (void)getPlatform:(CDVInvokedUrlCommand *)command {
-  CDVPluginResult *pluginResult =
-      [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                        messageAsString:@"ios"];
-  ;
-
-  [self.commandDelegate sendPluginResult:pluginResult
-                              callbackId:command.callbackId];
-}
-
 - (void)startWithOptions:(CDVInvokedUrlCommand *)command {
   NSDictionary *options = [command.arguments objectAtIndex:0];
 

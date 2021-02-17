@@ -11,16 +11,22 @@ declare global {
   };
 }
 
-const setupExecGlobal = (): void => {
+const setupGlobals = (): void => {
   // @ts-ignore Global
   global.Cordova = {
     exec: jest.fn(resolve => resolve()),
   };
+
+  // @ts-ignore Global
+  global.cordova = {
+    platformId: 'ios',
+  };
 };
 
 beforeEach(() => {
-  setupExecGlobal();
+  setupGlobals();
 
+  NATIVE._nativeInitialized = false;
   NATIVE.enableNative = true;
 });
 
@@ -60,10 +66,24 @@ describe('Tests Native Wrapper', () => {
 
       expect(global.Cordova.exec).not.toBeCalled();
     });
+
+    test('does not call native module on browser platform', async () => {
+      global.cordova.platformId = 'browser';
+
+      await NATIVE.startWithOptions({
+        dsn: 'test',
+        enableNative: true,
+      });
+
+      expect(global.Cordova.exec).not.toBeCalled();
+    });
   });
 
   describe('crash', () => {
     test('calls the native crash', () => {
+      NATIVE.enableNative = true;
+      NATIVE._nativeInitialized = true;
+
       NATIVE.crash();
 
       expect(global.Cordova.exec).toBeCalledWith(
@@ -78,6 +98,8 @@ describe('Tests Native Wrapper', () => {
 
   describe('setUser', () => {
     test('serializes all user object keys', async () => {
+      NATIVE._nativeInitialized = true;
+
       NATIVE.setUser({
         email: 'hello@sentry.io',
         // @ts-ignore Intentional incorrect type to simulate using a double as an id (We had a user open an issue because this didn't work before)
@@ -103,6 +125,8 @@ describe('Tests Native Wrapper', () => {
     });
 
     test('Calls native setUser with empty object as second param if no unique keys', async () => {
+      NATIVE._nativeInitialized = true;
+
       NATIVE.setUser({
         id: 'Hello',
       });
