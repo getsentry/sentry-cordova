@@ -6,7 +6,7 @@
     <h1>Official Sentry SDK for Cordova (Ionic, ...)</h1>
 </p>
 
-[![Travis](https://img.shields.io/travis/getsentry/sentry-cordova.svg?maxAge=2592000)](https://travis-ci.org/getsentry/sentry-cordova)
+[![build](https://github.com/getsentry/sentry-cordova/workflows/Build%20&%20Test/badge.svg?branch=main)](https://github.com/getsentry/sentry-cordova/actions?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/getsentry/sentry-cordova/branch/master/graph/badge.svg)](https://codecov.io/gh/getsentry/sentry-cordova)
 [![npm version](https://img.shields.io/npm/v/sentry-cordova.svg)](https://www.npmjs.com/package/sentry-cordova)
 [![npm dm](https://img.shields.io/npm/dm/sentry-cordova.svg)](https://www.npmjs.com/package/sentry-cordova)
