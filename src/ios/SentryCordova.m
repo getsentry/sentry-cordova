@@ -22,35 +22,31 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 }
 
 - (void)startWithOptions:(CDVInvokedUrlCommand *)command {
-  [self.commandDelegate runInBackground:^{
-    NSDictionary *options = [command.arguments objectAtIndex:0];
+  NSDictionary *options = [command.arguments objectAtIndex:0];
 
-    SentryBeforeSendEventCallback beforeSend =
-        ^SentryEvent *(SentryEvent *event) {
-      [self setReleaseVersionDist:event];
-      return event;
-    };
-    [options setValue:beforeSend forKey:@"beforeSend"];
+  SentryBeforeSendEventCallback beforeSend =
+      ^SentryEvent *(SentryEvent *event) {
+    [self setReleaseVersionDist:event];
+    return event;
+  };
+  [options setValue:beforeSend forKey:@"beforeSend"];
 
-    NSError *error = nil;
+  NSError *error = nil;
 
-    SentryOptions *sentryOptions = [[SentryOptions alloc] initWithDict:options
-                                                      didFailWithError:&error];
+  SentryOptions *sentryOptions = [[SentryOptions alloc] initWithDict:options
+                                                    didFailWithError:&error];
 
-    CDVPluginResult *result =
-        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                            messageAsBool:YES];
-    if (error != nil) {
-      NSLog(@"%@", error);
-      result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
-                                   messageAsBool:NO];
-    } else {
-      [SentrySDK startWithOptionsObject:sentryOptions];
-    }
+  CDVPluginResult *result =
+      [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+  if (error != nil) {
+    NSLog(@"%@", error);
+    result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                 messageAsBool:NO];
+  } else {
+    [SentrySDK startWithOptionsObject:sentryOptions];
+  }
 
-    [self.commandDelegate sendPluginResult:result
-                                callbackId:command.callbackId];
-  }];
+  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
 - (void)setReleaseVersionDist:(SentryEvent *)event {
