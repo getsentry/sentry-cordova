@@ -1,19 +1,27 @@
 import { defaultIntegrations } from '@sentry/browser';
-import { initAndBind } from '@sentry/core';
+import { Hub, initAndBind, makeMain } from '@sentry/core';
 import { configureScope } from '@sentry/minimal';
 import { Scope } from '@sentry/types';
 
 import { CordovaOptions } from './backend';
 import { CordovaClient } from './client';
 import { Cordova, Release } from './integrations';
+import { CordovaScope } from './scope';
 
 /**
  * Inits the SDK
  */
-export function init(options: CordovaOptions): void {
-  if (options.defaultIntegrations === undefined) {
-    options.defaultIntegrations = [...defaultIntegrations, new Cordova(), new Release()];
-  }
+export function init(_options: CordovaOptions): void {
+  const options = {
+    enableNative: true,
+    defaultIntegrations: [...defaultIntegrations, new Cordova(), new Release()],
+    ..._options,
+  };
+
+  // Initialize a new hub using our scope with native sync
+  const cordovaHub = new Hub(undefined, new CordovaScope());
+  makeMain(cordovaHub);
+
   initAndBind(CordovaClient, options);
 }
 

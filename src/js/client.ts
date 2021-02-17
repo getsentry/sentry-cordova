@@ -1,6 +1,5 @@
 import { BaseClient, Scope } from '@sentry/core';
 import { Event, EventHint } from '@sentry/types';
-import { SyncPromise } from '@sentry/utils';
 
 import { CordovaBackend, CordovaOptions } from './backend';
 import { SDK_NAME, SDK_VERSION } from './version';
@@ -23,7 +22,7 @@ export class CordovaClient extends BaseClient<CordovaBackend, CordovaOptions> {
   /**
    * @inheritDoc
    */
-  protected _prepareEvent(event: Event, scope?: Scope, hint?: EventHint): SyncPromise<Event | null> {
+  protected _prepareEvent(event: Event, scope?: Scope, hint?: EventHint): PromiseLike<Event | null> {
     event.platform = event.platform || 'javascript';
     event.sdk = {
       ...event.sdk,
