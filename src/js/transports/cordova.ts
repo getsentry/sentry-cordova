@@ -1,6 +1,6 @@
 import { FetchTransport, XHRTransport } from '@sentry/browser/dist/transports';
 import { Event, Response, Transport, TransportOptions } from '@sentry/types';
-import { logger, PromiseBuffer, SentryError, supportsFetch } from '@sentry/utils';
+import { PromiseBuffer, SentryError, supportsFetch } from '@sentry/utils';
 
 import { NATIVE } from '../wrapper';
 
@@ -21,8 +21,6 @@ export class CordovaTransport implements Transport {
     } else {
       this._fallbackTransport = new XHRTransport(options);
     }
-
-    void this._checkNative();
   }
 
   /**
@@ -43,21 +41,8 @@ export class CordovaTransport implements Transport {
    * @inheritDoc
    */
   public close(timeout?: number): PromiseLike<boolean> {
-    return Promise.all([this._buffer.drain(timeout), this._fallbackTransport.close()]).then(responses =>
-      responses.every(response => response)
+    return Promise.all([this._buffer.drain(timeout), this._fallbackTransport.close()]).then(
+      ([bufferDrained, fallbackClosed]) => bufferDrained && fallbackClosed
     );
-  }
-
-  /**
-   * Checks the platform to determine whether native transport is available.
-   */
-  private async _checkNative(): Promise<void> {
-    await NATIVE.getPlatform();
-
-    if (NATIVE.isNativeTransportAvailable()) {
-      logger.log(`Native Transport is available, using Native Transport.`);
-    } else {
-      logger.log(`Native Transport is not available, using Browser Transport.`);
-    }
   }
 }

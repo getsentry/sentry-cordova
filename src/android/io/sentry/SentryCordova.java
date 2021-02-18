@@ -37,9 +37,6 @@ public class SentryCordova extends CordovaPlugin {
 
           callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
           break;
-        case "getPlatform":
-          callbackContext.sendPluginResult(new PluginResult(Status.OK, "android"));
-          break;
         default:
           callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
           break;
