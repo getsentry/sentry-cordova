@@ -1,14 +1,14 @@
 const replace = require('replace-in-file');
 const newVersion = process.argv[2];
 
-if (!newVersion || !newVersion.match(/^\d+\.\d+\.\d+$/)) {
+if (!newVersion || !newVersion.match(/\d+\.\d+.\d+(?:-\w+(?:\.\w+)?)?/)) {
   console.log(`Invalid version: ${newVersion}`);
   process.exit(1);
 }
 
 replace({
   files: ['./src/ios/SentryCordova.m', './src/js/version.ts'],
-  from: /\d+\.\d+.\d+/g,
+  from: /\d+\.\d+.\d+(?:-\w+(?:\.\w+)?)?/g,
   to: newVersion,
 })
   .then(changedFiles => {
