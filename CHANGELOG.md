@@ -1,10 +1,13 @@
 # Changelog
 
+## v1.0.0-rc.0
+
 - build(internal): Switch to eslint
 - build(android): Bump Android SDK to v4.1.0 (#187)
 - feat: Add global error handler wrapper method for Ionic (#190)
 - build(ios): Bump sentry-cocoa to 6.1.4 (#194)
 - feat: Add Native Wrapper and Cordova Transport (#194)
+- fix: Fix all errors from platforms without native module such as browser (#199)
 
 ## v0.17.0
 
