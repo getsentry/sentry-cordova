@@ -3,6 +3,10 @@ github:
   owner: getsentry
   repo: sentry-cordova
 changelogPolicy: simple
+statusProvider:
+  name: github
+artifactProvider:
+  name: github
 preReleaseCommand: bash scripts/craft-pre-release.sh
 targets:
   - name: npm
