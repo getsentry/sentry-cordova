@@ -1,7 +1,12 @@
 package io.sentry;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import android.util.Log;
@@ -34,17 +39,46 @@ public class SentryCordova extends CordovaPlugin {
     Log.d(TAG, "Initializing Sentry");
   }
 
-  public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
-    switch (action) {
-    case "startWithOptions":
-      JSONObject jsonOptions = args.getJSONObject(0);
+  public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) {
+    // Special case for crash
+    if (action.equals("crash")) {
+      crash();
+    }
 
-      startWithOptions(jsonOptions, callbackContext);
+    try {
+      switch (action) {
+      case "startWithOptions":
+        JSONObject jsonOptions = args.getJSONObject(0);
 
-      break;
-    default:
-      callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
-      break;
+        startWithOptions(jsonOptions, callbackContext);
+
+        break;
+      case "captureEnvelope":
+        String envelope = args.getString(0);
+
+        captureEnvelope(envelope, callbackContext);
+
+        break;
+      case "getStringBytesLength":
+        String payload = args.getString(0);
+
+        int length = getStringBytesLength(payload);
+
+        callbackContext.sendPluginResult(new PluginResult(Status.OK, length));
+
+        break;
+      default:
+        callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
+        break;
+      }
+    } catch (Exception e) {
+      if (e instanceof JSONException) {
+        logger.info("Error parsing JSON from native bridge");
+      }
+
+      callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
+
+      return false;
     }
 
     return true;
@@ -53,11 +87,60 @@ public class SentryCordova extends CordovaPlugin {
   private void startWithOptions(final JSONObject jsonOptions, final CallbackContext callbackContext) {
     SentryAndroid.init(this.cordova.getActivity().getApplicationContext(), options -> {
       try {
-        withJsonOptions(jsonOptions, options);
+        if (jsonOptions.has("dsn") && jsonOptions.getString("dsn") != null) {
+          String dsn = jsonOptions.getString("dsn");
+          logger.info(String.format("Starting with DSN: '%s'", dsn));
+          options.setDsn(dsn);
+        } else {
+          // SentryAndroid needs an empty string fallback for the dsn.
+          options.setDsn("");
+        }
+        if (jsonOptions.has("debug") && jsonOptions.getBoolean("debug")) {
+          options.setDebug(true);
+        }
+        if (jsonOptions.has("maxBreadcrumbs")) {
+          options.setMaxBreadcrumbs(jsonOptions.getInt("maxBreadcrumbs"));
+        }
+        if (jsonOptions.has("environment") && jsonOptions.getString("environment") != null) {
+          options.setEnvironment(jsonOptions.getString("environment"));
+        }
+        if (jsonOptions.has("release") && jsonOptions.getString("release") != null) {
+          options.setRelease(jsonOptions.getString("release"));
+        }
+        if (jsonOptions.has("dist") && jsonOptions.getString("dist") != null) {
+          options.setDist(jsonOptions.getString("dist"));
+        }
+        if (jsonOptions.has("enableAutoSessionTracking")) {
+          options.setEnableSessionTracking(jsonOptions.getBoolean("enableAutoSessionTracking"));
+        }
+        if (jsonOptions.has("sessionTrackingIntervalMillis")) {
+          options.setSessionTrackingIntervalMillis(jsonOptions.getInt("sessionTrackingIntervalMillis"));
+        }
+        if (jsonOptions.has("enableNdkScopeSync")) {
+          options.setEnableScopeSync(jsonOptions.getBoolean("enableNdkScopeSync"));
+        }
+        if (jsonOptions.has("attachStacktrace")) {
+          options.setAttachStacktrace(jsonOptions.getBoolean("attachStacktrace"));
+        }
+        if (jsonOptions.has("attachThreads")) {
+          // JS use top level stacktraces and android attaches Threads which
+          // hides them so by default we hide.
+          options.setAttachThreads(jsonOptions.getBoolean("attachThreads"));
+        }
+
+        if (jsonOptions.has("enableNativeCrashHandling") && !jsonOptions.getBoolean("enableNativeCrashHandling")) {
+          final List<Integration> integrations = options.getIntegrations();
+          for (final Integration integration : integrations) {
+            if (integration instanceof UncaughtExceptionHandlerIntegration || integration instanceof AnrIntegration || integration instanceof NdkIntegration) {
+              integrations.remove(integration);
+            }
+          }
+        }
+
         logger.info(String.format("Native Integrations '%s'", options.getIntegrations().toString()));
         sentryOptions = options;
       } catch (JSONException e) {
-        logger.error("Error parsing options JSON sent over native bridge.");
+        logger.info("Error parsing options JSON sent over native bridge.");
         callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
       }
     });
@@ -65,55 +148,21 @@ public class SentryCordova extends CordovaPlugin {
     callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
   }
 
-  private void withJsonOptions(final JSONObject jsonOptions, SentryOptions options) throws JSONException {
-    if (jsonOptions.has("dsn") && jsonOptions.getString("dsn") != null) {
-      String dsn = jsonOptions.getString("dsn");
-      logger.info(String.format("Starting with DSN: '%s'", dsn));
-      options.setDsn(dsn);
-    } else {
-      // SentryAndroid needs an empty string fallback for the dsn.
-      options.setDsn("");
-    }
-    if (jsonOptions.has("debug") && jsonOptions.getBoolean("debug")) {
-      options.setDebug(true);
-    }
-    if (jsonOptions.has("maxBreadcrumbs")) {
-      options.setMaxBreadcrumbs(jsonOptions.getInt("maxBreadcrumbs"));
-    }
-    if (jsonOptions.has("environment") && jsonOptions.getString("environment") != null) {
-      options.setEnvironment(jsonOptions.getString("environment"));
-    }
-    if (jsonOptions.has("release") && jsonOptions.getString("release") != null) {
-      options.setRelease(jsonOptions.getString("release"));
-    }
-    if (jsonOptions.has("dist") && jsonOptions.getString("dist") != null) {
-      options.setDist(jsonOptions.getString("dist"));
-    }
-    if (jsonOptions.has("enableAutoSessionTracking")) {
-      options.setEnableSessionTracking(jsonOptions.getBoolean("enableAutoSessionTracking"));
-    }
-    if (jsonOptions.has("sessionTrackingIntervalMillis")) {
-      options.setSessionTrackingIntervalMillis(jsonOptions.getInt("sessionTrackingIntervalMillis"));
-    }
-    if (jsonOptions.has("enableNdkScopeSync")) {
-      options.setEnableScopeSync(jsonOptions.getBoolean("enableNdkScopeSync"));
-    }
-    if (jsonOptions.has("attachStacktrace")) {
-      options.setAttachStacktrace(jsonOptions.getBoolean("attachStacktrace"));
-    }
-    if (jsonOptions.has("attachThreads")) {
-      // JS use top level stacktraces and android attaches Threads which
-      // hides them so by default we hide.
-      options.setAttachThreads(jsonOptions.getBoolean("attachThreads"));
+  private void captureEnvelope(String envelope, final CallbackContext callbackContext) {
+    try {
+      File installation = new File(sentryOptions.getOutboxPath(), UUID.randomUUID().toString());
+      try (FileOutputStream out = new FileOutputStream(installation)) {
+        out.write(envelope.getBytes(Charset.forName("UTF-8")));
+      }
+    } catch (Exception e) {
+      logger.info("Error reading envelope");
+      callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
     }
 
-    if (jsonOptions.has("enableNativeCrashHandling") && !jsonOptions.getBoolean("enableNativeCrashHandling")) {
-      final List<Integration> integrations = options.getIntegrations();
-      for (final Integration integration : integrations) {
-        if (integration instanceof UncaughtExceptionHandlerIntegration || integration instanceof AnrIntegration || integration instanceof NdkIntegration) {
-          integrations.remove(integration);
-        }
-      }
-    }
+    callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
   }
+
+  private int getStringBytesLength(String payload) throws UnsupportedEncodingException { return payload.getBytes("UTF-8").length; }
+
+  private void crash() { throw new RuntimeException("TEST - Sentry Client Crash (only works in release mode)"); }
 }

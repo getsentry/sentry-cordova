@@ -11,7 +11,7 @@ import { getPlatform, processLevel, serializeObject } from './utils';
  */
 export const NATIVE = {
   PLUGIN_NAME: 'Sentry',
-  SUPPORTS_NATIVE_TRANSPORT: [CordovaPlatformType.Ios],
+  SUPPORTS_NATIVE_TRANSPORT: [CordovaPlatformType.Ios, CordovaPlatformType.Android],
   SUPPORTS_NATIVE_SCOPE_SYNC: [CordovaPlatformType.Ios],
   SUPPORTS_NATIVE_SDK: [CordovaPlatformType.Android, CordovaPlatformType.Ios],
   /**
@@ -74,8 +74,6 @@ export const NATIVE = {
    * @param event Event
    */
   async sendEvent(event: Event): Promise<Response> {
-    // TODO: Android version, currently Android uses browser's transport.
-
     if (!this.isNativeClientAvailable()) {
       throw this._NativeClientError;
     }
@@ -98,11 +96,34 @@ export const NATIVE = {
       },
     };
 
+    if (getPlatform() === CordovaPlatformType.Android) {
+      const headerString = JSON.stringify(header);
+
+      const payloadString = JSON.stringify(payload);
+      let length = payloadString.length;
+      try {
+        length = await this._nativeCall('getStringBytesLength', payloadString);
+      } catch {
+        // The native call failed, we do nothing, we have payload.length as a fallback
+      }
+
+      const item = {
+        content_type: 'application/json',
+        length,
+        type: payload.type ?? 'event',
+      };
+
+      const itemString = JSON.stringify(item);
+
+      const envelopeString = `${headerString}\n${itemString}\n${payloadString}`;
+
+      return this._nativeCall('captureEnvelope', envelopeString);
+    }
+
     // Serialize and remove any instances that will crash the native bridge such as Spans
     const serializedPayload = JSON.parse(JSON.stringify(payload));
 
     // The envelope item is created (and its length determined) on the iOS side of the native bridge.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     return this._nativeCall('captureEnvelope', {
       header,
       payload: serializedPayload,
