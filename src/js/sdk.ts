@@ -7,6 +7,7 @@ import { CordovaOptions } from './backend';
 import { CordovaClient } from './client';
 import { Cordova, Release } from './integrations';
 import { CordovaScope } from './scope';
+import { NATIVE } from './wrapper';
 
 /**
  * Inits the SDK
@@ -41,4 +42,14 @@ export function setDist(dist: string): void {
   configureScope((scope: Scope) => {
     scope.setExtra('__sentry_dist', dist);
   });
+}
+
+/**
+ * If native client is available it will trigger a native crash.
+ * Use this only for testing purposes.
+ */
+export function nativeCrash(): void {
+  if (NATIVE.isNativeClientAvailable()) {
+    NATIVE.crash();
+  }
 }

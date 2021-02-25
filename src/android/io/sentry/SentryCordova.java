@@ -43,6 +43,7 @@ public class SentryCordova extends CordovaPlugin {
     // Special case for crash
     if (action.equals("crash")) {
       crash();
+      return true;
     }
 
     try {
