@@ -12,7 +12,7 @@ import { getPlatform, processLevel, serializeObject } from './utils';
 export const NATIVE = {
   PLUGIN_NAME: 'Sentry',
   SUPPORTS_NATIVE_TRANSPORT: [CordovaPlatformType.Ios, CordovaPlatformType.Android],
-  SUPPORTS_NATIVE_SCOPE_SYNC: [CordovaPlatformType.Ios],
+  SUPPORTS_NATIVE_SCOPE_SYNC: [CordovaPlatformType.Ios, CordovaPlatformType.Android],
   SUPPORTS_NATIVE_SDK: [CordovaPlatformType.Android, CordovaPlatformType.Ios],
   /**
    * Starts native with the provided options.

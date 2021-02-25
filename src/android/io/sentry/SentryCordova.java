@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -22,6 +23,7 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.PluginResult.Status;
 
+import io.sentry.Sentry;
 import io.sentry.UncaughtExceptionHandlerIntegration;
 import io.sentry.android.core.AnrIntegration;
 import io.sentry.android.core.NdkIntegration;
@@ -60,6 +62,12 @@ public class SentryCordova extends CordovaPlugin {
         captureEnvelope(envelope, callbackContext);
 
         break;
+      case "addBreadcrumb":
+        JSONObject jsonBreadcrumb = args.getJSONObject(0);
+
+        addBreadcrumb(jsonBreadcrumb, callbackContext);
+
+        break;
       case "getStringBytesLength":
         String payload = args.getString(0);
 
@@ -69,7 +77,7 @@ public class SentryCordova extends CordovaPlugin {
 
         break;
       default:
-        callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
+        // callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
         break;
       }
     } catch (Exception e) {
@@ -163,7 +171,64 @@ public class SentryCordova extends CordovaPlugin {
     callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
   }
 
+  private void addBreadcrumb(final JSONObject jsonBreadcrumb, final CallbackContext callbackContext) {
+    Sentry.configureScope(scope -> {
+      try {
+        Breadcrumb breadcrumb = new Breadcrumb();
+
+        if (jsonBreadcrumb.has("message")) {
+          breadcrumb.setMessage(jsonBreadcrumb.getString("message"));
+        }
+
+        if (jsonBreadcrumb.has("type")) {
+          breadcrumb.setType(jsonBreadcrumb.getString("type"));
+        }
+
+        if (jsonBreadcrumb.has("category")) {
+          breadcrumb.setCategory(jsonBreadcrumb.getString("category"));
+        }
+
+        if (jsonBreadcrumb.has("level")) {
+          breadcrumb.setLevel(getSentryLevelFromString(jsonBreadcrumb.getString("level")));
+        }
+
+        if (jsonBreadcrumb.has("data")) {
+          JSONObject data = jsonBreadcrumb.getJSONObject("data");
+          Iterator<String> it = data.keys();
+          while (it.hasNext()) {
+            String key = it.next();
+            String value = data.getString(key);
+
+            breadcrumb.setData(key, value);
+          }
+        }
+
+        scope.addBreadcrumb(breadcrumb);
+        logger.info("Send breadcrumb successful");
+      } catch (JSONException e) {
+        logger.info("Error deserializing breadcrumb");
+      }
+    });
+  }
+
   private int getStringBytesLength(String payload) throws UnsupportedEncodingException { return payload.getBytes("UTF-8").length; }
 
-  private void crash() { throw new RuntimeException("TEST - Sentry Client Crash (only works in release mode)"); }
+  private SentryLevel getSentryLevelFromString(String level) {
+    switch (level) {
+    case "fatal":
+      return SentryLevel.FATAL;
+    case "warning":
+      return SentryLevel.WARNING;
+    case "info":
+      return SentryLevel.INFO;
+    case "debug":
+      return SentryLevel.DEBUG;
+    case "error":
+      return SentryLevel.ERROR;
+    default:
+      return SentryLevel.ERROR;
+    }
+  }
+
+  private void crash() { Sentry.captureException(new RuntimeException("TEST - Sentry Client Crash (only works in release mode)")); }
 }
