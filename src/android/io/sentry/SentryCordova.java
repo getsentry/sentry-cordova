@@ -68,6 +68,9 @@ public class SentryCordova extends CordovaPlugin {
         addBreadcrumb(jsonBreadcrumb, callbackContext);
 
         break;
+      case "clearBreadcrumbs":
+        clearBreadcrumbs(callbackContext);
+        break;
       case "getStringBytesLength":
         String payload = args.getString(0);
 
@@ -209,6 +212,11 @@ public class SentryCordova extends CordovaPlugin {
         logger.info("Error deserializing breadcrumb");
       }
     });
+  }
+
+  private void clearBreadcrumbs(final CallbackContext callbackContext) {
+    Sentry.configureScope(scope -> { scope.clearBreadcrumbs(); });
+    callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
   }
 
   private int getStringBytesLength(String payload) throws UnsupportedEncodingException { return payload.getBytes("UTF-8").length; }
