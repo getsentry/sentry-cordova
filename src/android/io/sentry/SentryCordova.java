@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,7 @@ import io.sentry.UncaughtExceptionHandlerIntegration;
 import io.sentry.android.core.AnrIntegration;
 import io.sentry.android.core.NdkIntegration;
 import io.sentry.android.core.SentryAndroid;
+import io.sentry.protocol.User;
 
 public class SentryCordova extends CordovaPlugin {
   private static final String TAG = "Sentry";
@@ -60,6 +62,13 @@ public class SentryCordova extends CordovaPlugin {
         String envelope = args.getString(0);
 
         captureEnvelope(envelope, callbackContext);
+
+        break;
+      case "setUser":
+        JSONObject jsonUser = args.getJSONObject(0);
+        JSONObject otherUserKeys = args.getJSONObject(1);
+
+        setUser(jsonUser, otherUserKeys, callbackContext);
 
         break;
       case "addBreadcrumb":
@@ -170,6 +179,55 @@ public class SentryCordova extends CordovaPlugin {
       logger.info("Error reading envelope");
       callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
     }
+
+    callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+  }
+
+  private void setUser(final JSONObject jsonUser, final JSONObject otherUserKeys, final CallbackContext callbackContext) {
+    Sentry.configureScope(scope -> {
+      try {
+        if (jsonUser == null && otherUserKeys == null) {
+          scope.setUser(null);
+        } else {
+          User userInstance = new User();
+
+          if (jsonUser != null) {
+            if (jsonUser.has("email")) {
+              userInstance.setEmail(jsonUser.getString("email"));
+            }
+
+            if (jsonUser.has("id")) {
+              userInstance.setId(jsonUser.getString("id"));
+            }
+
+            if (jsonUser.has("username")) {
+              userInstance.setUsername(jsonUser.getString("username"));
+            }
+
+            if (jsonUser.has("ip_address")) {
+              userInstance.setIpAddress(jsonUser.getString("ip_address"));
+            }
+          }
+
+          if (otherUserKeys != null) {
+            HashMap<String, String> otherUserKeysMap = new HashMap<String, String>();
+            Iterator<String> it = otherUserKeys.keys();
+            while (it.hasNext()) {
+              String key = it.next();
+              String value = otherUserKeys.getString(key);
+
+              otherUserKeysMap.put(key, value);
+            }
+
+            userInstance.setOthers(otherUserKeysMap);
+          }
+
+          scope.setUser(userInstance);
+        }
+      } catch (JSONException e) {
+        logger.info("Error deserializing user");
+      }
+    });
 
     callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
   }
