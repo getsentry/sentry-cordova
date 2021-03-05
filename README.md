@@ -6,15 +6,13 @@
     <h1>Official Sentry SDK for Cordova (Ionic, ...)</h1>
 </p>
 
+_Bad software is everywhere, and we're tired of it. Sentry is on a mission to help developers write better software faster, so we can get back to enjoying technology. If you want to join us [<kbd>**Check out our open positions**</kbd>](https://sentry.io/careers/)_
+
 [![build](https://github.com/getsentry/sentry-cordova/workflows/Build%20&%20Test/badge.svg?branch=main)](https://github.com/getsentry/sentry-cordova/actions?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/getsentry/sentry-cordova/branch/master/graph/badge.svg)](https://codecov.io/gh/getsentry/sentry-cordova)
 [![npm version](https://img.shields.io/npm/v/sentry-cordova.svg)](https://www.npmjs.com/package/sentry-cordova)
 [![npm dm](https://img.shields.io/npm/dm/sentry-cordova.svg)](https://www.npmjs.com/package/sentry-cordova)
 [![npm dt](https://img.shields.io/npm/dt/sentry-cordova.svg)](https://www.npmjs.com/package/sentry-cordova)
-
-[![deps](https://david-dm.org/getsentry/sentry-cordova/status.svg)](https://david-dm.org/getsentry/sentry-cordova?view=list)
-[![deps dev](https://david-dm.org/getsentry/sentry-cordova/dev-status.svg)](https://david-dm.org/getsentry/sentry-cordova?type=dev&view=list)
-[![deps peer](https://david-dm.org/getsentry/sentry-cordova/peer-status.svg)](https://david-dm.org/getsentry/sentry-cordova?type=peer&view=list)
 
 **This is a beta release**
 
