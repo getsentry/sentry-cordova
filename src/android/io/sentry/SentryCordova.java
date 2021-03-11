@@ -98,7 +98,10 @@ public class SentryCordova extends CordovaPlugin {
         break;
       case "setContext":
         String contextKey = args.getString(0);
-        JSONObject contextObject = args.getJSONObject(1);
+        JSONObject contextObject = null;
+        if (!args.isNull(1)) {
+          contextObject = args.getJSONObject(1);
+        }
 
         setContext(contextKey, contextObject, callbackContext);
 
