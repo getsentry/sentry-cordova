@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -95,6 +96,13 @@ public class SentryCordova extends CordovaPlugin {
         setTag(tagKey, tag, callbackContext);
 
         break;
+      case "setContext":
+        String contextKey = args.getString(0);
+        JSONObject contextObject = args.getJSONObject(1);
+
+        setContext(contextKey, contextObject, callbackContext);
+
+        break;
       case "setExtra":
         String extraKey = args.getString(0);
         String extra = args.getString(1);
@@ -103,13 +111,17 @@ public class SentryCordova extends CordovaPlugin {
 
         break;
       default:
-        // callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
+        callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
         break;
       }
+
+    } catch (JSONException e) {
+      logger.info("Error parsing JSON from native bridge");
+
+      callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
+
+      return false;
     } catch (Exception e) {
-      if (e instanceof JSONException) {
-        logger.info("Error parsing JSON from native bridge");
-      }
 
       callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
 
@@ -303,6 +315,26 @@ public class SentryCordova extends CordovaPlugin {
     callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
   }
 
+  public void setContext(String contextKey, JSONObject jsonContext, final CallbackContext callbackContext) throws JSONException {
+    if (jsonContext == null) {
+      Sentry.configureScope(scope -> { scope.removeContexts(contextKey); });
+    } else {
+      final Map<String, String> contextMap = new HashMap<>();
+
+      Iterator<String> it = jsonContext.keys();
+      while (it.hasNext()) {
+        String key = it.next();
+        String value = jsonContext.getString(key);
+
+        contextMap.put(key, value);
+      }
+
+      Sentry.configureScope(scope -> { scope.setContexts(contextKey, contextMap); });
+    }
+
+    callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+  }
+
   private int getStringBytesLength(String payload) throws UnsupportedEncodingException { return payload.getBytes("UTF-8").length; }
 
   private SentryLevel getSentryLevelFromString(String level) {
@@ -322,5 +354,5 @@ public class SentryCordova extends CordovaPlugin {
     }
   }
 
-  private void crash() { Sentry.captureException(new RuntimeException("TEST - Sentry Client Crash (only works in release mode)")); }
+  private void crash() { Sentry.captureException(new RuntimeException("TEST - Sentry Silent Client Crash")); }
 }
