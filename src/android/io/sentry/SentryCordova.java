@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.util.Log;
@@ -126,12 +127,13 @@ public class SentryCordova extends CordovaPlugin {
       }
 
     } catch (JSONException e) {
-      logger.info("Error parsing JSON from native bridge");
+      logger.log(Level.SEVERE, "Error parsing JSON from native bridge");
 
       callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
 
       return false;
     } catch (Exception e) {
+      logger.log(Level.SEVERE, "Error occurred on native bridge: ", e);
 
       callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
 
