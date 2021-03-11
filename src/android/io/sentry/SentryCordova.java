@@ -66,8 +66,15 @@ public class SentryCordova extends CordovaPlugin {
 
         break;
       case "setUser":
-        JSONObject jsonUser = args.getJSONObject(0);
-        JSONObject otherUserKeys = args.getJSONObject(1);
+        JSONObject jsonUser = null;
+        JSONObject otherUserKeys = null;
+
+        if (!args.isNull(0)) {
+          jsonUser = args.getJSONObject(0);
+        }
+        if (!args.isNull(1)) {
+          otherUserKeys = args.getJSONObject(1);
+        }
 
         setUser(jsonUser, otherUserKeys, callbackContext);
 
