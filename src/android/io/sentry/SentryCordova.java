@@ -88,6 +88,20 @@ public class SentryCordova extends CordovaPlugin {
         callbackContext.sendPluginResult(new PluginResult(Status.OK, length));
 
         break;
+      case "setTag":
+        String tagKey = args.getString(0);
+        String tag = args.getString(1);
+
+        setTag(tagKey, tag, callbackContext);
+
+        break;
+      case "setExtra":
+        String extraKey = args.getString(0);
+        String extra = args.getString(1);
+
+        setExtra(extraKey, extra, callbackContext);
+
+        break;
       default:
         // callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "not implemented"));
         break;
@@ -274,6 +288,18 @@ public class SentryCordova extends CordovaPlugin {
 
   private void clearBreadcrumbs(final CallbackContext callbackContext) {
     Sentry.configureScope(scope -> { scope.clearBreadcrumbs(); });
+    callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+  }
+
+  public void setExtra(String key, String extra, final CallbackContext callbackContext) {
+    Sentry.configureScope(scope -> { scope.setExtra(key, extra); });
+
+    callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+  }
+
+  public void setTag(String key, String value, final CallbackContext callbackContext) {
+    Sentry.configureScope(scope -> { scope.setTag(key, value); });
+
     callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
   }
 
