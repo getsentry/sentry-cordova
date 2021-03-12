@@ -46,7 +46,7 @@ public class SentryCordova extends CordovaPlugin {
   }
 
   public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) {
-    // Special case for crash
+    // Special case for crash outside the try/catch block
     if (action.equals("crash")) {
       crash();
       return true;
