@@ -144,16 +144,18 @@ public class SentryCordova extends CordovaPlugin {
   }
 
   private void startWithOptions(final JSONObject jsonOptions, final CallbackContext callbackContext) {
+    String dsn = jsonOptions.optString("dsn", null);
+
+    if (dsn == null) {
+      logger.log(Level.SEVERE, "No DSN passed through native bridge, native Android SDK will not start.");
+
+      callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "Missing dsn"));
+    } else {
     SentryAndroid.init(this.cordova.getActivity().getApplicationContext(), options -> {
       try {
-        if (jsonOptions.has("dsn") && jsonOptions.getString("dsn") != null) {
-          String dsn = jsonOptions.getString("dsn");
           logger.info(String.format("Starting with DSN: '%s'", dsn));
           options.setDsn(dsn);
-        } else {
-          // SentryAndroid needs an empty string fallback for the dsn.
-          options.setDsn("");
-        }
+
         if (jsonOptions.has("debug") && jsonOptions.getBoolean("debug")) {
           options.setDebug(true);
         }
@@ -205,6 +207,7 @@ public class SentryCordova extends CordovaPlugin {
     });
 
     callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+  }
   }
 
   private void captureEnvelope(String envelope, final CallbackContext callbackContext) {
