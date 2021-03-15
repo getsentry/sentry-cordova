@@ -151,63 +151,60 @@ public class SentryCordova extends CordovaPlugin {
 
       callbackContext.sendPluginResult(new PluginResult(Status.ERROR, "Missing dsn"));
     } else {
-    SentryAndroid.init(this.cordova.getActivity().getApplicationContext(), options -> {
-      try {
+      SentryAndroid.init(this.cordova.getActivity().getApplicationContext(), options -> {
+        try {
           logger.info(String.format("Starting with DSN: '%s'", dsn));
           options.setDsn(dsn);
 
-        if (jsonOptions.has("debug") && jsonOptions.getBoolean("debug")) {
-          options.setDebug(true);
-        }
-        if (jsonOptions.has("maxBreadcrumbs")) {
-          options.setMaxBreadcrumbs(jsonOptions.getInt("maxBreadcrumbs"));
-        }
-        if (jsonOptions.has("environment") && jsonOptions.getString("environment") != null) {
-          options.setEnvironment(jsonOptions.getString("environment"));
-        }
-        if (jsonOptions.has("release") && jsonOptions.getString("release") != null) {
-          options.setRelease(jsonOptions.getString("release"));
-        }
-        if (jsonOptions.has("dist") && jsonOptions.getString("dist") != null) {
-          options.setDist(jsonOptions.getString("dist"));
-        }
-        if (jsonOptions.has("enableAutoSessionTracking")) {
-          options.setEnableSessionTracking(jsonOptions.getBoolean("enableAutoSessionTracking"));
-        }
-        if (jsonOptions.has("sessionTrackingIntervalMillis")) {
-          options.setSessionTrackingIntervalMillis(jsonOptions.getInt("sessionTrackingIntervalMillis"));
-        }
-        if (jsonOptions.has("enableNdkScopeSync")) {
-          options.setEnableScopeSync(jsonOptions.getBoolean("enableNdkScopeSync"));
-        }
-        if (jsonOptions.has("attachStacktrace")) {
-          options.setAttachStacktrace(jsonOptions.getBoolean("attachStacktrace"));
-        }
-        if (jsonOptions.has("attachThreads")) {
-          // JS use top level stacktraces and android attaches Threads which
-          // hides them so by default we hide.
-          options.setAttachThreads(jsonOptions.getBoolean("attachThreads"));
-        }
+          boolean debug = jsonOptions.optBoolean("debug", false);
+          options.setDebug(debug);
 
-        if (jsonOptions.has("enableNativeCrashHandling") && !jsonOptions.getBoolean("enableNativeCrashHandling")) {
-          final List<Integration> integrations = options.getIntegrations();
-          for (final Integration integration : integrations) {
-            if (integration instanceof UncaughtExceptionHandlerIntegration || integration instanceof AnrIntegration || integration instanceof NdkIntegration) {
-              integrations.remove(integration);
-            }
+          if (!jsonOptions.isNull("environment")) {
+            options.setEnvironment(jsonOptions.getString("environment"));
           }
+          if (!jsonOptions.isNull("release")) {
+            options.setRelease(jsonOptions.getString("release"));
+          }
+          if (!jsonOptions.isNull("dist")) {
+            options.setDist(jsonOptions.getString("dist"));
+          }
+          if (jsonOptions.has("maxBreadcrumbs")) {
+            options.setMaxBreadcrumbs(jsonOptions.getInt("maxBreadcrumbs"));
+          }
+          if (jsonOptions.has("enableAutoSessionTracking")) {
+            options.setEnableSessionTracking(jsonOptions.getBoolean("enableAutoSessionTracking"));
+          }
+          if (jsonOptions.has("sessionTrackingIntervalMillis")) {
+            options.setSessionTrackingIntervalMillis(jsonOptions.getInt("sessionTrackingIntervalMillis"));
+          }
+          if (jsonOptions.has("enableNdkScopeSync")) {
+            options.setEnableScopeSync(jsonOptions.getBoolean("enableNdkScopeSync"));
+          }
+          if (jsonOptions.has("attachStacktrace")) {
+            options.setAttachStacktrace(jsonOptions.getBoolean("attachStacktrace"));
+          }
+          if (jsonOptions.has("attachThreads")) {
+            // JS use top level stacktraces and android attaches Threads which
+            // hides them so by default we hide.
+            options.setAttachThreads(jsonOptions.getBoolean("attachThreads"));
+          }
+
+          boolean enableNativeCrashHandling = jsonOptions.optBoolean("enableNativeCrashHandling", true);
+          if (!enableNativeCrashHandling) {
+            options.setEnableUncaughtExceptionHandler(false);
+            options.setAnrEnabled(false);
+            options.setEnableNdk(false);
+          }
+
+          sentryOptions = options;
+        } catch (JSONException e) {
+          logger.info("Error parsing options JSON sent over native bridge.");
+          callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
         }
+      });
 
-        logger.info(String.format("Native Integrations '%s'", options.getIntegrations().toString()));
-        sentryOptions = options;
-      } catch (JSONException e) {
-        logger.info("Error parsing options JSON sent over native bridge.");
-        callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
-      }
-    });
-
-    callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
-  }
+      callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+    }
   }
 
   private void captureEnvelope(String envelope, final CallbackContext callbackContext) {
