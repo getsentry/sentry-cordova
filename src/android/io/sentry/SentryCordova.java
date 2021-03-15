@@ -208,17 +208,31 @@ public class SentryCordova extends CordovaPlugin {
   }
 
   private void captureEnvelope(String envelope, final CallbackContext callbackContext) {
-    try {
-      File installation = new File(sentryOptions.getOutboxPath(), UUID.randomUUID().toString());
-      try (FileOutputStream out = new FileOutputStream(installation)) {
-        out.write(envelope.getBytes(Charset.forName("UTF-8")));
-      }
-    } catch (Exception e) {
-      logger.info("Error reading envelope");
-      callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
+    if (envelope == null || envelope.equals("")) {
+      logger.log(Level.WARNING, "Received an envelope that was null or empty");
+    } else if (writeEnvelope(envelope)) {
+      callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+      return;
     }
 
-    callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+    callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
+  }
+
+  private boolean writeEnvelope(String envelope) {
+    String outboxPath = sentryOptions.getOutboxPath();
+
+    if (outboxPath != null || outboxPath.equals("")) {
+      File outputFile = new File(outboxPath, UUID.randomUUID().toString());
+      try (FileOutputStream out = new FileOutputStream(outputFile)) {
+        out.write(envelope.getBytes(Charset.forName("UTF-8")));
+
+        return true;
+      } catch (Exception e) {
+        logger.log(Level.WARNING, "Error reading envelope from native bridge", e);
+      }
+    }
+
+    return false;
   }
 
   private void setUser(final JSONObject jsonUser, final JSONObject otherUserKeys, final CallbackContext callbackContext) {
