@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- build(ios): Bump `sentry-cocoa` to 6.2.1
+
 ## v1.0.0-rc.0
 
 - build(internal): Switch to eslint
