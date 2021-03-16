@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- build(ios): Bump `sentry-cocoa` to 6.2.1
+- build(ios): Bump `sentry-cocoa` to 6.2.1 (#205)
 
 ## v1.0.0-rc.0
 
