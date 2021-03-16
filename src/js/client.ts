@@ -37,6 +37,12 @@ export class CordovaClient extends BaseClient<CordovaBackend, CordovaOptions> {
       version: SDK_VERSION,
     };
 
+    if (!event.tags) {
+      event.tags = {};
+    }
+    event.tags['event.origin'] = 'cordova';
+    event.tags['event.environment'] = 'javascript';
+
     return super._prepareEvent(event, scope, hint);
   }
 }
