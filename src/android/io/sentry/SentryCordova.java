@@ -198,7 +198,7 @@ public class SentryCordova extends CordovaPlugin {
 
           sentryOptions = options;
         } catch (JSONException e) {
-          logger.info("Error parsing options JSON sent over native bridge.");
+          logger.severe("Error parsing options JSON sent over native bridge.");
           callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
         }
       });
@@ -277,7 +277,7 @@ public class SentryCordova extends CordovaPlugin {
           scope.setUser(userInstance);
         }
       } catch (JSONException e) {
-        logger.info("Error deserializing user");
+        logger.warning("Error deserializing user");
       }
     });
 
@@ -319,7 +319,7 @@ public class SentryCordova extends CordovaPlugin {
         scope.addBreadcrumb(breadcrumb);
         logger.info("Send breadcrumb successful");
       } catch (JSONException e) {
-        logger.info("Error deserializing breadcrumb");
+        logger.warning("Error deserializing breadcrumb");
       }
     });
   }
