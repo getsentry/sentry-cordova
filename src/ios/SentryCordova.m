@@ -2,8 +2,6 @@
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
-NSString *const cocoaSdk = @"sentry.cocoa";
-
 @implementation SentryCordova
 
 - (void)pluginInitialize {
@@ -44,7 +42,7 @@ NSString *const cocoaSdk = @"sentry.cocoa";
     NSString *sdkName = event.sdk[@"name"];
 
     // If the event is from cordova js, it gets set there and we do not handle it here.
-    if ([sdkName isEqualToString:cocoaSdk]) {
+    if ([sdkName isEqualToString:@"sentry.cocoa"]) {
       [self setEventEnvironmentTag:event origin:@"ios" environment:@"native"];
     }
   }

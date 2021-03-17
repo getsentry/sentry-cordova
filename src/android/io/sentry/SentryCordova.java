@@ -387,18 +387,15 @@ public class SentryCordova extends CordovaPlugin {
     }
   }
 
-  private final String androidSdk = "sentry.java.android";
-  private final String nativeSdk = "sentry.native";
-
   private void setEventOriginTag(SentryEvent event) {
     SdkVersion sdk = event.getSdk();
     if (sdk != null) {
       switch (sdk.getName()) {
       // If the event is from cordova js, it gets set there and we do not handle it here.
-      case nativeSdk:
+      case "sentry.native":
         setEventEnvironmentTag(event, "android", "native");
         break;
-      case androidSdk:
+      case "sentry.java.android":
         setEventEnvironmentTag(event, "android", "java");
         break;
       default:
