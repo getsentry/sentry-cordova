@@ -182,19 +182,23 @@
   NSDictionary *user = [command.arguments objectAtIndex:0];
   NSDictionary *otherUserKeys = [command.arguments objectAtIndex:1];
 
+  bool userIsNull = (nil == user || [user isEqual:[NSNull null]]);
+  bool otherUserKeysIsNull =
+      (nil == otherUserKeys || [otherUserKeys isEqual:[NSNull null]]);
+
   [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
-    if (nil == user && nil == otherUserKeys) {
+    if (userIsNull && otherUserKeysIsNull) {
       [scope setUser:nil];
     } else {
       SentryUser *userInstance = [[SentryUser alloc] init];
 
-      if (nil != user) {
+      if (!userIsNull) {
         [userInstance setUserId:user[@"id"]];
         [userInstance setEmail:user[@"email"]];
         [userInstance setUsername:user[@"username"]];
       }
 
-      if (nil != otherUserKeys) {
+      if (!otherUserKeysIsNull) {
         [userInstance setData:otherUserKeys];
       }
 
