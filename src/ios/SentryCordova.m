@@ -52,7 +52,9 @@ NSString *const cocoaSdk = @"sentry.cocoa";
 
 - (void)setEventEnvironmentTag:(SentryEvent *)event origin:(NSString *)origin environment:(NSString *)environment {
   NSMutableDictionary *newTags = [NSMutableDictionary new];
-  [newTags addEntriesFromDictionary:event.tags];
+  if (nil != event.tags) {
+    [newTags addEntriesFromDictionary:event.tags];
+  }
   [newTags setValue:origin forKey:@"event.origin"];
   [newTags setValue:environment forKey:@"event.environment"];
   event.tags = newTags;
