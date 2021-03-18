@@ -98,36 +98,17 @@ export const NATIVE = {
 
     if (getPlatform() === CordovaPlatformType.Android) {
       const headerString = JSON.stringify(header);
-
       const payloadString = JSON.stringify(payload);
-      let length = payloadString.length;
-      try {
-        length = await this._nativeCall('getStringBytesLength', payloadString);
-      } catch {
-        // The native call failed, we do nothing, we have payload.length as a fallback
-      }
+      const payloadType = payload.type ?? 'event';
 
-      const item = {
-        content_type: 'application/json',
-        length,
-        type: payload.type ?? 'event',
-      };
-
-      const itemString = JSON.stringify(item);
-
-      const envelopeString = `${headerString}\n${itemString}\n${payloadString}`;
-
-      return this._nativeCall('captureEnvelope', envelopeString);
+      return this._nativeCall('captureEnvelope', headerString, payloadString, payloadType);
     }
 
     // Serialize and remove any instances that will crash the native bridge such as Spans
     const serializedPayload = JSON.parse(JSON.stringify(payload));
 
     // The envelope item is created (and its length determined) on the iOS side of the native bridge.
-    return this._nativeCall('captureEnvelope', {
-      header,
-      payload: serializedPayload,
-    });
+    return this._nativeCall('captureEnvelope', header, serializedPayload);
   },
 
   /**

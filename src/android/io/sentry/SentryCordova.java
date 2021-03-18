@@ -62,9 +62,21 @@ public class SentryCordova extends CordovaPlugin {
 
         break;
       case "captureEnvelope":
-        String envelope = args.getString(0);
+        String headerString = null;
+        String payloadString = null;
+        String payloadType = "event";
 
-        captureEnvelope(envelope, callbackContext);
+        if (!args.isNull(0)) {
+          headerString = args.getString(0);
+        }
+        if (!args.isNull(1)) {
+          payloadString = args.getString(1);
+        }
+        if (!args.isNull(2)) {
+          payloadType = args.getString(2);
+        }
+
+        captureEnvelope(headerString, payloadString, payloadType, callbackContext);
 
         break;
       case "setUser":
@@ -89,14 +101,6 @@ public class SentryCordova extends CordovaPlugin {
         break;
       case "clearBreadcrumbs":
         clearBreadcrumbs(callbackContext);
-        break;
-      case "getStringBytesLength":
-        String payload = args.getString(0);
-
-        int length = getStringBytesLength(payload);
-
-        callbackContext.sendPluginResult(new PluginResult(Status.OK, length));
-
         break;
       case "setTag":
         String tagKey = args.getString(0);
@@ -214,12 +218,36 @@ public class SentryCordova extends CordovaPlugin {
     }
   }
 
-  private void captureEnvelope(String envelope, final CallbackContext callbackContext) {
-    if (envelope == null || envelope.equals("")) {
+  private void captureEnvelope(String headerString, String payloadString, String payloadType, final CallbackContext callbackContext) {
+    if (headerString == null || headerString.equals("") || payloadString == null || payloadString.equals("")) {
       logger.log(Level.WARNING, "Received an envelope that was null or empty");
-    } else if (writeEnvelope(envelope)) {
-      callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
-      return;
+    } else {
+      try {
+        int payloadLength = payloadString.getBytes("UTF-8").length;
+
+        JSONObject item = new JSONObject();
+        item.put("content_type", "application/json");
+        item.put("length", payloadLength);
+        item.put("type", payloadType);
+        String itemString = item.toString();
+
+        String envelopeString = new StringBuilder()
+          .append(headerString)
+          .append("\n")
+          .append(itemString)
+          .append("\n")
+          .append(payloadString)
+          .toString();
+
+        if (writeEnvelope(envelopeString)) {
+          logger.info("Envelope write successful");
+
+          callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
+          return;
+        }
+      } catch (Exception e) {
+        logger.log(Level.SEVERE, "Error deserializing envelope from native bridge", e);
+      }
     }
 
     callbackContext.sendPluginResult(new PluginResult(Status.ERROR, false));
@@ -367,8 +395,6 @@ public class SentryCordova extends CordovaPlugin {
 
     callbackContext.sendPluginResult(new PluginResult(Status.OK, true));
   }
-
-  private int getStringBytesLength(String payload) throws UnsupportedEncodingException { return payload.getBytes("UTF-8").length; }
 
   private SentryLevel getSentryLevelFromString(String level) {
     switch (level) {

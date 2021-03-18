@@ -76,28 +76,30 @@
 }
 
 - (void)captureEnvelope:(CDVInvokedUrlCommand *)command {
-  NSDictionary *envelopeDict = [command.arguments objectAtIndex:0];
+  NSDictionary *headerDict = [command.arguments objectAtIndex:0];
+  NSDictionary *payloadDict = [command.arguments objectAtIndex:1];
+
   CDVPluginResult *result =
       [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
 
-  if ([NSJSONSerialization isValidJSONObject:envelopeDict]) {
-    SentrySdkInfo *sdkInfo =
-        [[SentrySdkInfo alloc] initWithDict:envelopeDict[@"header"]];
-    SentryId *eventId = [[SentryId alloc]
-        initWithUUIDString:envelopeDict[@"header"][@"event_id"]];
+  if ([NSJSONSerialization isValidJSONObject:headerDict] &&
+      [NSJSONSerialization isValidJSONObject:payloadDict]) {
+    SentrySdkInfo *sdkInfo = [[SentrySdkInfo alloc] initWithDict:headerDict];
+    SentryId *eventId =
+        [[SentryId alloc] initWithUUIDString:headerDict[@"event_id"]];
     SentryEnvelopeHeader *envelopeHeader =
         [[SentryEnvelopeHeader alloc] initWithId:eventId andSdkInfo:sdkInfo];
 
     NSError *error;
     NSData *envelopeItemData =
-        [NSJSONSerialization dataWithJSONObject:envelopeDict[@"payload"]
+        [NSJSONSerialization dataWithJSONObject:payloadDict
                                         options:0
                                           error:&error];
     if (nil != error) {
       result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
                                    messageAsBool:NO];
     } else {
-      NSString *itemType = envelopeDict[@"payload"][@"type"];
+      NSString *itemType = payloadDict[@"type"];
       if (itemType == nil) {
         // Default to event type.
         itemType = @"event";
@@ -118,7 +120,7 @@
 #if DEBUG
       [[SentrySDK currentHub] captureEnvelope:envelope];
 #else
-      if ([envelopeDict[@"payload"][@"level"] isEqualToString:@"fatal"]) {
+      if ([payloadDict[@"level"] isEqualToString:@"fatal"]) {
         // Storing to disk happens asynchronously with captureEnvelope
         // We need to make sure the event is written to disk before resolving
         // the promise. This could be replaced by SentrySDK.flush() when
