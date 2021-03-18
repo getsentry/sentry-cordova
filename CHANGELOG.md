@@ -6,6 +6,7 @@
 - feat(android): Add Android native bridge, full scope sync, and cached events (#202)
 - feat: Set `event.origin` and `event.environment` tags (#204)
 - fix: Support clearing user with null on iOS native bridge (#207)
+- fix(ios): Handle auto session tracking start on iOS (#206)
 
 ## v1.0.0-rc.0
 
