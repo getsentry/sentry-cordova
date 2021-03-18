@@ -17,6 +17,23 @@ export interface CordovaOptions extends BrowserOptions {
    * Defaults to `true`.
    */
   enableNative?: boolean;
+
+  /**
+   * Should sessions be tracked to Sentry Health or not.
+   * Defaults to `true`.
+   *
+   * NOTE: Currently only supported on Android and iOS. Browser not yet supported.
+   */
+  enableAutoSessionTracking?: boolean;
+
+  /** The interval to end a session if the App goes to the background. */
+  sessionTrackingIntervalMillis?: number;
+
+  /** Enable scope sync from Java to NDK on Android */
+  enableNdkScopeSync?: boolean;
+
+  /** When enabled, all the threads are automatically attached to all logged events on Android */
+  attachThreads?: boolean;
 }
 
 /** The Sentry Cordova SDK Backend. */
@@ -26,7 +43,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   private readonly _deviceReadyCallback?: () => void;
 
   /** Creates a new cordova backend instance. */
-  public constructor(protected readonly _options: CordovaOptions = {}) {
+  public constructor(protected readonly _options: CordovaOptions) {
     super(_options);
     this._browserBackend = new BrowserBackend(_options);
 
