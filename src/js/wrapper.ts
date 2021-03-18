@@ -18,8 +18,13 @@ export const NATIVE = {
    * Starts native with the provided options.
    * @param options CordovaOptions
    */
-  async startWithOptions(options: CordovaOptions): Promise<boolean> {
+  async startWithOptions(_options: CordovaOptions): Promise<boolean> {
     if (this.SUPPORTS_NATIVE_SDK.includes(getPlatform())) {
+      const options = {
+        enableNative: true,
+        ..._options,
+      };
+
       this.enableNative = options.enableNative;
 
       if (!options.enableNative) {

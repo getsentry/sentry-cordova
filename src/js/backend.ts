@@ -16,7 +16,7 @@ export interface CordovaOptions extends BrowserOptions {
    * Enables crash reporting for native crashes.
    * Defaults to `true`.
    */
-  enableNative: boolean;
+  enableNative?: boolean;
 
   /**
    * Should sessions be tracked to Sentry Health or not.
@@ -24,16 +24,16 @@ export interface CordovaOptions extends BrowserOptions {
    *
    * NOTE: Currently only supported on Android and iOS. Browser not yet supported.
    */
-  enableAutoSessionTracking: boolean;
+  enableAutoSessionTracking?: boolean;
 
   /** The interval to end a session if the App goes to the background. */
   sessionTrackingIntervalMillis?: number;
 
   /** Enable scope sync from Java to NDK on Android */
-  enableNdkScopeSync: boolean;
+  enableNdkScopeSync?: boolean;
 
   /** When enabled, all the threads are automatically attached to all logged events on Android */
-  attachThreads: boolean;
+  attachThreads?: boolean;
 }
 
 /** The Sentry Cordova SDK Backend. */
