@@ -1,4 +1,4 @@
-import { defaultIntegrations } from '@sentry/browser';
+import { defaultIntegrations as defaultBrowserIntegrations } from '@sentry/browser';
 import { Hub, initAndBind, makeMain } from '@sentry/core';
 import { configureScope } from '@sentry/minimal';
 import { Scope } from '@sentry/types';
@@ -9,13 +9,22 @@ import { Cordova, Release } from './integrations';
 import { CordovaScope } from './scope';
 import { NATIVE } from './wrapper';
 
+const DEFAULT_INTEGRATIONS = [...defaultBrowserIntegrations, new Cordova(), new Release()];
+
+const DEFAULT_OPTIONS: CordovaOptions = {
+  enableNative: true,
+  defaultIntegrations: DEFAULT_INTEGRATIONS,
+  enableAutoSessionTracking: true,
+  enableNdkScopeSync: false,
+  attachThreads: false,
+};
+
 /**
  * Inits the SDK
  */
-export function init(_options: CordovaOptions): void {
+export function init(_options: Partial<CordovaOptions>): void {
   const options = {
-    enableNative: true,
-    defaultIntegrations: [...defaultIntegrations, new Cordova(), new Release()],
+    ...DEFAULT_OPTIONS,
     ..._options,
   };
 
