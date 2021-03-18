@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.0.0-rc.1
+
 - build(ios): Bump `sentry-cocoa` to 6.2.1 (#205)
 - feat(android): Add Android native bridge, full scope sync, and cached events (#202)
 - feat: Set `event.origin` and `event.environment` tags (#204)
