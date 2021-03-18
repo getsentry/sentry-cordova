@@ -2,7 +2,9 @@
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
-@implementation SentryCordova
+@implementation SentryCordova {
+  bool sentHybridSdkDidBecomeActive;
+}
 
 - (void)pluginInitialize {
   NSLog(@"Sentry Cordova Plugin initialized");
@@ -32,6 +34,19 @@
                                  messageAsBool:NO];
   } else {
     [SentrySDK startWithOptionsObject:sentryOptions];
+
+    // If the app is active/in foreground, and we have not sent the
+    // SentryHybridSdkDidBecomeActive notification, send it.
+    if ([[UIApplication sharedApplication] applicationState] ==
+            UIApplicationStateActive &&
+        !sentHybridSdkDidBecomeActive &&
+        sentryOptions.enableAutoSessionTracking) {
+      [[NSNotificationCenter defaultCenter]
+          postNotificationName:@"SentryHybridSdkDidBecomeActive"
+                        object:nil];
+
+      sentHybridSdkDidBecomeActive = true;
+    }
   }
 
   [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
