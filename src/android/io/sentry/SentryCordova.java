@@ -31,6 +31,7 @@ import io.sentry.UncaughtExceptionHandlerIntegration;
 import io.sentry.android.core.AnrIntegration;
 import io.sentry.android.core.NdkIntegration;
 import io.sentry.android.core.SentryAndroid;
+import io.sentry.protocol.SdkVersion;
 import io.sentry.protocol.User;
 
 public class SentryCordova extends CordovaPlugin {
@@ -195,6 +196,12 @@ public class SentryCordova extends CordovaPlugin {
             options.setAnrEnabled(false);
             options.setEnableNdk(false);
           }
+
+          options.setBeforeSend((event, hint) -> {
+            setEventOriginTag(event);
+
+            return event;
+          });
 
           sentryOptions = options;
         } catch (JSONException e) {
@@ -378,6 +385,28 @@ public class SentryCordova extends CordovaPlugin {
     default:
       return SentryLevel.ERROR;
     }
+  }
+
+  private void setEventOriginTag(SentryEvent event) {
+    SdkVersion sdk = event.getSdk();
+    if (sdk != null) {
+      switch (sdk.getName()) {
+      // If the event is from cordova js, it gets set there and we do not handle it here.
+      case "sentry.native":
+        setEventEnvironmentTag(event, "android", "native");
+        break;
+      case "sentry.java.android":
+        setEventEnvironmentTag(event, "android", "java");
+        break;
+      default:
+        break;
+      }
+    }
+  }
+
+  private void setEventEnvironmentTag(SentryEvent event, String origin, String environment) {
+    event.setTag("event.origin", origin);
+    event.setTag("event.environment", environment);
   }
 
   private void crash() { Sentry.captureException(new RuntimeException("TEST - Sentry Silent Client Crash")); }

@@ -2,9 +2,6 @@
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
-NSString *const SentryCordovaVersionString = @"1.0.0-rc.0";
-NSString *const SentryCordovaSdkName = @"sentry-cordova";
-
 @implementation SentryCordova
 
 - (void)pluginInitialize {
@@ -14,9 +11,10 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
 - (void)startWithOptions:(CDVInvokedUrlCommand *)command {
   NSDictionary *options = [command.arguments objectAtIndex:0];
 
-  SentryBeforeSendEventCallback beforeSend =
-      ^SentryEvent *(SentryEvent *event) {
+  SentryBeforeSendEventCallback beforeSend = ^SentryEvent *(SentryEvent *event) {
     [self setReleaseVersionDist:event];
+    [self setEventOriginTag:event];
+
     return event;
   };
   [options setValue:beforeSend forKey:@"beforeSend"];
@@ -39,6 +37,27 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
   [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
+- (void)setEventOriginTag:(SentryEvent *)event {
+  if (event.sdk != nil) {
+    NSString *sdkName = event.sdk[@"name"];
+
+    // If the event is from cordova js, it gets set there and we do not handle it here.
+    if ([sdkName isEqualToString:@"sentry.cocoa"]) {
+      [self setEventEnvironmentTag:event origin:@"ios" environment:@"native"];
+    }
+  }
+}
+
+- (void)setEventEnvironmentTag:(SentryEvent *)event origin:(NSString *)origin environment:(NSString *)environment {
+  NSMutableDictionary *newTags = [NSMutableDictionary new];
+  if (nil != event.tags) {
+    [newTags addEntriesFromDictionary:event.tags];
+  }
+  [newTags setValue:origin forKey:@"event.origin"];
+  [newTags setValue:environment forKey:@"event.environment"];
+  event.tags = newTags;
+}
+
 - (void)setReleaseVersionDist:(SentryEvent *)event {
   if (event.extra[@"__sentry_version"]) {
     NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
@@ -54,11 +73,6 @@ NSString *const SentryCordovaSdkName = @"sentry-cordova";
     event.dist =
         [NSString stringWithFormat:@"%@", event.extra[@"__sentry_dist"]];
   }
-  event.sdk = @{
-    @"name" : SentryCordovaSdkName,
-    @"version" : SentryCordovaVersionString,
-    @"integrations" : @[ @"sentry-cocoa" ]
-  };
 }
 
 - (void)captureEnvelope:(CDVInvokedUrlCommand *)command {
