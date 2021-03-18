@@ -43,7 +43,7 @@ export class CordovaBackend extends BaseBackend<BrowserOptions> {
   private readonly _deviceReadyCallback?: () => void;
 
   /** Creates a new cordova backend instance. */
-  public constructor(protected readonly _options: CordovaOptions = {}) {
+  public constructor(protected readonly _options: CordovaOptions) {
     super(_options);
     this._browserBackend = new BrowserBackend(_options);
 
