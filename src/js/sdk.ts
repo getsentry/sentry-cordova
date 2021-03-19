@@ -23,11 +23,11 @@ const DEFAULT_OPTIONS: CordovaOptions = {
  */
 export function init(_options: Partial<CordovaOptions>): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const window = getGlobalObject<{ SENTRY_RELEASE?: string }>();
+  const window = getGlobalObject<{ SENTRY_RELEASE?: { id?: string } }>();
 
   const options = {
     ...DEFAULT_OPTIONS,
-    release: window?.SENTRY_RELEASE,
+    release: window?.SENTRY_RELEASE?.id,
     ..._options,
   };
 
