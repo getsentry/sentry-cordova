@@ -23,7 +23,9 @@ describe('Tests SDK', () => {
   describe('init', () => {
     it('Uses SENTRY_RELEASE environment variable if present.', () => {
       const window = getGlobalObject<any>();
-      window.SENTRY_RELEASE = 'test-release';
+      window.SENTRY_RELEASE = {
+        id: 'test-release',
+      };
 
       Sdk.init({});
 
@@ -32,7 +34,9 @@ describe('Tests SDK', () => {
 
     it('User release has precedence over SENTRY_RELEASE', () => {
       const window = getGlobalObject<any>();
-      window.SENTRY_RELEASE = 'test-release';
+      window.SENTRY_RELEASE = {
+        id: 'test-release',
+      };
 
       Sdk.init({
         release: 'user-release',
