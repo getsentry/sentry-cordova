@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix: Remove setRelease and setDist, have auto release passed to native #213
+
 ## v1.0.0-rc.1
 
 - build(ios): Bump `sentry-cocoa` to 6.2.1 (#205)
