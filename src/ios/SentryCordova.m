@@ -13,8 +13,8 @@
 - (void)startWithOptions:(CDVInvokedUrlCommand *)command {
   NSDictionary *options = [command.arguments objectAtIndex:0];
 
-  SentryBeforeSendEventCallback beforeSend = ^SentryEvent *(SentryEvent *event) {
-    [self setReleaseVersionDist:event];
+  SentryBeforeSendEventCallback beforeSend =
+      ^SentryEvent *(SentryEvent *event) {
     [self setEventOriginTag:event];
 
     return event;
@@ -56,14 +56,17 @@
   if (event.sdk != nil) {
     NSString *sdkName = event.sdk[@"name"];
 
-    // If the event is from cordova js, it gets set there and we do not handle it here.
+    // If the event is from cordova js, it gets set there and we do not handle
+    // it here.
     if ([sdkName isEqualToString:@"sentry.cocoa"]) {
       [self setEventEnvironmentTag:event origin:@"ios" environment:@"native"];
     }
   }
 }
 
-- (void)setEventEnvironmentTag:(SentryEvent *)event origin:(NSString *)origin environment:(NSString *)environment {
+- (void)setEventEnvironmentTag:(SentryEvent *)event
+                        origin:(NSString *)origin
+                   environment:(NSString *)environment {
   NSMutableDictionary *newTags = [NSMutableDictionary new];
   if (nil != event.tags) {
     [newTags addEntriesFromDictionary:event.tags];
@@ -71,23 +74,6 @@
   [newTags setValue:origin forKey:@"event.origin"];
   [newTags setValue:environment forKey:@"event.environment"];
   event.tags = newTags;
-}
-
-- (void)setReleaseVersionDist:(SentryEvent *)event {
-  if (event.extra[@"__sentry_version"]) {
-    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-    event.releaseName =
-        [NSString stringWithFormat:@"%@-%@", infoDict[@"CFBundleIdentifier"],
-                                   event.extra[@"__sentry_version"]];
-  }
-  if (event.extra[@"__sentry_release"]) {
-    event.releaseName =
-        [NSString stringWithFormat:@"%@", event.extra[@"__sentry_release"]];
-  }
-  if (event.extra[@"__sentry_dist"]) {
-    event.dist =
-        [NSString stringWithFormat:@"%@", event.extra[@"__sentry_dist"]];
-  }
 }
 
 - (void)captureEnvelope:(CDVInvokedUrlCommand *)command {

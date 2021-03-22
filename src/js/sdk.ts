@@ -1,15 +1,14 @@
 import { defaultIntegrations as defaultBrowserIntegrations } from '@sentry/browser';
 import { Hub, initAndBind, makeMain } from '@sentry/core';
-import { configureScope } from '@sentry/minimal';
-import { Scope } from '@sentry/types';
+import { getGlobalObject } from '@sentry/utils';
 
 import { CordovaOptions } from './backend';
 import { CordovaClient } from './client';
-import { Cordova, Release } from './integrations';
+import { Cordova } from './integrations';
 import { CordovaScope } from './scope';
 import { NATIVE } from './wrapper';
 
-const DEFAULT_INTEGRATIONS = [...defaultBrowserIntegrations, new Cordova(), new Release()];
+const DEFAULT_INTEGRATIONS = [...defaultBrowserIntegrations, new Cordova()];
 
 const DEFAULT_OPTIONS: CordovaOptions = {
   enableNative: true,
@@ -23,8 +22,12 @@ const DEFAULT_OPTIONS: CordovaOptions = {
  * Inits the SDK
  */
 export function init(_options: Partial<CordovaOptions>): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const window = getGlobalObject<{ SENTRY_RELEASE?: { id?: string } }>();
+
   const options = {
     ...DEFAULT_OPTIONS,
+    release: window?.SENTRY_RELEASE?.id,
     ..._options,
   };
 
@@ -33,24 +36,6 @@ export function init(_options: Partial<CordovaOptions>): void {
   makeMain(cordovaHub);
 
   initAndBind(CordovaClient, options);
-}
-
-/**
- * Sets the release on the event.
- */
-export function setRelease(release: string): void {
-  configureScope((scope: Scope) => {
-    scope.setExtra('__sentry_release', release);
-  });
-}
-
-/**
- * Sets the dist on the event.
- */
-export function setDist(dist: string): void {
-  configureScope((scope: Scope) => {
-    scope.setExtra('__sentry_dist', dist);
-  });
 }
 
 /**
