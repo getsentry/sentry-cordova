@@ -3,6 +3,7 @@
 ## Unreleased
 
 - fix: Remove setRelease and setDist, have auto release passed to native #213
+- feat: Expose startTransaction #216
 
 ## v1.0.0-rc.1
 

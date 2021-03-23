@@ -29,11 +29,13 @@ export {
   setExtras,
   setTag,
   setTags,
+  startTransaction,
   Hub,
   Scope,
 } from '@sentry/core';
 
 import { Integrations as BrowserIntegrations } from '@sentry/browser';
+
 export { CordovaBackend, CordovaOptions } from './backend';
 export { CordovaClient } from './client';
 export { init, nativeCrash } from './sdk';
