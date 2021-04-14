@@ -13,6 +13,9 @@ env:
    CACHED_BUILD_PATHS: |
      ${{ github.workspace }}/dist
 
+   CACHED_CARTHAGE_PATHS: |
+     ${{ github.workspace }}/src/ios/Carthage
+
    BUILD_CACHE_KEY: ${{ github.sha }}
 
 jobs:
@@ -94,14 +97,33 @@ jobs:
          # this file) to a constant and skip rebuilding all of the packages each time CI runs.
          if: steps.cache_built_packages.outputs.cache-hit == ''
          run: yarn build
+
      outputs:
        # this needs to be passed on, because the `needs` context only looks at direct ancestors (so steps which depend on
        # `job_build` can't see `job_install_deps` and what it returned)
        dependency_cache_key: ${{ needs.job_install_deps.outputs.dependency_cache_key }}
 
+   job_carthage_build:
+     name: Build Carthage Dependencies
+     runs-on: ubuntu-latest
+     timeout-minutes: 15
+     steps:
+       - name: Check out current commit (${{ github.sha }})
+         uses: actions/checkout@v2
+       - name: Check Carthage build cache
+         uses: actions/cache@v2
+         id: cache_built_carthage
+         with:
+           path: ${{ env.CACHED_CARTHAGE_PATHS }}
+           key: ${{ env.BUILD_CACHE_KEY }}
+       - name: Build Cocoa SDK from Carthage
+         if: steps.cache_built_carthage.outputs.cache-hit == ''
+         run: make build
+
+
    job_artifacts:
      name: Upload Artifacts
-     needs: job_build
+     needs: [job_build, job_carthage_build]
      runs-on: ubuntu-latest
      steps:
        - name: Check out current commit (${{ github.sha }})
@@ -117,6 +139,12 @@ jobs:
          uses: actions/cache@v2
          with:
            path: ${{ env.CACHED_BUILD_PATHS }}
+           key: ${{ env.BUILD_CACHE_KEY }}
+       - name: Check Carthage build cache
+         uses: actions/cache@v2
+         id: cache_built_carthage
+         with:
+           path: ${{ env.CACHED_CARTHAGE_PATHS }}
            key: ${{ env.BUILD_CACHE_KEY }}
        - name: Pack
          run: yarn pack
