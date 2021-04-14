@@ -115,15 +115,13 @@ jobs:
          id: cache_built_carthage
          with:
            path: ${{ env.CACHED_CARTHAGE_PATHS }}
-           key: ${{ env.BUILD_CACHE_KEY }}-carthage
+           key: ${{ hashFiles('src/ios/Cartfile') }}
        - name: Install Carthage
          if: steps.cache_built_carthage.outputs.cache-hit == ''
          run: brew install carthage
        - name: Build Cocoa SDK from Carthage
          if: steps.cache_built_carthage.outputs.cache-hit == ''
          run: make build
-       - name: Check ios folder
-         run: cd src/ios/ && ls
 
 
    job_artifacts:
@@ -149,7 +147,9 @@ jobs:
          uses: actions/cache@v2
          with:
            path: ${{ env.CACHED_CARTHAGE_PATHS }}
-           key: ${{ env.BUILD_CACHE_KEY }}-carthage
+           key: ${{ hashFiles('src/ios/Cartfile') }}
+       - name: Check that Carthage build exists
+         run: test -d src/ios/Carthage || exit 1
        - name: Pack
          run: yarn pack
        - name: Archive artifacts
