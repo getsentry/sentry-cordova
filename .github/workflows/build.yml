@@ -116,6 +116,11 @@ jobs:
          with:
            path: ${{ env.CACHED_CARTHAGE_PATHS }}
            key: ${{ env.BUILD_CACHE_KEY }}
+       - name: Install Carthage
+         if: steps.cache_built_carthage.outputs.cache-hit == ''
+         run: |
+          brew update > /dev/null
+          brew outdated carthage || brew upgrade carthage
        - name: Build Cocoa SDK from Carthage
          if: steps.cache_built_carthage.outputs.cache-hit == ''
          run: make build
