@@ -115,7 +115,7 @@ jobs:
          id: cache_built_carthage
          with:
            path: ${{ env.CACHED_CARTHAGE_PATHS }}
-           key: ${{ env.BUILD_CACHE_KEY }}
+           key: ${{ env.BUILD_CACHE_KEY }}-carthage
        - name: Install Carthage
          if: steps.cache_built_carthage.outputs.cache-hit == ''
          run: brew install carthage
@@ -149,7 +149,7 @@ jobs:
          uses: actions/cache@v2
          with:
            path: ${{ env.CACHED_CARTHAGE_PATHS }}
-           key: ${{ env.BUILD_CACHE_KEY }}
+           key: ${{ env.BUILD_CACHE_KEY }}-carthage
        - name: Pack
          run: yarn pack
        - name: Archive artifacts
