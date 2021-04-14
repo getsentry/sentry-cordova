@@ -14,7 +14,7 @@ env:
      ${{ github.workspace }}/dist
 
    CACHED_CARTHAGE_PATHS: |
-     ${{ github.workspace }}/src/ios/Carthage
+     ${{ github.workspace }}/src/ios/Carthage/Build/iOS/
 
    BUILD_CACHE_KEY: ${{ github.sha }}
 
@@ -122,6 +122,8 @@ jobs:
        - name: Build Cocoa SDK from Carthage
          if: steps.cache_built_carthage.outputs.cache-hit == ''
          run: make build
+       - name: Check ios folder
+         run: cd /src/ios/ && ls
 
 
    job_artifacts:
@@ -145,7 +147,6 @@ jobs:
            key: ${{ env.BUILD_CACHE_KEY }}
        - name: Check Carthage build cache
          uses: actions/cache@v2
-         id: cache_built_carthage
          with:
            path: ${{ env.CACHED_CARTHAGE_PATHS }}
            key: ${{ env.BUILD_CACHE_KEY }}
