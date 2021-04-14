@@ -14,14 +14,14 @@ env:
      ${{ github.workspace }}/dist
 
    CACHED_CARTHAGE_PATHS: |
-     ${{ github.workspace }}/src/ios/Carthage/Build/iOS/
+     ${{ github.workspace }}/src/ios/Carthage/Build/
 
    BUILD_CACHE_KEY: ${{ github.sha }}
 
 jobs:
    job_install_deps:
      name: Install Dependencies
-     runs-on: ubuntu-latest
+     runs-on: macos-latest
      timeout-minutes: 15
      steps:
        - name: Check out current commit (${{ github.sha }})
@@ -50,7 +50,7 @@ jobs:
      needs: job_build
      continue-on-error: true
      timeout-minutes: 30
-     runs-on: ubuntu-latest
+     runs-on: macos-latest
      steps:
        - name: Check out current commit (${{ github.sha }})
          uses: actions/checkout@v2
@@ -72,7 +72,7 @@ jobs:
    job_build:
      name: Build
      needs: job_install_deps
-     runs-on: ubuntu-latest
+     runs-on: macos-latest
      timeout-minutes: 15
      steps:
        - name: Check out current commit (${{ github.sha }})
@@ -129,7 +129,7 @@ jobs:
    job_artifacts:
      name: Upload Artifacts
      needs: [job_build, job_carthage_build]
-     runs-on: ubuntu-latest
+     runs-on: macos-latest
      steps:
        - name: Check out current commit (${{ github.sha }})
          uses: actions/checkout@v2
