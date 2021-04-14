@@ -105,7 +105,7 @@ jobs:
 
    job_carthage_build:
      name: Build Carthage Dependencies
-     runs-on: ubuntu-latest
+     runs-on: macos-latest
      timeout-minutes: 15
      steps:
        - name: Check out current commit (${{ github.sha }})
