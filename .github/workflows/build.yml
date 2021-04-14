@@ -123,7 +123,7 @@ jobs:
          if: steps.cache_built_carthage.outputs.cache-hit == ''
          run: make build
        - name: Check ios folder
-         run: cd /src/ios/ && ls
+         run: cd src/ios/ && ls
 
 
    job_artifacts:
