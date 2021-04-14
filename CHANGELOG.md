@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## v1.0.0
+
+- Full scope sync such that any tag, context, extra, and breadcrumb set on the JavaScript scope will be available on crashes that happen on the native (iOS/Android) layer. You can also sync down to the NDK layer on Android if you opt-in through: `enableNdkScopeSync`.
+- Offline event caching for Android. (already an existing feature on iOS)
+- Performance monitoring support: the Sentry Cordova SDK now supports JavaScript-layer performance monitoring and tracing, when you integrate the `@sentry/tracing` package. You can then start a transaction just by calling `Sentry.startTransaction`.
+- Session tracking and release health on Android and iOS.
+- `event.origin` and `event.environment` tags to show which layer of the app the event originated from.
+- Official support for the browser platform.
+
+### Migration
+
+- Deprecated `setRelease` and `setDist`; instead pass `release` and `dist` to the `Sentry.init` call.
+
 ## v1.0.0-rc.2
 
 - fix: Remove setRelease and setDist, have auto release passed to native (#213)
