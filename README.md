@@ -40,6 +40,6 @@ Sentry.init({ dsn: '___PUBLIC_DSN___' });
 
 ## Documentation
 
-* [Installation](https://docs.sentry.io/clients/cordova/#installation)
-* [Using Sentry with Ionic](https://docs.sentry.io/clients/cordova/ionic/)
-* [Documentation](https://docs.sentry.io/clients/cordova/)
+* [Installation](https://docs.sentry.io/platforms/javascript/guides/cordova/#install)
+* [Using Sentry with Ionic](https://docs.sentry.io/platforms/javascript/guides/cordova/ionic/)
+* [Documentation](https://docs.sentry.io/platforms/javascript/guides/cordova/)
