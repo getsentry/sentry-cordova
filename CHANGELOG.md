@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## 1.0.0-dev-1.0
+- 
+
 ## v1.0.0
 
 - Full scope sync such that any tag, context, extra, and breadcrumb set on the JavaScript scope will be available on crashes that happen on the native (iOS/Android) layer. You can also sync down to the NDK layer on Android if you opt-in through: `enableNdkScopeSync`.
