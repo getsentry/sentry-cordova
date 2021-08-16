@@ -2,20 +2,9 @@
 
 ## Unreleased
 
-## v1.0.0-dev-1.3
-
-- test
-
-## v1.0.0-dev-1.2
-
-- test
-
-## v1.0.0-dev-1.1
+## v1.0.0-dev-1.0
 
 - bundle size decreased
-
-## v1.0.0-dev-1.0
-- test
 
 ## v1.0.0
 
