@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v1.0.0-dev-1.3
+
+- test
+
 ## v1.0.0-dev-1.2
 
 - test
