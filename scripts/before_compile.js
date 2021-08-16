@@ -101,14 +101,11 @@ module.exports = function(ctx) {
     const fileHash = shasum2.digest('hex');
 
     let release = Promise.resolve(fileHash.slice(0, 20));
-    console.log('===qqq release 1', release);
     // if the environment variable SENTRY_RELEASE_STRING is set this will be used instead of the filehash slice
     if (process.env.SENTRY_RELEASE_STRING) {
       release = Promise.resolve(process.env.SENTRY_RELEASE_STRING);
-      console.log('===qqq release 2', release);
     } else if (process.env.SENTRY_RELEASE_PROPOSE_VERSION) {
       release = sentryCli.releases.proposeVersion();
-      console.log('===qqq release 3', release);
     }
 
     return release.then(release => {
