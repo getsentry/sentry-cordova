@@ -6,4 +6,15 @@ describe('JS conversion check', () => {
     // expect(content.toString().match(/^[^\*]*@sentry\/browser/gm)).toBeFalsy();
     expect(content.toString().match(/ require\(/)).toBeFalsy();
   });
+
+  test('Check required JS file for native build', () => {
+
+    const jsExists = fs.existsSync('dist/js/sentry-cordova.bundle.min.js');
+    expect(jsExists).toBeTruthy();
+  });
+
+  test('Check required source map file for native build', () => {
+    const sourceMapExists = fs.existsSync('dist/js/sentry-cordova.bundle.min.js.map');
+    expect(sourceMapExists).toBeTruthy();
+  });
 });
