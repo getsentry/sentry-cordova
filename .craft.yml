@@ -1,6 +1,6 @@
 ---
 github:
-  owner: getsentry
+  owner: expcapitaldev
   repo: sentry-cordova
 changelogPolicy: simple
 statusProvider:
