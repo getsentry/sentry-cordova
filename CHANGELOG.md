@@ -2,10 +2,6 @@
 
 ## Unreleased
 
-## v1.0.0-dev-1.1
-
-- ci: release updates
-
 ## v1.0.0-dev-1.0
 
 - bundle size decreased
