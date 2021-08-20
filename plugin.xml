@@ -3,11 +3,11 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="sentry-cordova" version="1.0.0-dev-1.0">
     <name>Sentry</name>
     <author>Sentry</author>
-    <description>Official Sentry SDK for Cordova</description>
+    <description>Fork from Official Sentry SDK for Cordova</description>
     <license>MIT</license>
     <keywords>ecosystem:cordova,cordova-android,cordova-ios,android,ios,sentry,debugging,errors,exceptions,logging</keywords>
-    <repo>https://github.com/getsentry/sentry-cordova.git</repo>
-    <issue>https://github.com/getsentry/sentry-cordova/issues</issue>
+    <repo>https://github.com/expcapitaldev/sentry-cordova.git</repo>
+    <issue>https://github.com/expcapitaldev/sentry-cordova/issues</issue>
 
     <preference name="SENTRY_ANDROID_SDK_VERSION" default="4.1.0"/>
 
