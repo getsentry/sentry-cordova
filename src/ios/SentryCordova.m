@@ -2,6 +2,16 @@
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
+@interface SentrySDK ()
+
++ (SentryHub *)currentHub;
+
++ (void)captureEnvelope:(SentryEnvelope *)envelope;
+
++ (void)storeEnvelope:(SentryEnvelope *)envelope;
+
+@end
+
 @implementation SentryCordova {
   bool sentHybridSdkDidBecomeActive;
 }
@@ -89,7 +99,7 @@
     SentryId *eventId =
         [[SentryId alloc] initWithUUIDString:headerDict[@"event_id"]];
     SentryEnvelopeHeader *envelopeHeader =
-        [[SentryEnvelopeHeader alloc] initWithId:eventId andSdkInfo:sdkInfo];
+        [[SentryEnvelopeHeader alloc] initWithId:eventId sdkInfo:sdkInfo traceState:nil];
 
     NSError *error;
     NSData *envelopeItemData =
@@ -119,16 +129,16 @@
                                       singleItem:envelopeItem];
 
 #if DEBUG
-      [[SentrySDK currentHub] captureEnvelope:envelope];
+      [SentrySDK captureEnvelope:envelope];
 #else
       if ([payloadDict[@"level"] isEqualToString:@"fatal"]) {
         // Storing to disk happens asynchronously with captureEnvelope
         // We need to make sure the event is written to disk before resolving
         // the promise. This could be replaced by SentrySDK.flush() when
         // available.
-        [[[SentrySDK currentHub] getClient] storeEnvelope:envelope];
+        [SentrySDK storeEnvelope:envelope];
       } else {
-        [[SentrySDK currentHub] captureEnvelope:envelope];
+        [SentrySDK captureEnvelope:envelope];
       }
 #endif
     }
