@@ -1,6 +1,7 @@
 *
 !/dist/**/*
 !/src/ios/Carthage/Build/iOS/**/*
+!/src/ios/Carthage/Build/Sentry.xcframework/**/*
 !/src/ios/SentryCordova.*
 !/src/android/**/*
 !/scripts/**/*
