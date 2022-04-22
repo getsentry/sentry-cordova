@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Fix build on Mac M1 ([#262](https://github.com/getsentry/sentry-cordova/pull/262))
 - Support for running with cordova-android 10 ([#246](https://github.com/getsentry/sentry-cordova/pull/246))
 
 ## v1.0.0
