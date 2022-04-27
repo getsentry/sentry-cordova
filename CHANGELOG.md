@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Sentry.xcframework being excluded by npm rule ([#266](https://github.com/getsentry/sentry-cordova/pull/266))
+
 ## 1.0.1
 
 ### Fixes
