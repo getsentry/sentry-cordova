@@ -181,6 +181,9 @@ jobs:
         run: |
           $symLinks = (find "${{ github.workspace }}/sentry-cordova" -type l -ls)
           if ($null -ne $symLinks) {
-            Write-Error "Atficact contains illegal SymLinks`n$symLinks"
+            Write-Error "Atfifact contains illegal SymLinks`n$symLinks"
           }
           Write-Output "No Symbolic Links found, all good :)"
+
+          find "${{ github.workspace }}/sentry-cordova" -type l -ls
+          find "${{ github.workspace }}" -type l -ls
