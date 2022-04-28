@@ -178,7 +178,7 @@ jobs:
            path: |
              ${{ github.workspace }}/sentry-cordova
       - name: Extract artifact
-        run |
+        run: |
           $bundleName = (Get-Item ${{ github.workspace }}/sentry-cordova/*.tgz).Name
           tar -xvzf "${{ github.workspace }}/sentry-cordova/$bundleName"
 
