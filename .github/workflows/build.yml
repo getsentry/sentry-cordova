@@ -177,6 +177,11 @@ jobs:
            name: ${{ github.sha }}
            path: |
              ${{ github.workspace }}/sentry-cordova
+      - name: Extract artifact
+        run |
+          $bundleName = (Get-Item ${{ github.workspace }}/sentry-cordova/*.tgz).Name
+          tar -xvzf "${{ github.workspace }}/sentry-cordova/$bundleName"
+
       - name: Check if package contains any Symlink
         run: |
           $symLinks = (find "${{ github.workspace }}/sentry-cordova" -type l -ls)
