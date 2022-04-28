@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Enhance package validation and Removed Symbolic Links ([#267](https://github.com/getsentry/sentry-cordova/pull/267))
 - Sentry.xcframework being excluded by npm rule ([#266](https://github.com/getsentry/sentry-cordova/pull/266))
 
 ## 1.0.1
