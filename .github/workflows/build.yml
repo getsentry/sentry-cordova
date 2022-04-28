@@ -176,19 +176,17 @@ jobs:
         with:
            name: ${{ github.sha }}
            path: |
-             ${{ github.workspace }}/sentry-cordova
+             ${{ github.workspace }}/artifact
       - name: Extract artifact
         run: |
-          $bundleName = (Get-Item ${{ github.workspace }}/sentry-cordova/*.tgz).Name
-          tar -xvzf "${{ github.workspace }}/sentry-cordova/$bundleName"
+          cd ${{ github.workspace }}/artifact
+          $bundleName = (Get-Item *.tgz).Name
+          tar -xvzf "$bundleName"
 
       - name: Check if package contains any Symlink
         run: |
-          $symLinks = (find "${{ github.workspace }}/sentry-cordova" -type l -ls)
+          $symLinks = (find "${{ github.workspace }}" -type l -ls)
           if ($null -ne $symLinks) {
             Write-Error "Atfifact contains illegal SymLinks`n$symLinks"
           }
           Write-Output "No Symbolic Links found, all good :)"
-
-          find "${{ github.workspace }}/sentry-cordova" -type l -ls
-          find "${{ github.workspace }}" -type l -ls
