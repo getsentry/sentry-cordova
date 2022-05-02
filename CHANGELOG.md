@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Add missing info.plist ([#268](https://github.com/getsentry/sentry-cordova/pull/268))
+
 ## 1.0.2
 
 ### Fixes
