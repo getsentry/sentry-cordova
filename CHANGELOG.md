@@ -1,6 +1,25 @@
 # Changelog
 
-## Unreleased
+
+## 1.0.3
+
+### Fixes
+
+- Add missing info.plist ([#268](https://github.com/getsentry/sentry-cordova/pull/268))
+
+## 1.0.2
+
+### Fixes
+
+- Enhance package validation and Removed Symbolic Links ([#267](https://github.com/getsentry/sentry-cordova/pull/267))
+- Sentry.xcframework being excluded by npm rule ([#266](https://github.com/getsentry/sentry-cordova/pull/266))
+
+## 1.0.1
+
+### Fixes
+
+- Fix build on Mac M1 ([#262](https://github.com/getsentry/sentry-cordova/pull/262))
+- Support for running with cordova-android 10 ([#246](https://github.com/getsentry/sentry-cordova/pull/246))
 
 ## v1.0.0-dev-1.0
 
@@ -8,54 +27,86 @@
 
 ## v1.0.0
 
-- Full scope sync such that any tag, context, extra, and breadcrumb set on the JavaScript scope will be available on crashes that happen on the native (iOS/Android) layer. You can also sync down to the NDK layer on Android if you opt-in through: `enableNdkScopeSync`.
-- Offline event caching for Android. (already an existing feature on iOS)
+### Features
+
+- Full scope sync such that any tag, context, extra, and breadcrumb set on the JavaScript scope will be available on crashes that happen on the native (iOS/Android) layer. You can also sync down to the NDK layer on Android if you opt-in through: `enableNdkScopeSync`.- Offline event caching for Android. (already an existing feature on iOS)
 - Performance monitoring support: the Sentry Cordova SDK now supports JavaScript-layer performance monitoring and tracing, when you integrate the `@sentry/tracing` package. You can then start a transaction just by calling `Sentry.startTransaction`.
 - Session tracking and release health on Android and iOS.
-- `event.origin` and `event.environment` tags to show which layer of the app the event originated from.
 - Official support for the browser platform.
 
+### Fixes
+
+- `event.origin` and `event.environment` tags to show which layer of the app the event originated from.
+
 ### Migration
+
+### Fixes
 
 - Deprecated `setRelease` and `setDist`; instead pass `release` and `dist` to the `Sentry.init` call.
 - Minimum Typescript version is now `3.0.0`
 
 ## v1.0.0-rc.2
 
-- fix: Remove setRelease and setDist, have auto release passed to native (#213)
-- feat: Expose startTransaction (#216)
+### Features
+
+- Expose startTransaction ([#216](https://github.com/getsentry/sentry-cordova/pull/216))
+
+### Fixes
+
+- Remove setRelease and setDist, have auto release passed to native ([#213](https://github.com/getsentry/sentry-cordova/pull/213))
 
 ## v1.0.0-rc.1
 
-- build(ios): Bump `sentry-cocoa` to 6.2.1 (#205)
-- feat(android): Add Android native bridge, full scope sync, and cached events (#202)
-- feat: Set `event.origin` and `event.environment` tags (#204)
-- fix: Support clearing user with null on iOS native bridge (#207)
-- fix(ios): Handle auto session tracking start on iOS (#206)
+### Features
+
+- Set `event.origin` and `event.environment` tags ([#204](https://github.com/getsentry/sentry-cordova/pull/204))
+- feat(android): Add Android native bridge, full scope sync, and cached events ([#202](https://github.com/getsentry/sentry-cordova/pull/202))
+
+### Fixes
+
+- fix(ios): Handle auto session tracking start on iOS ([#210](https://github.com/getsentry/sentry-cordova/pull/210))
+- Support clearing user with null on iOS native bridge ([#207](https://github.com/getsentry/sentry-cordova/pull/207))
+- build(ios): Bump `sentry-cocoa` to 6.2.1 ([#205](https://github.com/getsentry/sentry-cordova/pull/205))
 
 ## v1.0.0-rc.0
 
+### Features
+
+- Add global error handler wrapper method for Ionic ([#190](https://github.com/getsentry/sentry-cordova/pull/190))
+- Add Native Wrapper and Cordova Transport ([#194](https://github.com/getsentry/sentry-cordova/pull/194))
+
+### Fixes
+
 - build(internal): Switch to eslint
-- build(android): Bump Android SDK to v4.1.0 (#187)
-- feat: Add global error handler wrapper method for Ionic (#190)
-- build(ios): Bump sentry-cocoa to 6.1.4 (#194)
-- feat: Add Native Wrapper and Cordova Transport (#194)
-- fix: Fix all errors from platforms without native module such as browser (#199)
+- Fix all errors from platforms without native module such as browser ([#199](https://github.com/getsentry/sentry-cordova/pull/199))
+- build(ios): Bump sentry-cocoa to 6.1.4 ([#194](https://github.com/getsentry/sentry-cordova/pull/194))
+- build(android): Bump Android SDK to v4.1.0 ([#187](https://github.com/getsentry/sentry-cordova/pull/187))
 
 ## v0.17.0
 
-- feat: Add `SENTRY_ANDROID_SDK_VERSION` to configure Android SDK version
-- fix: Replicate cordova prepare functionality for getting platform path
+### Features
+
+- Add `SENTRY_ANDROID_SDK_VERSION` to configure Android SDK version
+
+### Fixes
+
+- Replicate cordova prepare functionality for getting platform path
 
 ## v0.16.2
 
-- Fix #146
+### Fixes
+
+- Sentry generating a lot of "not implemented" errors ([#146](https://github.com/getsentry/sentry-cordova/commit/8922f6361583f7cf38429862aeda5e2a90d3e949))
 
 ## v0.16.1
 
-- Fix #147
+### Fixes
+
+- NSInvalidArgumentException on iOS ([#147](https://github.com/getsentry/sentry-cordova/issues/147))
 
 ## v0.16.0
+
+### Fixes
 
 - Bump `@sentry/*` `~5.6.0`
 - Bump `sentry-cocoa` `4.4.0`
@@ -63,44 +114,60 @@
 
 ## v0.15.0
 
+### Fixes
+
 - Bump `@sentry/*` `5.1.0`
-- Fix #65
+- exec proxy not found for :: Sentry :: install ([#65](https://github.com/getsentry/sentry-cordova/issues/65))
 
 ## v0.14.0
 
+### Fixes
+
 - Bump `@sentry/*` `4.6.6`
-- Fix #91
-- Fix #120
+- Failed to restore plugin "sentry-cordova" from config.xml ([#91](https://github.com/getsentry/sentry-cordova/issues/91))
+- Remove usage of deprecated requireCordovaModule ([#120](https://github.com/getsentry/sentry-cordova/pull/120))
 
 ## v0.13.1
+
+### Fixes
 
 - Fix `level` parameter
 
 ## v0.13.0
 
+### Fixes
+
 - Using `@sentry/*` `~4.3.0` packages
 
 ## v0.12.3
 
-- Fixed #81
+### Fixes
+
+- Sentry changes the SENTRY_RELEASE only after the apk has been build ([#83](https://github.com/getsentry/sentry-cordova/pull/83))
 
 ## v0.12.2
 
-- Remove sourcemap from plugins Fixed #76
+### Fixes
+
+- Remove sourcemap from plugins Fixed ([#76](https://github.com/getsentry/sentry-cordova/issues/76))
 
 ## v0.12.1
 
-- Fixed #72
+### Fixes
+
+- Uncaught (in promise): not implemented ([#72](https://github.com/getsentry/sentry-cordova/issues/72))
 - Using `@sentry/*` `4.0.0-beta.12` packages
 
 ## v0.12.0
 
-- Fixed #66
+### Fixes
+
+- Remove or adding other plugins gives sentry messages ([#70](https://github.com/getsentry/sentry-cordova/pull/70))
 
 ## v0.11.0 - Warning, breaking changes
 
 - Using `@sentry/*` `4.0.0-beta` packages
-- Fixes setting version on android #54
+- Fixes setting version on android ([#54](https://github.com/getsentry/sentry-cordova/pull/54))
 - Breaking change:
 
 Replaced functions `setUserContext` `setTagsContext` `setExtraContext` with:
@@ -115,44 +182,68 @@ Sentry.configureScope(scope => {
 
 ## v0.10.2
 
+### Fixes
+
 - Fix es5 syntax in build script
 
 ## v0.10.1
 
+### Fixes
+
 - Fix es5 syntax in build script
 
 ## v0.10.0
+
+### Fixes
 
 - Use unminified version of bundle
 - Bundle and compile in one step
 
 ## v0.9.1
 
+### Fixes
+
 - Fix release script
 
 ## v0.9.0 - Warning, breaking changes
 
 - Breaking change: Renamed create to init
+
+### Features
+
+- Use es5 target and update deps ([48](https://github.com/getsentry/sentry-cordova/pull/48))
+
+### Fixes
+
 - Update dependencies
-- Fixed #47
 
 ## v0.8.5
+
+### Fixes
 
 - Fix internal console.error endless loop
 
 ## v0.8.4
 
+### Fixes
+
 - Fix private DSN
 
 ## v0.8.3
+
+### Fixes
 
 - Fix missing source of ios/android
 
 ## v0.8.2
 
+### Fixes
+
 - Bump to `sentry-cocoa` `3.12.2`
 
 ## v0.8.1
+
+### Fixes
 
 - Bump to `sentry-cocoa` `3.12.1`, fix build
 
@@ -165,33 +256,50 @@ Sentry.configureScope(scope => {
 
 ## v0.7.0
 
+### Features
+
 - Using new `0.4.0` of `@sentry/core` & `@sentry/browser`
-- Bump `sentry-wizard` to fix #29
+- Bump `sentry-wizard` to fix ([29](https://github.com/getsentry/sentry-cordova/issues/29))
 
 ## v0.6.0
 
+### Fixes
+
 - Fixed #13
+
+### Features
+
 - Added SENTRY_SKIP_WIZARD to skip wizard invocation
 
 ## v0.5.3
+
+### Fixes
 
 - Fix sentry.properties location
 
 ## v0.5.2
 
-- Require cordova 7.0.0 and cordova-ios 4.4.0 since we need to support embed framework s
+### Fixes
+
+- Require cordova 7.0.0 and cordova-ios 4.4.0 since we need to support embedded frameworks
 
 ## v0.5.1
+
+### Fixes
 
 - Removed console.log
 
 ## v0.5.0
 
-- Fix uploading of all build assests @DavidStrausz
-- Fix install/uninstall with wizard
+### Fixes
+
+- Uploading of all build assests @DavidStrausz
+- install/uninstall with wizard
 - Move sentry.properties into plugin folder
 
 ## v0.4.0
+
+### Features
 
 - Detect tty if sentry-wizard should run on the setup process
 - Added SENTRY_SKIP_AUTO_RELEASE to skip automatic release version
@@ -199,28 +307,42 @@ Sentry.configureScope(scope => {
 
 ## v0.3.0
 
+### Fixes
+
 - Bump sentry-wizard and sentry-cli to use new JS interface
 
 ## v0.2.1
+
+### Fixes
 
 - Fix travis
 
 ## v0.2.0
 
-- Rename sentry release window global var for Ionic #5
+### Fixes
+
+- Rename sentry release window global var for Ionic ([#5](https://github.com/getsentry/sentry-cordova/pull/5))
 
 ## v0.1.3
+
+### Fixes
 
 - Fix build for iOS project (add framework)
 
 ## v0.1.2
 
+### Features
+
 - Bump sentry-wizard
 
 ## v0.1.1
 
+### Features
+
 - Add CI and build stuff
 
 ## v0.1.0
+
+### First release
 
 - Initial Release

@@ -2,6 +2,9 @@
 node_modules
 *.log
 
+# we include auth token in this onex
+sentry.properties
+
 # Mac OS X
 .DS_Store
 
