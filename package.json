@@ -1,6 +1,6 @@
 {
   "name": "sentry-cordova",
-  "version": "1.0.0-dev-1.0",
+  "version": "1.0.3-dev-1.0",
   "main": "dist/js/sentry-cordova.js",
   "types": "dist/js/sentry-cordova.d.ts",
   "license": "MIT",
