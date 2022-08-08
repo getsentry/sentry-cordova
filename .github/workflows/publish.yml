@@ -1,0 +1,122 @@
+name: "PrepareRelease"
+description: "Common setup for craft/prepare"
+inputs:
+  version:
+    description: Version to release (optional)
+    required: false
+  calver:
+    description: Use automatic CalVer versioning
+    required: true
+    default: false
+  merge_target:
+    description: Target branch to merge into. Uses the default branch as a fallback (optional)
+    required: false
+  force:
+    description: Force a release even when there are release-blockers (optional)
+    required: false
+  craft_version:
+    description: The craft version to use, defaults to "latest" (optional)
+    required: true
+    default: latest
+  path:
+    description: The path that Craft will run inside. Defaults to `.`
+    required: true
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - id: killswitch
+      name: Check release blockers
+      shell: bash
+      run: |
+        if [[ -z '${{ inputs.force }}' ]] && gh issue list -l release-blocker -s open | grep -q '^[0-9]\+[[:space:]]'; then
+          echo "Open release-blocking issues found, cancelling release...";
+          gh api -X POST repos/:owner/:repo/actions/runs/$GITHUB_RUN_ID/cancel;
+        fi
+    - name: Determine version
+      shell: bash
+      run: |
+        if [[ -n '${{ inputs.version }}' ]]; then
+          echo 'RELEASE_VERSION=${{ inputs.version }}' >> $GITHUB_ENV;
+        elif [[ '${{ inputs.calver }}' = 'true' ]]; then
+          # Our releases are on 15th of each month so go back 14 days (a fortnight)
+          DATE_PART=$(date -d '-1 fortnight' +'%y.%-m')
+          declare -i PATCH_VERSION=0
+          while gh api --silent "repos/:owner/:repo/git/ref/tags/$DATE_PART.$PATCH_VERSION" 2>/dev/null; do
+            PATCH_VERSION+=1
+          done
+          echo "RELEASE_VERSION=${DATE_PART}.${PATCH_VERSION}" >> $GITHUB_ENV;
+        else
+          echo "You need to provide a version to release.";
+          exit 1;
+        fi
+#    - name: Set git user to getsentry-bot
+#      shell: bash
+#      run: |
+#        echo "GIT_COMMITTER_NAME=getsentry-bot" >> $GITHUB_ENV;
+#        echo "GIT_AUTHOR_NAME=getsentry-bot" >> $GITHUB_ENV;
+#        echo "EMAIL=bot@sentry.io" >> $GITHUB_ENV;
+#    - name: Install Craft
+#      shell: bash
+#      run: |
+#        craft_url=$(curl -s https://api.github.com/repos/getsentry/craft/releases/${{ inputs.craft_version }} | jq -r '.assets[].browser_download_url | select(endswith("/craft"))')
+#        sudo curl -sL -o /usr/local/bin/craft "$craft_url"
+#        sudo chmod +x /usr/local/bin/craft
+#    - name: Craft Prepare
+#      id: craft
+#      shell: bash
+#      env:
+#        CRAFT_LOG_LEVEL: Warn
+#      run: |
+#        cd '${{ inputs.path }}'
+#        # Ensure we have origin/HEAD set
+#        git remote set-head origin --auto
+#        CRAFT_LOG_LEVEL=Debug craft prepare "${{ env.RELEASE_VERSION }}"
+#        targets=$(craft targets | jq -r '.[]|" - [ ] \(.)"')
+#        targets="${targets//$'\n'/'%0A'}"
+#        echo "::set-output name=targets::$targets"
+#    - name: Get Release Git Info
+#      id: release-git-info
+#      shell: bash
+#      run: |
+#        echo "::set-output name=branch::$(git rev-parse --symbolic-full-name @{-1})"
+#        echo "::set-output name=sha::$(git rev-parse @{-1})"
+#        echo "::set-output name=last::$(gh api repos/:owner/:repo/releases/latest | jq -r .tag_name)"
+    - name: Request publish
+      shell: bash
+      run: |
+        if [[ '${{ inputs.path }}' == '.' ]]; then
+          subdirectory='';
+        else
+          subdirectory='/${{ inputs.path }}';
+        fi
+
+        if [[ -n '${{ inputs.merge_target }}' ]]; then
+          merge_target='${{ inputs.merge_target }}';
+        else
+          merge_target='(default)';
+        fi
+        title="publish: $GITHUB_REPOSITORY$subdirectory@$RELEASE_VERSION"
+        # So, GitHub only allows search with the "in" operator and this
+        # issue search can return non-exact matches. Due to this, we extract
+        # the titles of the returned issues and check them with `grep -xw`
+        # which does a non-regexp full-line match (exact match for us)
+        if gh -R $GITHUB_REPOSITORY_OWNER/publish issue list -S "'$title' in:title" --json title -q '.[] | .title' | grep -qxF -- "$title"; then
+          echo "There's already an open publish request, skipped issue creation.";
+          exit 0;
+        fi
+        body="Requested by: @$GITHUB_ACTOR
+
+        Merge target: $merge_target
+
+        Quick links:
+        - [View changes](https://github.com/$GITHUB_REPOSITORY/compare/${{ steps.release-git-info.outputs.last }}...${{ steps.release-git-info.outputs.branch }})
+        - [View check runs](https://github.com/$GITHUB_REPOSITORY/commit/${{ steps.release-git-info.outputs.sha }}/checks/)
+        Assign the **accepted** label to this issue to approve the release.
+        Leave the \`#retract\` comment under this issue to retract the release (original issuer only).
+        ### Targets
+        #${{ steps.craft.outputs.targets }}
+        Targets marked with a checkbox have already been executed.  Administrators can manually tick a checkbox to force craft to skip it.
+        "
+        gh issue create -R "$GITHUB_REPOSITORY_OWNER/publish" --title "$title" --body "$body"
