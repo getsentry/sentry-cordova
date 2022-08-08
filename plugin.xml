@@ -74,3 +74,4 @@
 
     <hook type="before_compile" src="scripts/before_compile.js" />
 </plugin>
+
