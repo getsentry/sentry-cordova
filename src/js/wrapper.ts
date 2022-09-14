@@ -97,19 +97,6 @@ export const NATIVE = {
     };
 
     if (getPlatform() === CordovaPlatformType.Android) {
-        /*
-        We do this to avoid duplicate breadcrumbs on Android as sentry-android applies the breadcrumbs
-        from the native scope onto every envelope sent through it. This scope will contain the breadcrumbs
-        sent through the scope sync feature. This causes duplicate breadcrumbs.
-        We then remove the breadcrumbs in all cases but if it is handled == false,
-        this is a signal that the app would crash and android would lose the breadcrumbs by the time the app is restarted to read
-        the envelope.
-        */
-        if (event.exception?.values?.[0]?.mechanism?.handled != false && event.breadcrumbs) {
-          event.breadcrumbs = [];
-        }
-
-
       const headerString = JSON.stringify(header);
       const payloadString = JSON.stringify(payload);
       const payloadType = payload.type ?? 'event';
