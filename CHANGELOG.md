@@ -1,5 +1,12 @@
 # Changelog
 
+
+### Fixes
+
+- build(android): Bump Android SDK to 6.4.1
+  - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/6.4.1)
+  - [diff](https://github.com/getsentry/sentry-javascript/compare/4.1.0...6.4.1)
+
 ## 1.0.3
 
 ### Fixes

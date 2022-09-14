@@ -177,7 +177,7 @@ public class SentryCordova extends CordovaPlugin {
             options.setMaxBreadcrumbs(jsonOptions.getInt("maxBreadcrumbs"));
           }
           if (jsonOptions.has("enableAutoSessionTracking")) {
-            options.setEnableSessionTracking(jsonOptions.getBoolean("enableAutoSessionTracking"));
+            options.setEnableAutoSessionTracking(jsonOptions.getBoolean("enableAutoSessionTracking"));
           }
           if (jsonOptions.has("sessionTrackingIntervalMillis")) {
             options.setSessionTrackingIntervalMillis(jsonOptions.getInt("sessionTrackingIntervalMillis"));
@@ -435,5 +435,5 @@ public class SentryCordova extends CordovaPlugin {
     event.setTag("event.environment", environment);
   }
 
-  private void crash() { Sentry.captureException(new RuntimeException("TEST - Sentry Silent Client Crash")); }
+  private void crash() { throw new RuntimeException("TEST - Sentry Silent Client Crash"); }
 }
