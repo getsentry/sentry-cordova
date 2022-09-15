@@ -177,7 +177,7 @@ public class SentryCordova extends CordovaPlugin {
             options.setMaxBreadcrumbs(jsonOptions.getInt("maxBreadcrumbs"));
           }
           if (jsonOptions.has("enableAutoSessionTracking")) {
-            options.setEnableSessionTracking(jsonOptions.getBoolean("enableAutoSessionTracking"));
+            options.setEnableAutoSessionTracking(jsonOptions.getBoolean("enableAutoSessionTracking"));
           }
           if (jsonOptions.has("sessionTrackingIntervalMillis")) {
             options.setSessionTrackingIntervalMillis(jsonOptions.getInt("sessionTrackingIntervalMillis"));

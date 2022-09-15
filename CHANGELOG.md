@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- build(android): Bump Android SDK to 6.4.1 ([#286](https://github.com/getsentry/sentry-cordova/pull/286))
+  - [changelog](https://github.com/getsentry/sentry-java/releases/tag/6.4.1)
+  - [diff](https://github.com/getsentry/sentry-java/compare/4.1.0...6.4.1)
+
 ## 1.0.3
 
 ### Fixes
