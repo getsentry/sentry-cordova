@@ -102,7 +102,7 @@ describe('Tests Native Wrapper', () => {
 
       NATIVE.setUser({
         email: 'hello@sentry.io',
-        // @ts-ignore Intentional incorrect type to simulate using a double as an id (We had a user open an issue because this didn't work before)
+        // @ts-ignore Intentional incorrect type to simulate using a double as an id (We had a user open an issue because this didn't work before) https://github.com/getsentry/sentry-react-native/pull/926
         id: 3.14159265359,
         unique: 123,
       });
