@@ -155,8 +155,7 @@
 
 ### Fixes
 
-- Sentry changes the SENTRY_RELEASE only after the apk has been build
-  ([#83](https://github.com/getsentry/sentry-cordova/pull/83))
+- Sentry changes the SENTRY_RELEASE only after the apk has been build ([#83](https://github.com/getsentry/sentry-cordova/pull/83))
 
 ## v0.12.2
 
