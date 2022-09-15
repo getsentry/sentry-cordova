@@ -1,11 +1,12 @@
 # Changelog
 
+## Unreleased
 
 ### Fixes
 
-- build(android): Bump Android SDK to 6.4.1
-  - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/6.4.1)
-  - [diff](https://github.com/getsentry/sentry-javascript/compare/4.1.0...6.4.1)
+- build(android): Bump Android SDK to 6.4.1 ([#286](https://github.com/getsentry/sentry-cordova/pull/286))
+  - [changelog](https://github.com/getsentry/sentry-java/releases/tag/6.4.1)
+  - [diff](https://github.com/getsentry/sentry-java/compare/4.1.0...6.4.1)
 
 ## 1.0.3
 
@@ -31,8 +32,12 @@
 
 ### Features
 
-- Full scope sync such that any tag, context, extra, and breadcrumb set on the JavaScript scope will be available on crashes that happen on the native (iOS/Android) layer. You can also sync down to the NDK layer on Android if you opt-in through: `enableNdkScopeSync`.- Offline event caching for Android. (already an existing feature on iOS)
-- Performance monitoring support: the Sentry Cordova SDK now supports JavaScript-layer performance monitoring and tracing, when you integrate the `@sentry/tracing` package. You can then start a transaction just by calling `Sentry.startTransaction`.
+- Full scope sync such that any tag, context, extra, and breadcrumb set on the JavaScript scope will be available on
+  crashes that happen on the native (iOS/Android) layer. You can also sync down to the NDK layer on Android if you
+  opt-in through: `enableNdkScopeSync`.- Offline event caching for Android. (already an existing feature on iOS)
+- Performance monitoring support: the Sentry Cordova SDK now supports JavaScript-layer performance monitoring and
+  tracing, when you integrate the `@sentry/tracing` package. You can then start a transaction just by calling
+  `Sentry.startTransaction`.
 - Session tracking and release health on Android and iOS.
 - Official support for the browser platform.
 
@@ -55,14 +60,16 @@
 
 ### Fixes
 
-- Remove setRelease and setDist, have auto release passed to native ([#213](https://github.com/getsentry/sentry-cordova/pull/213))
+- Remove setRelease and setDist, have auto release passed to native
+  ([#213](https://github.com/getsentry/sentry-cordova/pull/213))
 
 ## v1.0.0-rc.1
 
 ### Features
 
 - Set `event.origin` and `event.environment` tags ([#204](https://github.com/getsentry/sentry-cordova/pull/204))
-- feat(android): Add Android native bridge, full scope sync, and cached events ([#202](https://github.com/getsentry/sentry-cordova/pull/202))
+- feat(android): Add Android native bridge, full scope sync, and cached events
+  ([#202](https://github.com/getsentry/sentry-cordova/pull/202))
 
 ### Fixes
 
@@ -80,7 +87,8 @@
 ### Fixes
 
 - build(internal): Switch to eslint
-- Fix all errors from platforms without native module such as browser ([#199](https://github.com/getsentry/sentry-cordova/pull/199))
+- Fix all errors from platforms without native module such as browser
+  ([#199](https://github.com/getsentry/sentry-cordova/pull/199))
 - build(ios): Bump sentry-cocoa to 6.1.4 ([#194](https://github.com/getsentry/sentry-cordova/pull/194))
 - build(android): Bump Android SDK to v4.1.0 ([#187](https://github.com/getsentry/sentry-cordova/pull/187))
 
@@ -98,7 +106,8 @@
 
 ### Fixes
 
-- Sentry generating a lot of "not implemented" errors ([#146](https://github.com/getsentry/sentry-cordova/commit/8922f6361583f7cf38429862aeda5e2a90d3e949))
+- Sentry generating a lot of "not implemented" errors
+  ([#146](https://github.com/getsentry/sentry-cordova/commit/8922f6361583f7cf38429862aeda5e2a90d3e949))
 
 ## v0.16.1
 
@@ -126,7 +135,8 @@
 ### Fixes
 
 - Bump `@sentry/*` `4.6.6`
-- Failed to restore plugin "sentry-cordova" from config.xml ([#91](https://github.com/getsentry/sentry-cordova/issues/91))
+- Failed to restore plugin "sentry-cordova" from config.xml
+  ([#91](https://github.com/getsentry/sentry-cordova/issues/91))
 - Remove usage of deprecated requireCordovaModule ([#120](https://github.com/getsentry/sentry-cordova/pull/120))
 
 ## v0.13.1
@@ -145,7 +155,8 @@
 
 ### Fixes
 
-- Sentry changes the SENTRY_RELEASE only after the apk has been build ([#83](https://github.com/getsentry/sentry-cordova/pull/83))
+- Sentry changes the SENTRY_RELEASE only after the apk has been build
+  ([#83](https://github.com/getsentry/sentry-cordova/pull/83))
 
 ## v0.12.2
 
