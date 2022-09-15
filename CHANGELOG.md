@@ -106,8 +106,7 @@
 
 ### Fixes
 
-- Sentry generating a lot of "not implemented" errors
-  ([#146](https://github.com/getsentry/sentry-cordova/commit/8922f6361583f7cf38429862aeda5e2a90d3e949))
+- Sentry generating a lot of "not implemented" errors ([#146](https://github.com/getsentry/sentry-cordova/commit/8922f6361583f7cf38429862aeda5e2a90d3e949))
 
 ## v0.16.1
 
@@ -135,8 +134,7 @@
 ### Fixes
 
 - Bump `@sentry/*` `4.6.6`
-- Failed to restore plugin "sentry-cordova" from config.xml
-  ([#91](https://github.com/getsentry/sentry-cordova/issues/91))
+- Failed to restore plugin "sentry-cordova" from config.xml ([#91](https://github.com/getsentry/sentry-cordova/issues/91))
 - Remove usage of deprecated requireCordovaModule ([#120](https://github.com/getsentry/sentry-cordova/pull/120))
 
 ## v0.13.1
