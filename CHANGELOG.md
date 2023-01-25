@@ -1,5 +1,7 @@
 # Changelog
 
+removed @sentry/minimal package in favour of using @sentry/hub
+
 ## 1.0.4
 
 ### Fixes

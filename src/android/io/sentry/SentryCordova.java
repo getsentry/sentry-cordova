@@ -65,18 +65,27 @@ public class SentryCordova extends CordovaPlugin {
         String headerString = null;
         String payloadString = null;
         String payloadType = "event";
-
+        JSONArray envelopeRaw = null;
         if (!args.isNull(0)) {
-          headerString = args.getString(0);
+          envelopeRaw = args.getJSONObject(0).getJSONArray("envelope");
         }
-        if (!args.isNull(1)) {
-          payloadString = args.getString(1);
-        }
-        if (!args.isNull(2)) {
-          payloadType = args.getString(2);
+        byte[] bytes = new byte[envelopeRaw.length()];
+        for (int i = 0; i < bytes.length; i++) {
+          bytes[i] = (byte) envelopeRaw.getInt(i);
         }
 
-        captureEnvelope(headerString, payloadString, payloadType, callbackContext);
+        final String outboxPath = HubAdapter.getInstance().getOptions().getOutboxPath();
+
+        final File installation = new File(outboxPath, UUID.randomUUID().toString());
+
+        try (FileOutputStream out = new FileOutputStream(installation)) {
+          out.write(bytes);
+          logger.info("Successfully captured envelope.");
+        } catch (Exception e) {
+          logger.info("Error writing envelope.");
+  //        call.reject(String.valueOf(e));
+        }
+
 
         break;
       case "setUser":
