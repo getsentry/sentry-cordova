@@ -41,3 +41,6 @@ export { Integrations };
 export { BrowserIntegrations };
 
 export { withSentryIonicErrorHandler } from './Ionic/SentryIonicErrorHandler';
+
+import { Replay } from '@sentry/replay';
+export { Replay }

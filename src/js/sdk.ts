@@ -1,6 +1,5 @@
-import { BrowserOptions, defaultIntegrations,init as browserInit } from '@sentry/browser';
+import { BrowserOptions, defaultIntegrations, init as browserInit } from '@sentry/browser';
 import { Hub, makeMain } from '@sentry/core';
-import { Replay } from '@sentry/replay';
 import { getGlobalObject } from '@sentry/utils';
 
 import { Cordova, EventOrigin, SdkInfo } from './integrations';
@@ -54,29 +53,25 @@ export function init(options: Partial<CordovaOptions>): void {
     new SdkInfo(),
     new EventOrigin(),
     new Cordova(),
-    new Replay({
-      maskAllText: false,
-      blockAllMedia: true,
-    }),
-];
+  ];
 
-  if (!options.transport && NATIVE.platform !== 'web') {
+  if (!options.transport && NATIVE.platform !== 'browser') {
     finalOptions.transport = options.transport || makeCordovaTransport;
   }
 
   const browserOptions = {
     ...finalOptions,
     autoSessionTracking:
-      NATIVE.platform === 'web' && finalOptions.enableAutoSessionTracking,
+      NATIVE.platform === 'browser' && finalOptions.enableAutoSessionTracking,
   } as BrowserOptions;
 
   const mobileOptions = {
     ...finalOptions,
     enableAutoSessionTracking:
-      NATIVE.platform !== 'web' && finalOptions.enableAutoSessionTracking,
+      NATIVE.platform !== 'browser' && finalOptions.enableAutoSessionTracking,
   } as CordovaOptions;
 
-    // We first initialize the NATIVE SDK to avoid the Javascript SDK to invoke any
+  // We first initialize the NATIVE SDK to avoid the Javascript SDK to invoke any
   // feature from the NATIVE SDK without the options being set.
   void NATIVE.startWithOptions(mobileOptions);
   browserInit(browserOptions);

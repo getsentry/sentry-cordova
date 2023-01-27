@@ -1,4 +1,6 @@
 #import "SentryCordova.h"
+#import <Sentry/Sentry.h>
+#import <Sentry/PrivateSentrySDKOnly.h>
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
@@ -77,66 +79,37 @@
 }
 
 - (void)captureEnvelope:(CDVInvokedUrlCommand *)command {
-  NSDictionary *headerDict = [command.arguments objectAtIndex:0];
-  NSDictionary *payloadDict = [command.arguments objectAtIndex:1];
 
-  CDVPluginResult *result =
-      [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+    CDVPluginResult *result =
+        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
 
-  if ([NSJSONSerialization isValidJSONObject:headerDict] &&
-      [NSJSONSerialization isValidJSONObject:payloadDict]) {
-    SentrySdkInfo *sdkInfo = [[SentrySdkInfo alloc] initWithDict:headerDict];
-    SentryId *eventId =
-        [[SentryId alloc] initWithUUIDString:headerDict[@"event_id"]];
-    SentryEnvelopeHeader *envelopeHeader =
-        [[SentryEnvelopeHeader alloc] initWithId:eventId andSdkInfo:sdkInfo];
+    NSDictionary *commandDictoinary = [command.arguments objectAtIndex:0];
+    NSArray *bytes = commandDictoinary[@"envelope"];
 
-    NSError *error;
-    NSData *envelopeItemData =
-        [NSJSONSerialization dataWithJSONObject:payloadDict
-                                        options:0
-                                          error:&error];
-    if (nil != error) {
-      result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
-                                   messageAsBool:NO];
-    } else {
-      NSString *itemType = payloadDict[@"type"];
-      if (itemType == nil) {
-        // Default to event type.
-        itemType = @"event";
-      }
-
-      SentryEnvelopeItemHeader *envelopeItemHeader =
-          [[SentryEnvelopeItemHeader alloc]
-              initWithType:itemType
-                    length:envelopeItemData.length];
-      SentryEnvelopeItem *envelopeItem =
-          [[SentryEnvelopeItem alloc] initWithHeader:envelopeItemHeader
-                                                data:envelopeItemData];
-
-      SentryEnvelope *envelope =
-          [[SentryEnvelope alloc] initWithHeader:envelopeHeader
-                                      singleItem:envelopeItem];
-
-#if DEBUG
-      [[SentrySDK currentHub] captureEnvelope:envelope];
-#else
-      if ([payloadDict[@"level"] isEqualToString:@"fatal"]) {
-        // Storing to disk happens asynchronously with captureEnvelope
-        // We need to make sure the event is written to disk before resolving
-        // the promise. This could be replaced by SentrySDK.flush() when
-        // available.
-        [[[SentrySDK currentHub] getClient] storeEnvelope:envelope];
-      } else {
-        [[SentrySDK currentHub] captureEnvelope:envelope];
-      }
-#endif
+    NSMutableData *data = [[NSMutableData alloc] initWithCapacity: [bytes count]];
+    for(NSNumber *number in bytes) {
+        char byte = [number charValue];
+        [data appendBytes: &byte length: 1];
     }
-  } else {
-    result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
-                                 messageAsBool:NO];
-  }
 
+    SentryEnvelope *envelope = [PrivateSentrySDKOnly envelopeWithData:data];
+
+    if (envelope == nil) {
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                     messageAsBool:NO];
+    }
+    else {
+    #if DEBUG
+        [PrivateSentrySDKOnly captureEnvelope:envelope];
+    #else
+        if (options[@'store']) {
+            // Storing to disk happens asynchronously with captureEnvelope
+            [PrivateSentrySDKOnly storeEnvelope:envelope];
+        } else {
+            [PrivateSentrySDKOnly captureEnvelope:envelope];
+        }
+    #endif
+  }
   [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
