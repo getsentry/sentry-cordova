@@ -31,7 +31,7 @@ export function init(options: Partial<CordovaOptions>): void {
   };
 
   if (finalOptions.enabled === false ||
-    NATIVE.platform === 'web') {
+    NATIVE.platform === 'browser') {
     finalOptions.enableNative = false;
     finalOptions.enableNativeNagger = false;
   } else {
@@ -55,7 +55,7 @@ export function init(options: Partial<CordovaOptions>): void {
     new Cordova(),
   ];
 
-  if (!options.transport && NATIVE.platform !== 'browser') {
+  if (!options.transport && finalOptions.enableNative) {
     finalOptions.transport = options.transport || makeCordovaTransport;
   }
 

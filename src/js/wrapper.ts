@@ -1,4 +1,4 @@
-import { AttachmentItem, BaseEnvelopeItemHeaders, Breadcrumb, ClientReportItem, Envelope, EnvelopeItem, Event, EventItem ,SessionItem, SeverityLevel, User, UserFeedbackItem } from '@sentry/types';
+import { AttachmentItem, BaseEnvelopeItemHeaders, Breadcrumb, ClientReportItem, Envelope, EnvelopeItem, Event, EventItem, SessionItem, SeverityLevel, User, UserFeedbackItem } from '@sentry/types';
 import { getGlobalObject, logger, SentryError } from '@sentry/utils';
 
 import { CordovaOptions } from './options';
@@ -19,7 +19,7 @@ export const NATIVE = {
    * @param options CordovaOptions
    */
   async startWithOptions(_options: CordovaOptions): Promise<boolean> {
-    if (this.SUPPORTS_NATIVE_SDK.includes(getPlatform())) {
+    if (_options.enableNative && this.SUPPORTS_NATIVE_SDK.includes(getPlatform())) {
       const options = {
         enableNative: true,
         ..._options,
@@ -94,7 +94,7 @@ export const NATIVE = {
 
       let bytesContentType: string;
       let bytesPayload: number[] = [];
-        if (typeof itemPayload === 'string') {
+      if (typeof itemPayload === 'string') {
         bytesContentType = 'text/plain';
         bytesPayload = utf8ToBytes(itemPayload);
       } else if (itemPayload instanceof Uint8Array) {
@@ -117,7 +117,7 @@ export const NATIVE = {
       envelopeBytes = envelopeBytes.concat(bytesPayload);
       envelopeBytes.push(EOL);
     }
-   await this._nativeCall('captureEnvelope',{ envelope: envelopeBytes });
+    await this._nativeCall('captureEnvelope', { envelope: envelopeBytes });
   },
 
   /**
@@ -254,47 +254,47 @@ export const NATIVE = {
     void this._nativeCall('setContext', key, context !== null ? serializeObject(context) : null);
   },
 
-    /**
-   * Gets the event from envelopeItem and applies the level filter to the selected event.
-   * @param data An envelope item containing the event.
-   * @returns The event from envelopeItem or undefined.
-   */
-    _processItem(item: EnvelopeItem): EnvelopeItem {
-      if (NATIVE.platform === 'android') {
-        const [itemHeader, itemPayload] = item;
+  /**
+ * Gets the event from envelopeItem and applies the level filter to the selected event.
+ * @param data An envelope item containing the event.
+ * @returns The event from envelopeItem or undefined.
+ */
+  _processItem(item: EnvelopeItem): EnvelopeItem {
+    if (NATIVE.platform === 'android') {
+      const [itemHeader, itemPayload] = item;
 
-        if (itemHeader.type == 'event' || itemHeader.type == 'transaction') {
-          const event = this._processLevels(itemPayload as Event);
-          if ('message' in event) {
-            // @ts-ignore Android still uses the old message object, without this the serialization of events will break.
-            event.message = { message: event.message };
-          }
-          /*
-        We do this to avoid duplicate breadcrumbs on Android as sentry-android applies the breadcrumbs
-        from the native scope onto every envelope sent through it. This scope will contain the breadcrumbs
-        sent through the scope sync feature. This causes duplicate breadcrumbs.
-        We then remove the breadcrumbs in all cases but if it is handled == false,
-        this is a signal that the app would crash and android would lose the breadcrumbs by the time the app is restarted to read
-        the envelope.
-        Since unhandled errors from Javascript are not going to crash the App, we can't rely on the
-        handled flag for filtering breadcrumbs.
-          */
-          if (event.breadcrumbs) {
-            event.breadcrumbs = [];
-          }
-          return [itemHeader, event];
+      if (itemHeader.type == 'event' || itemHeader.type == 'transaction') {
+        const event = this._processLevels(itemPayload as Event);
+        if ('message' in event) {
+          // @ts-ignore Android still uses the old message object, without this the serialization of events will break.
+          event.message = { message: event.message };
         }
+        /*
+      We do this to avoid duplicate breadcrumbs on Android as sentry-android applies the breadcrumbs
+      from the native scope onto every envelope sent through it. This scope will contain the breadcrumbs
+      sent through the scope sync feature. This causes duplicate breadcrumbs.
+      We then remove the breadcrumbs in all cases but if it is handled == false,
+      this is a signal that the app would crash and android would lose the breadcrumbs by the time the app is restarted to read
+      the envelope.
+      Since unhandled errors from Javascript are not going to crash the App, we can't rely on the
+      handled flag for filtering breadcrumbs.
+        */
+        if (event.breadcrumbs) {
+          event.breadcrumbs = [];
+        }
+        return [itemHeader, event];
       }
+    }
 
-      return item;
-    },
+    return item;
+  },
 
   /**
    * Gets the event from envelopeItem and applies the level filter to the selected event.
    * @param data An envelope item containing the event.
    * @returns The event from envelopeItem or undefined.
    */
-  _getEvent(envelopeItem: EventItem | AttachmentItem | UserFeedbackItem | SessionItem | ClientReportItem ): Event | undefined {
+  _getEvent(envelopeItem: EventItem | AttachmentItem | UserFeedbackItem | SessionItem | ClientReportItem): Event | undefined {
     if (envelopeItem[0].type == 'event' || envelopeItem[0].type == 'transaction') {
       return this._processLevels(envelopeItem[1] as Event);
     }
