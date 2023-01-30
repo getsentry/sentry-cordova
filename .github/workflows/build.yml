@@ -1,186 +1,186 @@
 name: 'Build & Test'
 on:
-   push:
-     branches:
-       - main
-       - release/**
-   pull_request:
+  push:
+    branches:
+      - main
+      - release/**
+  pull_request:
 
 env:
-   CACHED_DEPENDENCY_PATHS: |
-     ${{ github.workspace }}/node_modules
+  CACHED_DEPENDENCY_PATHS: |
+    ${{ github.workspace }}/node_modules
 
-   CACHED_BUILD_PATHS: |
-     ${{ github.workspace }}/dist
+  CACHED_BUILD_PATHS: |
+    ${{ github.workspace }}/dist
 
-   CACHED_CARTHAGE_PATHS: |
-     ${{ github.workspace }}/src/ios/Carthage/Build/
+  CACHED_CARTHAGE_PATHS: |
+    ${{ github.workspace }}/src/ios/Carthage/Build/
 
-   BUILD_CACHE_KEY: ${{ github.sha }}
+  BUILD_CACHE_KEY: ${{ github.sha }}
 
 jobs:
-   job_install_deps:
-     name: Install Dependencies
-     runs-on: macos-latest
-     timeout-minutes: 15
-     steps:
-       - name: Check out current commit (${{ github.sha }})
-         uses: actions/checkout@v2
-       - name: Set up Node
-         uses: actions/setup-node@v1
-         # we use a hash of yarn.lock as our cache key, because if it hasn't changed, our dependencies haven't changed,
-         # so no need to reinstall them
-       - name: Compute dependency cache key
-         id: compute_lockfile_hash
-         run: echo "hash=${{ hashFiles('yarn.lock') }}" >> "$GITHUB_OUTPUT"
-       - name: Check dependency cache
-         uses: actions/cache@v2
-         id: cache_dependencies
-         with:
-           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
-           key: ${{ steps.compute_lockfile_hash.outputs.hash }}
-       - name: Install dependencies
-         if: steps.cache_dependencies.outputs.cache-hit == ''
-         run: yarn install
-     outputs:
-       dependency_cache_key: ${{ steps.compute_lockfile_hash.outputs.hash }}
+  job_install_deps:
+    name: Install Dependencies
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out current commit (${{ github.sha }})
+        uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        # we use a hash of yarn.lock as our cache key, because if it hasn't changed, our dependencies haven't changed,
+        # so no need to reinstall them
+      - name: Compute dependency cache key
+        id: compute_lockfile_hash
+        run: echo "hash=${{ hashFiles('yarn.lock') }}" >> "$GITHUB_OUTPUT"
+      - name: Check dependency cache
+        uses: actions/cache@v2
+        id: cache_dependencies
+        with:
+          path: ${{ env.CACHED_DEPENDENCY_PATHS }}
+          key: ${{ steps.compute_lockfile_hash.outputs.hash }}
+      - name: Install dependencies
+        if: steps.cache_dependencies.outputs.cache-hit == ''
+        run: yarn install
+    outputs:
+      dependency_cache_key: ${{ steps.compute_lockfile_hash.outputs.hash }}
 
-   job_unit_test:
-     name: Test
-     needs: job_build
-     continue-on-error: true
-     timeout-minutes: 30
-     runs-on: macos-latest
-     steps:
-       - name: Check out current commit (${{ github.sha }})
-         uses: actions/checkout@v2
-       - name: Set up Node
-         uses: actions/setup-node@v1
-       - name: Check dependency cache
-         uses: actions/cache@v2
-         with:
-           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
-           key: ${{ needs.job_build.outputs.dependency_cache_key }}
-       - name: Check build cache
-         uses: actions/cache@v2
-         with:
-           path: ${{ env.CACHED_BUILD_PATHS }}
-           key: ${{ env.BUILD_CACHE_KEY }}
-       - name: Run tests
-         run: yarn test
+  job_unit_test:
+    name: Test
+    needs: job_build
+    continue-on-error: true
+    timeout-minutes: 30
+    runs-on: macos-latest
+    steps:
+      - name: Check out current commit (${{ github.sha }})
+        uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v1
+      - name: Check dependency cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHED_DEPENDENCY_PATHS }}
+          key: ${{ needs.job_build.outputs.dependency_cache_key }}
+      - name: Check build cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHED_BUILD_PATHS }}
+          key: ${{ env.BUILD_CACHE_KEY }}
+      - name: Run tests
+        run: yarn test
 
-   job_build:
-     name: Build
-     needs: job_install_deps
-     runs-on: macos-latest
-     timeout-minutes: 15
-     steps:
-       - name: Check out current commit (${{ github.sha }})
-         uses: actions/checkout@v2
-       - name: Set up Node
-         uses: actions/setup-node@v1
-       - name: Check dependency cache
-         uses: actions/cache@v2
-         with:
-           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
-           key: ${{ needs.job_install_deps.outputs.dependency_cache_key }}
-       - name: Check build cache
-         uses: actions/cache@v2
-         id: cache_built_packages
-         with:
-           path: ${{ env.CACHED_BUILD_PATHS }}
-           key: ${{ env.BUILD_CACHE_KEY }}
-       - name: Build packages
-         # Under normal circumstances, using the git SHA as a cache key, there shouldn't ever be a cache hit on the built
-         # packages, and so `yarn build` should always run. This `if` check is therefore only there for testing CI issues
-         # where the built packages are beside the point. In that case, you can change `BUILD_CACHE_KEY` (at the top of
-         # this file) to a constant and skip rebuilding all of the packages each time CI runs.
-         if: steps.cache_built_packages.outputs.cache-hit == ''
-         run: yarn build
+  job_build:
+    name: Build
+    needs: job_install_deps
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out current commit (${{ github.sha }})
+        uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v1
+      - name: Check dependency cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHED_DEPENDENCY_PATHS }}
+          key: ${{ needs.job_install_deps.outputs.dependency_cache_key }}
+      - name: Check build cache
+        uses: actions/cache@v2
+        id: cache_built_packages
+        with:
+          path: ${{ env.CACHED_BUILD_PATHS }}
+          key: ${{ env.BUILD_CACHE_KEY }}
+      - name: Build packages
+        # Under normal circumstances, using the git SHA as a cache key, there shouldn't ever be a cache hit on the built
+        # packages, and so `yarn build` should always run. This `if` check is therefore only there for testing CI issues
+        # where the built packages are beside the point. In that case, you can change `BUILD_CACHE_KEY` (at the top of
+        # this file) to a constant and skip rebuilding all of the packages each time CI runs.
+        if: steps.cache_built_packages.outputs.cache-hit == ''
+        run: yarn build
         # yarn.lock cannot be dirty when releasing a new version.
-       - name: Check if yarn.lock is dirty
-         if: steps.cache_built_packages.outputs.cache-hit == ''
-         run: yarn install --frozen-lockfile
+      - name: Check if yarn.lock is dirty
+        if: steps.cache_built_packages.outputs.cache-hit == ''
+        run: yarn install --frozen-lockfile
 
-     outputs:
-       # this needs to be passed on, because the `needs` context only looks at direct ancestors (so steps which depend on
-       # `job_build` can't see `job_install_deps` and what it returned)
-       dependency_cache_key: ${{ needs.job_install_deps.outputs.dependency_cache_key }}
+    outputs:
+      # this needs to be passed on, because the `needs` context only looks at direct ancestors (so steps which depend on
+      # `job_build` can't see `job_install_deps` and what it returned)
+      dependency_cache_key: ${{ needs.job_install_deps.outputs.dependency_cache_key }}
 
-   job_carthage_build:
-     name: Build Carthage Dependencies
-     runs-on: macos-latest
-     timeout-minutes: 15
-     steps:
-       - name: Check out current commit (${{ github.sha }})
-         uses: actions/checkout@v2
-       - name: Check Carthage build cache
-         uses: actions/cache@v2
-         id: cache_built_carthage
-         with:
-           path: ${{ env.CACHED_CARTHAGE_PATHS }}
-           key: ${{ hashFiles('src/ios/Cartfile') }}
-       - name: Install Carthage
-         if: steps.cache_built_carthage.outputs.cache-hit == ''
-         run: brew install carthage
-       - name: Build Cocoa SDK from Carthage
-         if: steps.cache_built_carthage.outputs.cache-hit == ''
-         env:
-            GITHUB_ACCESS_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
-         run: make build
+  job_carthage_build:
+    name: Build Carthage Dependencies
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out current commit (${{ github.sha }})
+        uses: actions/checkout@v2
+      - name: Check Carthage build cache
+        uses: actions/cache@v2
+        id: cache_built_carthage
+        with:
+          path: ${{ env.CACHED_CARTHAGE_PATHS }}
+          key: ${{ hashFiles('src/ios/Cartfile') }}
+      - name: Install Carthage
+        if: steps.cache_built_carthage.outputs.cache-hit == ''
+        run: brew install carthage
+      - name: Build Cocoa SDK from Carthage
+        if: steps.cache_built_carthage.outputs.cache-hit == ''
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+        run: make build
 
-   job_artifacts:
-     name: Upload Artifacts
-     needs: [job_build, job_carthage_build]
-     runs-on: macos-latest
-     steps:
-       - name: Check out current commit (${{ github.sha }})
-         uses: actions/checkout@v2
-       - name: Set up Node
-         uses: actions/setup-node@v1
-       - name: Check dependency cache
-         uses: actions/cache@v2
-         with:
-           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
-           key: ${{ needs.job_build.outputs.dependency_cache_key }}
-       - name: Check build cache
-         uses: actions/cache@v2
-         with:
-           path: ${{ env.CACHED_BUILD_PATHS }}
-           key: ${{ env.BUILD_CACHE_KEY }}
-       - name: Check Carthage build cache
-         uses: actions/cache@v2
-         with:
-           path: ${{ env.CACHED_CARTHAGE_PATHS }}
-           key: ${{ hashFiles('src/ios/Cartfile') }}
-       - name: Check that Carthage build exists
-         run: test -d src/ios/Carthage || exit 1
-       - name: Pack
-         run: yarn pack
-       - name: Archive artifacts
-         uses: actions/upload-artifact@v3.1.1
-         with:
-           name: ${{ github.sha }}
-           path: |
-             ${{ github.workspace }}/sentry-cordova-*
+  job_artifacts:
+    name: Upload Artifacts
+    needs: [job_build, job_carthage_build]
+    runs-on: macos-latest
+    steps:
+      - name: Check out current commit (${{ github.sha }})
+        uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v1
+      - name: Check dependency cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHED_DEPENDENCY_PATHS }}
+          key: ${{ needs.job_build.outputs.dependency_cache_key }}
+      - name: Check build cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHED_BUILD_PATHS }}
+          key: ${{ env.BUILD_CACHE_KEY }}
+      - name: Check Carthage build cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHED_CARTHAGE_PATHS }}
+          key: ${{ hashFiles('src/ios/Cartfile') }}
+      - name: Check that Carthage build exists
+        run: test -d src/ios/Carthage || exit 1
+      - name: Pack
+        run: yarn pack
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: ${{ github.sha }}
+          path: |
+            ${{ github.workspace }}/sentry-cordova-*
 
-   job_check_symlink:
-     name: Check for Symbolic Links
-     needs: [job_artifacts]
-     runs-on: macos-latest
-     defaults:
+  job_check_symlink:
+    name: Check for Symbolic Links
+    needs: [job_artifacts]
+    runs-on: macos-latest
+    defaults:
       run:
         shell: pwsh
-     steps:
+    steps:
       - name: Checkout
         uses: actions/checkout@v2.3.3
 
       - name: Download test app artifact
         uses: actions/download-artifact@v2
         with:
-           name: ${{ github.sha }}
-           path: |
-             ${{ github.workspace }}/artifact
+          name: ${{ github.sha }}
+          path: |
+            ${{ github.workspace }}/artifact
       - name: Extract artifact
         run: |
           cd ${{ github.workspace }}/artifact
