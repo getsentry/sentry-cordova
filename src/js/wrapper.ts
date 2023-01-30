@@ -336,7 +336,6 @@ export const NATIVE = {
     return level;
   },
 
-
   /**
    * Triggers a native crash.
    * Use this only for testing purposes.

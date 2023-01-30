@@ -62,13 +62,10 @@ public class SentryCordova extends CordovaPlugin {
 
         break;
       case "captureEnvelope":
-        String headerString = null;
-        String payloadString = null;
-        String payloadType = "event";
-        JSONArray envelopeRaw = null;
-        if (!args.isNull(0)) {
-          envelopeRaw = args.getJSONObject(0).getJSONArray("envelope");
+        if (args.isNull(0)) {
+          break;
         }
+        JSONArray envelopeRaw = args.getJSONObject(0).getJSONArray("envelope");
         byte[] bytes = new byte[envelopeRaw.length()];
         for (int i = 0; i < bytes.length; i++) {
           bytes[i] = (byte) envelopeRaw.getInt(i);
@@ -83,9 +80,7 @@ public class SentryCordova extends CordovaPlugin {
           logger.info("Successfully captured envelope.");
         } catch (Exception e) {
           logger.info("Error writing envelope.");
-  //        call.reject(String.valueOf(e));
         }
-
 
         break;
       case "setUser":
@@ -444,5 +439,5 @@ public class SentryCordova extends CordovaPlugin {
     event.setTag("event.environment", environment);
   }
 
-  private void crash() { Sentry.captureException(new RuntimeException("TEST - Sentry Silent Client Crash")); }
+  private void crash() => throw new RuntimeException("TEST - Sentry Silent Client Crash");
 }
