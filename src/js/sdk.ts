@@ -1,13 +1,13 @@
-import { BrowserOptions, defaultIntegrations, init as browserInit } from '@sentry/browser';
+import type { BrowserOptions } from '@sentry/browser';
+import { defaultIntegrations, init as browserInit } from '@sentry/browser';
 import { Hub, makeMain } from '@sentry/core';
 import { getGlobalObject } from '@sentry/utils';
 
-import { Cordova, EventOrigin, SdkInfo } from './integrations';
-import { CordovaOptions } from './options';
+import { Cordova, EventOrigin, ReplayBrowserFilter, SdkInfo } from './integrations';
+import type { CordovaOptions } from './options';
 import { CordovaScope } from './scope';
 import { makeCordovaTransport } from './transports/cordova';
 import { NATIVE } from './wrapper';
-
 const DEFAULT_OPTIONS: CordovaOptions = {
   enableNative: true,
   enableAutoSessionTracking: true,
@@ -54,6 +54,10 @@ export function init(options: Partial<CordovaOptions>): void {
     new EventOrigin(),
     new Cordova(),
   ];
+  if (NATIVE.platform === 'browser' &&
+    (options.replaysOnErrorSampleRate != undefined || options.replaysSessionSampleRate != undefined)) {
+    finalOptions.defaultIntegrations.push(new ReplayBrowserFilter());
+  }
 
   if (!options.transport && finalOptions.enableNative) {
     finalOptions.transport = options.transport || makeCordovaTransport;

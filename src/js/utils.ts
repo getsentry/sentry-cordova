@@ -1,5 +1,5 @@
 import { WINDOW } from '@sentry/browser';
-import { SeverityLevel } from '@sentry/types';
+import type { SeverityLevel } from '@sentry/types';
 
 import { CordovaPlatformType } from './types';
 

@@ -8,9 +8,9 @@
 
 ### Dependencies
 
-- Bump Sentry JavaScript SDK to `7.25.0` ([#301](https://github.com/getsentry/sentry-cordova/pull/299))
-  - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/7.25.0)
-  - [diff](https://github.com/getsentry/sentry-javascript/compare/6.1.0...7.25.0)
+- Bump Sentry JavaScript SDK to `7.34.0` ([#301](https://github.com/getsentry/sentry-cordova/pull/299))
+  - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/7.34.0)
+  - [diff](https://github.com/getsentry/sentry-javascript/compare/6.1.0...7.34.0)
 - build(android): Bump Android SDK to 6.11.0 ([#286](https://github.com/getsentry/sentry-cordova/pull/299))
   - [changelog](https://github.com/getsentry/sentry-java/releases/tag/6.11.0)
   - [diff](https://github.com/getsentry/sentry-java/compare/6.4.1...6.11.0)

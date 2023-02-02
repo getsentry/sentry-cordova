@@ -1,6 +1,6 @@
 import { getGlobalObject } from '@sentry/utils';
 
-import { CordovaOptions } from '../options';
+import type { CordovaOptions } from '../options';
 import * as Sdk from '../sdk';
 
 const optionsTest: {

@@ -1,7 +1,7 @@
-import { AttachmentItem, BaseEnvelopeItemHeaders, Breadcrumb, ClientReportItem, Envelope, EnvelopeItem, Event, EventItem, SessionItem, SeverityLevel, User, UserFeedbackItem } from '@sentry/types';
+import type { AttachmentItem, BaseEnvelopeItemHeaders, Breadcrumb, ClientReportItem, Envelope, EnvelopeItem, Event, EventItem, SessionItem, SeverityLevel, User, UserFeedbackItem } from '@sentry/types';
 import { getGlobalObject, logger, SentryError } from '@sentry/utils';
 
-import { CordovaOptions } from './options';
+import type { CordovaOptions } from './options';
 import { CordovaPlatformType } from './types';
 import { getPlatform, processLevel, serializeObject } from './utils';
 import { utf8ToBytes } from './vendor';

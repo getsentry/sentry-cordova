@@ -1,4 +1,4 @@
-import { EventProcessor, Integration } from '@sentry/types';
+import type { EventProcessor, Integration } from '@sentry/types';
 
 import { SDK_NAME, SDK_VERSION } from '../version';
 

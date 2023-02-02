@@ -1,4 +1,4 @@
-import { BrowserOptions } from '@sentry/browser';
+import type { BrowserOptions } from '@sentry/browser';
 
 /**
  * Configuration options for the Sentry Cordova SDK.
@@ -14,13 +14,6 @@ export interface CordovaOptions
 
   /** Should the native nagger alert be shown or not. */
   enableNativeNagger?: boolean;
-
-    /**
-   * Enables native crashHandling. This only works if `enableNative` is `true`.
-   * Defaults to `true`.
-   */
-  // TODO: CHECK IF NEEDED
-  // enableNativeCrashHandling?: boolean;
 
   /**
    * Should sessions be tracked to Sentry Health or not.
