@@ -126,7 +126,7 @@ jobs:
       - name: Build Cocoa SDK from Carthage
         if: steps.cache_built_carthage.outputs.cache-hit == ''
         env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+        #          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
         run: make build
 
   job_artifacts:
@@ -158,7 +158,7 @@ jobs:
       - name: Pack
         run: yarn pack
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.1
         with:
           name: ${{ github.sha }}
           path: |
