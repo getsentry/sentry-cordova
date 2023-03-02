@@ -439,5 +439,5 @@ public class SentryCordova extends CordovaPlugin {
     event.setTag("event.environment", environment);
   }
 
-  private void crash() => throw new RuntimeException("TEST - Sentry Silent Client Crash");
+  private void crash() { Sentry.captureException(new RuntimeException("TEST - Sentry Silent Client Crash")); }
 }
