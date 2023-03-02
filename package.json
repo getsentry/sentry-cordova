@@ -27,7 +27,6 @@
     "@sentry/browser": "7.34.0",
     "@sentry/core": "7.34.0",
     "@sentry/hub": "7.34.0",
-    "@sentry/replay": "7.34.0",
     "@sentry/types": "7.34.0",
     "@sentry/utils": "7.34.0",
     "@sentry/wizard": "^1.1.4"
