@@ -23,6 +23,8 @@ module.exports = {
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@sentry-internal/sdk/no-async-await': 'off',
+        '@sentry-internal/sdk/no-optional-chaining': 'off',
+        '@sentry-internal/sdk/no-nullish-coalescing': 'off',
       },
     },
   ],

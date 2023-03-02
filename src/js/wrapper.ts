@@ -1,10 +1,10 @@
-/* eslint-disable max-lines */
-import { Breadcrumb, Event, Response, User } from '@sentry/types';
+import type { AttachmentItem, BaseEnvelopeItemHeaders, Breadcrumb, ClientReportItem, Envelope, EnvelopeItem, Event, EventItem, SessionItem, SeverityLevel, User, UserFeedbackItem } from '@sentry/types';
 import { getGlobalObject, logger, SentryError } from '@sentry/utils';
 
-import { CordovaOptions } from './backend';
+import type { CordovaOptions } from './options';
 import { CordovaPlatformType } from './types';
 import { getPlatform, processLevel, serializeObject } from './utils';
+import { utf8ToBytes } from './vendor';
 
 /**
  * Our internal interface for calling native functions
@@ -19,7 +19,7 @@ export const NATIVE = {
    * @param options CordovaOptions
    */
   async startWithOptions(_options: CordovaOptions): Promise<boolean> {
-    if (this.SUPPORTS_NATIVE_SDK.includes(getPlatform())) {
+    if (_options.enableNative && this.SUPPORTS_NATIVE_SDK.includes(getPlatform())) {
       const options = {
         enableNative: true,
         ..._options,
@@ -73,42 +73,51 @@ export const NATIVE = {
    * Sending the event over the bridge to native
    * @param event Event
    */
-  async sendEvent(event: Event): Promise<Response> {
+  async sendEnvelope(envelope: Envelope): Promise<void> {
+    if (!this.enableNative) {
+      throw this._DisabledNativeError;
+    }
     if (!this.isNativeClientAvailable()) {
       throw this._NativeClientError;
     }
-    if (!this.isNativeTransportAvailable()) {
-      throw this._NativeTransportError;
+
+    const [EOL] = utf8ToBytes('\n');
+    const [envelopeHeader, envelopeItems] = envelope;
+
+    const headerString = JSON.stringify(envelopeHeader);
+    let envelopeBytes: number[] = utf8ToBytes(headerString);
+    envelopeBytes.push(EOL);
+
+    for (const rawItem of envelopeItems) {
+
+      const [itemHeader, itemPayload] = this._processItem(rawItem);
+
+      let bytesContentType: string;
+      let bytesPayload: number[] = [];
+      if (typeof itemPayload === 'string') {
+        bytesContentType = 'text/plain';
+        bytesPayload = utf8ToBytes(itemPayload);
+      } else if (itemPayload instanceof Uint8Array) {
+        bytesContentType = typeof itemHeader.content_type === 'string'
+          ? itemHeader.content_type
+          : 'application/octet-stream';
+        bytesPayload = [...itemPayload];
+      } else {
+        bytesContentType = 'application/json';
+        bytesPayload = utf8ToBytes(JSON.stringify(itemPayload));
+      }
+
+      // Content type is not inside BaseEnvelopeItemHeaders.
+      (itemHeader as BaseEnvelopeItemHeaders).content_type = bytesContentType;
+      (itemHeader as BaseEnvelopeItemHeaders).length = bytesPayload.length;
+      const serializedItemHeader = JSON.stringify(itemHeader);
+
+      envelopeBytes.push(...utf8ToBytes(serializedItemHeader));
+      envelopeBytes.push(EOL);
+      envelopeBytes = envelopeBytes.concat(bytesPayload);
+      envelopeBytes.push(EOL);
     }
-
-    // Process and convert deprecated levels
-    event.level = event.level ? processLevel(event.level) : undefined;
-
-    const header = {
-      event_id: event.event_id,
-      sdk: event.sdk,
-    };
-
-    const payload = {
-      ...event,
-      message: {
-        message: event.message,
-      },
-    };
-
-    if (getPlatform() === CordovaPlatformType.Android) {
-      const headerString = JSON.stringify(header);
-      const payloadString = JSON.stringify(payload);
-      const payloadType = payload.type ?? 'event';
-
-      return this._nativeCall('captureEnvelope', headerString, payloadString, payloadType);
-    }
-
-    // Serialize and remove any instances that will crash the native bridge such as Spans
-    const serializedPayload = JSON.parse(JSON.stringify(payload));
-
-    // The envelope item is created (and its length determined) on the iOS side of the native bridge.
-    return this._nativeCall('captureEnvelope', header, serializedPayload);
+    await this._nativeCall('captureEnvelope', { envelope: envelopeBytes });
   },
 
   /**
@@ -125,7 +134,7 @@ export const NATIVE = {
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, deprecation/deprecation
       const _window = getGlobalObject<any>();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const exec = _window && _window.Cordova && _window.Cordova.exec;
@@ -246,6 +255,88 @@ export const NATIVE = {
   },
 
   /**
+ * Gets the event from envelopeItem and applies the level filter to the selected event.
+ * @param data An envelope item containing the event.
+ * @returns The event from envelopeItem or undefined.
+ */
+  _processItem(item: EnvelopeItem): EnvelopeItem {
+    if (NATIVE.platform === 'android') {
+      const [itemHeader, itemPayload] = item;
+
+      if (itemHeader.type == 'event' || itemHeader.type == 'transaction') {
+        const event = this._processLevels(itemPayload as Event);
+        if ('message' in event) {
+          // @ts-ignore Android still uses the old message object, without this the serialization of events will break.
+          event.message = { message: event.message };
+        }
+        /*
+      We do this to avoid duplicate breadcrumbs on Android as sentry-android applies the breadcrumbs
+      from the native scope onto every envelope sent through it. This scope will contain the breadcrumbs
+      sent through the scope sync feature. This causes duplicate breadcrumbs.
+      We then remove the breadcrumbs in all cases but if it is handled == false,
+      this is a signal that the app would crash and android would lose the breadcrumbs by the time the app is restarted to read
+      the envelope.
+      Since unhandled errors from Javascript are not going to crash the App, we can't rely on the
+      handled flag for filtering breadcrumbs.
+        */
+        if (event.breadcrumbs) {
+          event.breadcrumbs = [];
+        }
+        return [itemHeader, event];
+      }
+    }
+
+    return item;
+  },
+
+  /**
+   * Gets the event from envelopeItem and applies the level filter to the selected event.
+   * @param data An envelope item containing the event.
+   * @returns The event from envelopeItem or undefined.
+   */
+  _getEvent(envelopeItem: EventItem | AttachmentItem | UserFeedbackItem | SessionItem | ClientReportItem): Event | undefined {
+    if (envelopeItem[0].type == 'event' || envelopeItem[0].type == 'transaction') {
+      return this._processLevels(envelopeItem[1] as Event);
+    }
+    return undefined;
+  },
+
+  /**
+   * Convert js severity level in event.level and event.breadcrumbs to more widely supported levels.
+   * @param event
+   * @returns Event with more widely supported Severity level strings
+   */
+  _processLevels(event: Event): Event {
+    const processed: Event = {
+      ...event,
+      level: event.level ? this._processLevel(event.level) : undefined,
+      breadcrumbs: event.breadcrumbs?.map(breadcrumb => ({
+        ...breadcrumb,
+        level: breadcrumb.level
+          ? this._processLevel(breadcrumb.level)
+          : undefined,
+      })),
+    };
+    return processed;
+  },
+
+  /**
+   * Convert js severity level which has critical and log to more widely supported levels.
+   * @param level
+   * @returns More widely supported Severity level strings
+   */
+  _processLevel(level: SeverityLevel): SeverityLevel {
+    if (level == 'log' as SeverityLevel) {
+      return 'debug' as SeverityLevel;
+    }
+    else if (level == 'critical' as SeverityLevel) {
+      return 'fatal' as SeverityLevel;
+    }
+
+    return level;
+  },
+
+  /**
    * Triggers a native crash.
    * Use this only for testing purposes.
    */
@@ -283,11 +374,12 @@ export const NATIVE = {
   },
 
   _NativeClientError: new SentryError('Native Client is not available.'),
-  _NativeTransportError: new SentryError('Native Transport is not available.'),
+  _DisabledNativeError: new SentryError('Native is disabled'),
 
   enableNative: true,
   _nativeInitialized: false,
 
   /** true if `getPlatform` has been called */
   _didGetPlatform: false,
+  platform: getPlatform().toString(),
 };
