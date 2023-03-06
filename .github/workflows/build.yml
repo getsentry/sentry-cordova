@@ -25,7 +25,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Node
         uses: actions/setup-node@v3
         # we use a hash of yarn.lock as our cache key, because if it hasn't changed, our dependencies haven't changed,
@@ -53,16 +53,16 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Node
         uses: actions/setup-node@v3
       - name: Check dependency cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         with:
           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
           key: ${{ needs.job_build.outputs.dependency_cache_key }}
       - name: Check build cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         with:
           path: ${{ env.CACHED_BUILD_PATHS }}
           key: ${{ env.BUILD_CACHE_KEY }}
@@ -76,16 +76,16 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Node
         uses: actions/setup-node@v3
       - name: Check dependency cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         with:
           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
           key: ${{ needs.job_install_deps.outputs.dependency_cache_key }}
       - name: Check build cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         id: cache_built_packages
         with:
           path: ${{ env.CACHED_BUILD_PATHS }}
@@ -113,9 +113,9 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Check Carthage build cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         id: cache_built_carthage
         with:
           path: ${{ env.CACHED_CARTHAGE_PATHS }}
@@ -135,21 +135,21 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
       - name: Check dependency cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         with:
           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
           key: ${{ needs.job_build.outputs.dependency_cache_key }}
       - name: Check build cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         with:
           path: ${{ env.CACHED_BUILD_PATHS }}
           key: ${{ env.BUILD_CACHE_KEY }}
       - name: Check Carthage build cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.5
         with:
           path: ${{ env.CACHED_CARTHAGE_PATHS }}
           key: ${{ hashFiles('src/ios/Cartfile') }}
@@ -173,7 +173,7 @@ jobs:
         shell: pwsh
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.3
+        uses: actions/checkout@v3
 
       - name: Download test app artifact
         uses: actions/download-artifact@v2
