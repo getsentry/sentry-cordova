@@ -1,5 +1,5 @@
-import { Severity } from '@sentry/types';
-import { getGlobalObject } from '@sentry/utils';
+import { WINDOW } from '@sentry/browser';
+import type { SeverityLevel } from '@sentry/types';
 
 import { CordovaPlatformType } from './types';
 
@@ -24,12 +24,9 @@ export const serializeObject = (data: { [key: string]: unknown }): { [key: strin
  * @param level
  * @returns More widely supported Severity level strings
  */
-export const processLevel = (level: Severity): Severity => {
-  if (level === Severity.Critical) {
-    return Severity.Fatal;
-  }
-  if (level === Severity.Log) {
-    return Severity.Debug;
+export const processLevel = (level: SeverityLevel): SeverityLevel => {
+  if (level === 'log' as SeverityLevel) {
+    return 'debug';
   }
 
   return level;
@@ -40,10 +37,9 @@ export const processLevel = (level: Severity): Severity => {
  * @returns The current platform the SDK is running on, defaults to Browser if unknown.
  */
 export const getPlatform = (): CordovaPlatformType => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const _window = getGlobalObject<any>();
+  const _window = WINDOW;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  let platform = _window?.cordova?.platformId;
+  let platform = _window?.cordova?.platformId as CordovaPlatformType;
 
   if (!platform || !Object.values(CordovaPlatformType).includes(platform)) {
     // Unsupported platform, default to browser

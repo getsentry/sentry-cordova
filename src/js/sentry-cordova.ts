@@ -1,16 +1,12 @@
-export {
+export type {
+  SeverityLevel,
   Breadcrumb,
   Request,
   SdkInfo,
   Event,
-  Exception,
-  Response,
-  Severity,
-  StackFrame,
-  Stacktrace,
-  Status,
-  Thread,
-  User,
+  Exception, StackFrame,
+  Stacktrace, Thread,
+  User
 } from '@sentry/types';
 
 export {
@@ -36,8 +32,7 @@ export {
 
 import { Integrations as BrowserIntegrations } from '@sentry/browser';
 
-export { CordovaBackend, CordovaOptions } from './backend';
-export { CordovaClient } from './client';
+export type { CordovaOptions } from './options';
 export { init, nativeCrash } from './sdk';
 export { SDK_NAME, SDK_VERSION } from './version';
 

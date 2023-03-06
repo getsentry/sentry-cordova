@@ -1,5 +1,5 @@
-import { Scope } from '@sentry/hub';
-import { Breadcrumb, User } from '@sentry/types';
+import { Scope } from '@sentry/core';
+import type { Breadcrumb, User } from '@sentry/types';
 
 import { NATIVE } from './wrapper';
 
