@@ -1,2 +1,2 @@
 export const SDK_NAME = 'sentry.javascript.cordova';
-export const SDK_VERSION = '1.0.4';
+export const SDK_VERSION = '1.1.4';
