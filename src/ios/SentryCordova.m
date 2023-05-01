@@ -83,8 +83,8 @@
     CDVPluginResult *result =
         [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
 
-    NSDictionary *commandDictoinary = [command.arguments objectAtIndex:0];
-    NSArray *bytes = commandDictoinary[@"envelope"];
+    NSDictionary *commandDictionary = [command.arguments objectAtIndex:0];
+    NSArray *bytes = commandDictionary[@"envelope"];
 
     NSMutableData *data = [[NSMutableData alloc] initWithCapacity: [bytes count]];
     for(NSNumber *number in bytes) {
@@ -102,7 +102,7 @@
     #if DEBUG
         [PrivateSentrySDKOnly captureEnvelope:envelope];
     #else
-        if (options[@'store']) {
+        if (commandDictionary[@'store']) {
             // Storing to disk happens asynchronously with captureEnvelope
             [PrivateSentrySDKOnly storeEnvelope:envelope];
         } else {
