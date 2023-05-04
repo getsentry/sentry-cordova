@@ -1,0 +1,1 @@
+{"version":3,"file":"types.js","sourceRoot":"","sources":["../../src/js/types.ts"],"names":[],"mappings":"AAAA,MAAM,CAAN,IAAY,mBAIX;AAJD,WAAY,mBAAmB;IAC7B,kCAAW,CAAA;IACX,0CAAmB,CAAA;IACnB,0CAAmB,CAAA;AACrB,CAAC,EAJW,mBAAmB,KAAnB,mBAAmB,QAI9B","sourcesContent":["export enum CordovaPlatformType {\n  Ios = 'ios',\n  Android = 'android',\n  Browser = 'browser',\n}\n"]}

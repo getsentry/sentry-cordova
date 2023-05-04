@@ -1,0 +1,1 @@
+{"version":3,"file":"cordova.d.ts","sourceRoot":"","sources":["../../../src/js/integrations/cordova.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAS,WAAW,EAAE,MAAM,eAAe,CAAC;AAIxD,2CAA2C;AAC3C,qBAAa,OAAQ,YAAW,WAAW;IACzC;;OAEG;IACH,OAAc,EAAE,EAAE,MAAM,CAAa;IAErC;;OAEG;IACI,IAAI,EAAE,MAAM,CAAc;IAEjC;;OAEG;IACI,SAAS,IAAI,IAAI;CASzB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"version.js","sourceRoot":"","sources":["../../src/js/version.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,QAAQ,GAAG,2BAA2B,CAAC;AACpD,MAAM,CAAC,MAAM,WAAW,GAAG,OAAO,CAAC","sourcesContent":["export const SDK_NAME = 'sentry.javascript.cordova';\nexport const SDK_VERSION = '1.1.4';\n"]}
