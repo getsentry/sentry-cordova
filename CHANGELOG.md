@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- iOS compile issue([#309](https://github.com/getsentry/sentry-cordova/pull/309))
+
 ## 1.1.4
 
 ### Dependencies
