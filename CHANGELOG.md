@@ -16,6 +16,7 @@
 ### Warning, breaking changes
 
 - The option `enableOutOfMemoryTracking` is now `enableWatchdogTerminationTracking`. The previous name will keep working but will be removed on a major version.
+- Bump minimum supported OS versions to macOS 10.13, iOS 11.
 
 ## 1.1.5
 
