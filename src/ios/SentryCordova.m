@@ -62,7 +62,7 @@
                                          error: (NSError *_Nonnull *_Nonnull) errorPointer
 {
     SentryBeforeSendEventCallback beforeSend = ^SentryEvent*(SentryEvent *event) {
-        // We don't want to send an event after startup that came from a Unhandled JS Exception of react native
+        // We don't want to send an event after startup that came from a Unhandled JS Exception of Cordova
         // Because we sent it already before the app crashed.
         if (nil != event.exceptions.firstObject.type &&
             [event.exceptions.firstObject.type rangeOfString:@"Unhandled JS Exception"].location != NSNotFound) {
