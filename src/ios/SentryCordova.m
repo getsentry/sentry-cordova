@@ -87,6 +87,7 @@
 
     SentryOptions *sentryOptions = [[SentryOptions alloc] initWithDict:mutableOptions didFailWithError:errorPointer];
     if (*errorPointer != nil) {
+        NSLog(@"Failed to create Sentry options.");
         return nil;
     }
 
