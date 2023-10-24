@@ -8,10 +8,10 @@
 
 ### Dependencies
 
-- Bump `sentry-wizard` to 3.10.0 ([#316](https://github.com/getsentry/sentry-cordova/pull/316))
-- build(ios): Bump `sentry-cocoa` to 8.9.3 ([#316](https://github.com/getsentry/sentry-cordova/pull/316))
-  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/7.27.1)
-  - [diff](https://github.com/getsentry/sentry-cocoa/compare/7.27.1...8.9.3)
+- Bump `sentry-wizard` to 3.16.1 ([#481](https://github.com/getsentry/sentry-wizard/pull/481))
+- build(ios): Bump `sentry-cocoa` to 8.13.1 ([#316](https://github.com/getsentry/sentry-cordova/pull/316))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.13.1)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/7.27.1...8.13.1)
 
 ### Warning, breaking changes
 
