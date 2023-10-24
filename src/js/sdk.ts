@@ -22,9 +22,14 @@ export function init(options: Partial<CordovaOptions>): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, deprecation/deprecation
   const window = getGlobalObject<{ SENTRY_RELEASE?: { id?: string } }>();
 
+  if (options.enableWatchdogTerminationTracking !== null) {
+    // eslint-disable-next-line deprecation/deprecation
+    options.enableWatchdogTerminationTracking = options.enableOutOfMemoryTracking;
+  }
+
   const finalOptions = {
     enableAutoSessionTracking: true,
-    enableOutOfMemoryTracking: true,
+    enableWatchdogTerminationTracking: true,
     ...DEFAULT_OPTIONS,
     release: window?.SENTRY_RELEASE?.id,
     ...options,

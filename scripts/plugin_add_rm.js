@@ -1,9 +1,9 @@
-module.exports = function(ctx) {
+module.exports = function (ctx) {
   try {
     if (!ctx.opts.plugins.some(plugin => plugin.includes('sentry-cordova'))) {
       return;
     }
-  } catch (e) {}
+  } catch (e) { }
 
   console.log(`Sentry: running ${ctx.hook} - set SENTRY_SKIP_WIZARD=true to skip this`);
 

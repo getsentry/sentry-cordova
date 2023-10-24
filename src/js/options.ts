@@ -39,5 +39,15 @@ export interface CordovaOptions
   *
   * @default true
   * */
+  enableWatchdogTerminationTracking?: boolean;
+
+  /**
+  * Enables Out of Memory Tracking for iOS and macCatalyst.
+  * See the following link for more information and possible restrictions:
+  * https://docs.sentry.io/platforms/apple/guides/ios/configuration/out-of-memory/
+  *
+  * @default true
+  * @deprecated The method will be removed on a major update, instead, use enableWatchdogTerminationTracking for the same result.
+  * */
   enableOutOfMemoryTracking?: boolean;
 }

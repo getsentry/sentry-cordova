@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+-  Fix iOS not bundling ([#316](https://github.com/getsentry/sentry-cordova/pull/316))
+
+### Dependencies
+
+- Bump `sentry-wizard` to 3.16.1 ([#481](https://github.com/getsentry/sentry-wizard/pull/481))
+- build(ios): Bump `sentry-cocoa` to 8.13.1 ([#316](https://github.com/getsentry/sentry-cordova/pull/316))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.13.1)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/7.27.1...8.13.1)
+
+### Warning, breaking changes
+
+- The option `enableOutOfMemoryTracking` is now `enableWatchdogTerminationTracking`. The previous name will keep working but will be removed on a major version.
+- Bump minimum supported OS versions to macOS 10.13, iOS 11.
+
 ## 1.1.5
 
 ### Fixes

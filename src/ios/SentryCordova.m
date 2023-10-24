@@ -1,6 +1,7 @@
 #import "SentryCordova.h"
 #import <Sentry/Sentry.h>
 #import <Sentry/PrivateSentrySDKOnly.h>
+#import <Sentry/SentryOptions+HybridSDKs.h>
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
@@ -25,8 +26,11 @@
 
   NSError *error = nil;
 
-  SentryOptions *sentryOptions = [[SentryOptions alloc] initWithDict:options
-                                                    didFailWithError:&error];
+    SentryOptions* sentryOptions = [self createOptionsWithDictionary:options error:&error];
+    if (error != nil) {
+        NSLog(@"%@", error);
+        return;
+    }
 
   CDVPluginResult *result =
       [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
@@ -35,7 +39,7 @@
     result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
                                  messageAsBool:NO];
   } else {
-    [SentrySDK startWithOptionsObject:sentryOptions];
+      [SentrySDK startWithOptions:sentryOptions];
 
     // If the app is active/in foreground, and we have not sent the
     // SentryHybridSdkDidBecomeActive notification, send it.
@@ -52,6 +56,61 @@
   }
 
   [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+}
+
+- (SentryOptions *_Nullable)createOptionsWithDictionary:(NSDictionary *_Nonnull)options
+                                         error: (NSError *_Nonnull *_Nonnull) errorPointer
+{
+    SentryBeforeSendEventCallback beforeSend = ^SentryEvent*(SentryEvent *event) {
+        // We don't want to send an event after startup that came from a Unhandled JS Exception of Cordova
+        // Because we sent it already before the app crashed.
+        if (nil != event.exceptions.firstObject.type &&
+            [event.exceptions.firstObject.type rangeOfString:@"Unhandled JS Exception"].location != NSNotFound) {
+            NSLog(@"Unhandled JS Exception");
+            return nil;
+        }
+
+        [self setEventOriginTag:event];
+
+        return event;
+    };
+
+    NSMutableDictionary * mutableOptions =[options mutableCopy];
+    [mutableOptions setValue:beforeSend forKey:@"beforeSend"];
+
+    // remove performance traces sample rate and traces sampler since we don't want to synchronize these configurations
+    // to the Native SDKs.
+    // The user could tho initialize the SDK manually and set themselves.
+    [mutableOptions removeObjectForKey:@"tracesSampleRate"];
+    [mutableOptions removeObjectForKey:@"tracesSampler"];
+    [mutableOptions removeObjectForKey:@"enableTracing"];
+
+    SentryOptions *sentryOptions = [[SentryOptions alloc] initWithDict:mutableOptions didFailWithError:errorPointer];
+    if (*errorPointer != nil) {
+        NSLog(@"Failed to create Sentry options.");
+        return nil;
+    }
+
+    if ([mutableOptions valueForKey:@"enableNativeCrashHandling"] != nil) {
+        BOOL enableNativeCrashHandling = [mutableOptions[@"enableNativeCrashHandling"] boolValue];
+
+        if (!enableNativeCrashHandling) {
+            NSMutableArray *integrations = sentryOptions.integrations.mutableCopy;
+            [integrations removeObject:@"SentryCrashIntegration"];
+            sentryOptions.integrations = integrations;
+        }
+    }
+
+    // Enable the App start and Frames tracking measurements
+    if ([mutableOptions valueForKey:@"enableAutoPerformanceTracing"] != nil) {
+        BOOL enableAutoPerformanceTracing = [mutableOptions[@"enableAutoPerformanceTracing"] boolValue];
+        PrivateSentrySDKOnly.appStartMeasurementHybridSDKMode = enableAutoPerformanceTracing;
+#if TARGET_OS_IPHONE || TARGET_OS_MACCATALYST
+        PrivateSentrySDKOnly.framesTrackingMeasurementHybridSDKMode = enableAutoPerformanceTracing;
+#endif
+    }
+
+    return sentryOptions;
 }
 
 - (void)setEventOriginTag:(SentryEvent *)event {
