@@ -537,7 +537,7 @@
   dependencies:
     "@sentry/types" "7.75.0"
 
-"@sentry/wizard@3.16.1":
+"@sentry/wizard@^3.16.1":
   version "3.16.1"
   resolved "https://registry.yarnpkg.com/@sentry/wizard/-/wizard-3.16.1.tgz#af08e72aaaf783ba608c43a4d8d6eef5e58abdb1"
   integrity sha512-BaBVHFFEpecOyLDVKx6wgalYdA7FC2oyRgQ9KIZzoMr9+Phfq0aLPQG5g2A9RefBX6jbISGGcYVIUuiwAEQAmQ==
@@ -2778,11 +2778,6 @@ is-typedarray@^1.0.0, is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
   integrity sha1-5HnICFjfDBsR3dppQPlgEfzaSpo=
-
-is-unicode-supported@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/is-unicode-supported/-/is-unicode-supported-1.3.0.tgz#d824984b616c292a2e198207d4a609983842f714"
-  integrity sha512-43r2mRvz+8JRIKnWJ+3j8JtjRKZ6GmjzfaE/qiBJnikNnYv/6bagRJ1kUhNk8R5EX/GkobD+r+sfxCPJsiKBLQ==
 
 is-windows@^1.0.2:
   version "1.0.2"
