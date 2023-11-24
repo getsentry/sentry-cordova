@@ -25,8 +25,9 @@ On the root folder of Sentry Cordova run the following commands:
 
 ### Testing on a sample project
 
-On the sample project folder, load your local Sentry Cordova with the following command:
+On the sample project folder, load your local Sentry Cordova with the following commands:
 
+- yarn platforms:add
 - cordova plugin add '../'
 
 If succeeded, Sentry wizzard will be invoked and your project configured with Sentry Cordova.

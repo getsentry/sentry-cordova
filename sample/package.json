@@ -1,33 +1,47 @@
 {
-  "name": "io.cordova.hellocordova",
-  "displayName": "HelloCordova",
+  "name": "io.cordova.hellosentrycordova",
+  "displayName": "SentryCordova",
   "version": "1.0.0",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "platforms:add": "cordova platform add ios && cordova platform add android && cordova platform add browser",
+    "platforms:remove": "cordova platform rm ios && cordova platform rm android && cordova platform rm browser",
+    "sentry:remove": "cordova plugins remove sentry-cordova",
+    "reset-ios": "cordova platform rm ios && cordova platform add ios",
+    "reset-sentry-ios": "yarn reset-ios && cordova plugins add ../sentry-cordova",
+    "build": "cordova build"
   },
   "keywords": [
     "ecosystem:cordova"
   ],
-  "author": "Apache Cordova Team",
-  "license": "Apache-2.0",
   "devDependencies": {
-    "cordova-browser": "^6.0.0",
-    "cordova-ios": "^6.2.0",
-    "cordova-plugin-whitelist": "^1.3.5",
-    "sentry-cordova": "^1.0.0"
+    "cordova-android": "^12.0.1",
+    "cordova-browser": "^7.0.0",
+    "cordova-ios": "^7.0.1",
+    "sentry-cordova": "file:../sentry-cordova"
   },
   "cordova": {
-    "plugins": {
-      "cordova-plugin-whitelist": {},
+    "_comment_plugins": {
       "sentry-cordova": {
-        "SENTRY_ANDROID_SDK_VERSION": "4.1.0"
+        "SENTRY_ANDROID_SDK_VERSION": "6.11.0"
       }
     },
     "platforms": [
-      "browser",
-      "ios"
-    ]
+      "ios",
+      "android",
+      "browser"
+    ],
+    "plugins_comment": {
+      "sentry-cordova": {}
+    },
+    "plugins": {
+      "sentry-cordova": {}
+    }
+  },
+  "dependencies": {
+    "cordova": "^12.0.0",
+    "typescript": "^5.2.2"
   }
 }
