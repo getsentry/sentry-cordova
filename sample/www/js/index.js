@@ -22,27 +22,13 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
-    // Cordova is now initialized. Have fun!
-    var Sentry = cordova.require("sentry-cordova.Sentry");
-    Sentry.init({
-         dsn: 'https://7e4fb5fbc26e4014acb13772e1782aea@o447951.ingest.sentry.io/5627302', 
-         debug:true, 
-         release:'a6ea5e699790',
-         enableNtive: false,
-/*
-         // This sets the sample rate to be 10%. You may want this to be 100% while
-        // in development and sample at a lower rate in production
-        replaysSessionSampleRate: 0.1,
-        // If the entire session is not sampled, use the below sample rate to sample
-        // sessions when an error occurs.
-        replaysOnErrorSampleRate: 1.0,
-         integrations: [ new Sentry.Replay({
-            maskAllText: true,
-            blockAllMedia: false,    
-         }) ],
-  */      
-    });
-  
-    console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
-    document.getElementById('deviceready').classList.add('ready');
+  // Cordova is now initialized. Have fun!
+  var Sentry = cordova.require("sentry-cordova.Sentry");
+  Sentry.init({
+    dsn: 'https://7e4fb5fbc26e4014acb13772e1782aea@o447951.ingest.sentry.io/5627302',
+    debug: true,
+  });
+
+  console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
+  document.getElementById('deviceready').classList.add('ready');
 }
