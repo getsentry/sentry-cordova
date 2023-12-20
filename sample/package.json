@@ -20,6 +20,7 @@
     "ecosystem:cordova"
   ],
   "devDependencies": {
+    "cordova-android": "^12.0.1",
     "cordova-browser": "^7.0.0",
     "cordova-ios": "^7.0.1",
     "sentry-cordova": "file:.yalc/sentry-cordova"
@@ -32,6 +33,7 @@
     },
     "platforms": [
       "ios",
+      "android",
       "browser"
     ],
     "plugins_comment": {
@@ -42,7 +44,7 @@
     }
   },
   "dependencies": {
-    "cordova": "^7.0.1",
+    "cordova": "^12.0.0",
     "typescript": "^5.2.2"
   }
 }
