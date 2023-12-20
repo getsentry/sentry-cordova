@@ -2,13 +2,13 @@
 <widget id="com.sentry.cordova" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>HelloSentry</name>
     <description>Sample Apache Cordova App with Sentry</description>
-    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
-        Apache Cordova Team
-    </author>
     <content src="index.html" />
     <access origin="o447951.ingest.sentry.io" />
     <access origin="sentry.io" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
-    <source-file src="..." target-dir="..."/>
+    <source-file src="..." target-dir="..." />
+    <engine name="ios" />
+    <engine name="browser" />
+    <plugin name="sentry-cordova" />
 </widget>
