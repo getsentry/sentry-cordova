@@ -13,7 +13,6 @@ sentry.properties
 ## Build generated
 build/
 DerivedData
-www
 coverage
 
 ## Various settings
