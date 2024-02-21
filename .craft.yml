@@ -11,4 +11,5 @@ preReleaseCommand: bash scripts/craft-pre-release.sh
 targets:
   - name: npm
   - name: github
+  - name: registry
     tagPrefix: v
