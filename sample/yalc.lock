@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "sentry-cordova": {
-      "signature": "3e632c35ff5297f3595a5d05b5108a10",
+      "signature": "e2954ab708fdc853c3f51a10930867cf",
       "file": true,
       "replaced": "file:../"
     }
