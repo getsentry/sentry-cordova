@@ -5,7 +5,7 @@
 ### Dependencies
 
 - Bump `sentry-wizard` to 3.21.0 ([#544](https://github.com/getsentry/sentry-wizard/pull/544))
-- Bump Android SDK from v6.11.0 to v7.6.0 ([#544](https://github.com/getsentry/sentry-capacitor/pull/336))
+- Bump Android SDK from v6.11.0 to v7.6.0 ([#336](https://github.com/getsentry/sentry-capacitor/pull/336))
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#760)
   - [diff](https://github.com/getsentry/sentry-java/compare/6.11.0...7.6.0)
 
