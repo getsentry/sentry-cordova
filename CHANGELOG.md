@@ -1,5 +1,14 @@
 # Changelog
 
+## Unrelease
+
+### Dependencies
+
+- Bump Android SDK from v6.11.0 to v7.6.0 ([#544](https://github.com/getsentry/sentry-capacitor/pull/544))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#760)
+  - [diff](https://github.com/getsentry/sentry-java/compare/6.34.0...7.6.0)
+
+
 ## 1.2.0
 
 ### Fixes
