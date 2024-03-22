@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add options for iOS: enableAppHangTracking and appHangTimeoutInterval, allowing users to define the App hang timeout or completly disabling it. ([#338](https://github.com/getsentry/sentry-cordova/pull/338))
+
 ## 1.2.0
 
 ### Fixes
