@@ -4,7 +4,7 @@
 
 ### Dependencies
 
-- build(ios): Bump `sentry-cocoa` to 8.21.0 ([#317](https://github.com/getsentry/sentry-cordova/pull/337))
+- build(ios): Bump `sentry-cocoa` to 8.21.0 ([#337](https://github.com/getsentry/sentry-cordova/pull/337))
   - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.21.0)
   - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.13.1...8.21.0)
 ## 1.2.0
