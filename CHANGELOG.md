@@ -6,6 +6,12 @@
 
 - Add options for iOS: enableAppHangTracking and appHangTimeoutInterval, allowing users to define the App hang timeout or completly disabling it. ([#338](https://github.com/getsentry/sentry-cordova/pull/338))
 
+### Dependencies
+
+- build(ios): Bump `sentry-cocoa` to 8.21.0 ([#337](https://github.com/getsentry/sentry-cordova/pull/337))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.21.0)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.13.1...8.21.0)
+
 ## 1.2.0
 
 ### Fixes
