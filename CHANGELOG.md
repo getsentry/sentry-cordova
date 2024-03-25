@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Features
+
+- Add options for iOS: enableAppHangTracking and appHangTimeoutInterval, allowing users to define the App hang timeout or completly disabling it. ([#338](https://github.com/getsentry/sentry-cordova/pull/338))
+
 ### Dependencies
 
 - Bump `sentry-wizard` to 3.21.0 ([#544](https://github.com/getsentry/sentry-wizard/pull/544))

@@ -7,6 +7,8 @@ import { Cordova, EventOrigin, SdkInfo } from './integrations';
 import type { CordovaOptions } from './options';
 import { CordovaScope } from './scope';
 import { makeCordovaTransport } from './transports/cordova';
+import { CordovaPlatformType } from './types';
+import { getPlatform } from './utils';
 import { NATIVE } from './wrapper';
 const DEFAULT_OPTIONS: CordovaOptions = {
   enableNative: true,
@@ -46,6 +48,11 @@ export function init(options: Partial<CordovaOptions>): void {
     }
     if (finalOptions.enableNative === undefined) {
       finalOptions.enableNative = true;
+    }
+
+    if (getPlatform() !== CordovaPlatformType.Ios) {
+      delete finalOptions.appHangTimeoutInterval;
+      delete finalOptions.enableAppHangTracking;
     }
   }
 
