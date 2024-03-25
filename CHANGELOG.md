@@ -4,6 +4,10 @@
 
 ### Dependencies
 
+- Bump `sentry-wizard` to 3.21.0 ([#544](https://github.com/getsentry/sentry-wizard/pull/544))
+- Bump Android SDK from v6.11.0 to v7.6.0 ([#336](https://github.com/getsentry/sentry-capacitor/pull/336))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#760)
+  - [diff](https://github.com/getsentry/sentry-java/compare/6.11.0...7.6.0)
 - build(ios): Bump `sentry-cocoa` to 8.21.0 ([#337](https://github.com/getsentry/sentry-cordova/pull/337))
   - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.21.0)
   - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.13.1...8.21.0)

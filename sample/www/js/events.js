@@ -12,11 +12,11 @@ function buttonClick(){ {
     console.log("execute capture error");
     try {
         data_throwerror();
-        
+
     } catch (error) {
         var Sentry = cordova.require("sentry-cordova.Sentry", "debug");
         Sentry.captureException(error);
-            
+
     }
 
 }}
@@ -30,7 +30,7 @@ function captureMessage(){ {
 function native(){ {
     console.log("execute native");
     var Sentry = cordova.require("sentry-cordova.Sentry");
-    Sentry.crash();
+    Sentry.nativeCrash();
 
 }}
 
@@ -42,7 +42,7 @@ function addBreadcrumb(){ {
         category: "auth",
         message: "Authenticated user 1234",
         level: "log",
-      });    
+      });
 }}
 
 function setTag(){ {
@@ -51,3 +51,4 @@ function setTag(){ {
     Sentry.setTag("tag", "value");
 
 }}
+
