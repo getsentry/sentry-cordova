@@ -51,3 +51,4 @@ function setTag(){ {
     Sentry.setTag("tag", "value");
 
 }}
+
