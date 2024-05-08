@@ -6,19 +6,22 @@ function onBackKeyDown() {
   document.removeEventListener("backbutton", onBackKeyDown, false);
 }
 
+function wait(ms) {
+  var start = Date.now(),
+      now = start;
+  while (now - start < ms) {
+    now = Date.now();
+  }
+}
+
 function doPerformanceMonitor() {
   // Start a Sentry transaction
-  const transaction = Sentry.instance.startTransaction({ name: 'example-transaction', op: 'example-operation' });
-
-  // Create a span inside the transaction
-  const span = transaction.startChild({ op: 'example-span-operation' });
-
-  // Simulate some work within the span
-  setTimeout(() => {
-    // Finish the span after 3 seconds
-    span.finish();
-
-    // Finish the transaction after all work is done
-    transaction.finish();
-  }, 3000);
+  wait(100);
+  Sentry.instance.startSpan({ name: 'example-transaction', op: 'example-operation' }, (span) =>
+  {
+    Sentry.instance.startSpan(({ op: 'example-span-operation' }), () => {
+      wait(100);
+    });
+    wait(100);
+  });
 }

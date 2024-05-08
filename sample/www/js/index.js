@@ -31,7 +31,17 @@ function onDeviceReady() {
     debug: true,
     replaysSessionSampleRate: 1,
     replaysOnErrorSampleRate: 1,
-    tracesSampleRate: 1
+    tracesSampleRate: 1,
+    profilesSampleRate: 1,
+    integrations: [
+      Sentry.replayIntegration({
+        maskAllText: false,
+        blockAllMedia: true,
+      }),
+      Sentry.browserTracingIntegration(),
+      Sentry.browserProfilingIntegration()
+
+    ]
   });
 
   console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
