@@ -1,5 +1,55 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Sentry Replay Support ([#342](https://github.com/getsentry/sentry-wizard/pull/342))
+- Sentry Profiling Support ([#342](https://github.com/getsentry/sentry-wizard/pull/342))
+
+How to use:
+
+Replay, profiling and performance monitoring are bundled into Sentry Cordova, all you need to do is to initialise the SDK, include the desired feature and use the sampling filters:
+
+```javascript
+/***
+ * @type {import("sentry-cordova")}
+ */
+  var Sentry = cordova.require("sentry-cordova.Sentry");
+  Sentry.init({
+    dsn: YOUR_DSN,
+    integrations: [
+      // Replay integration.
+      Sentry.replayIntegration({
+        maskAllText: false,
+        blockAllMedia: true,
+      }),
+      // Tracing integration.
+      Sentry.browserTracingIntegration(),
+      // Profiling integration.
+      Sentry.browserProfilingIntegration()
+    ],
+    // Replay sampling filters.
+    replaysSessionSampleRate: 1,
+    replaysOnErrorSampleRate: 1,
+
+    // Tracing sampling filter.
+    tracesSampleRate: 1,
+
+    // Profiling sampling filter.
+    profilesSampleRate: 1
+  });
+```
+
+### Dependencies
+
+- Bump `sentry-wizard` to 3.22.0 ([#342](https://github.com/getsentry/sentry-wizard/pull/342))
+- Bump Sentry JavaScript SDK to `7.114.0` ([#342](https://github.com/getsentry/sentry-cordova/pull/342))
+  - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/7.114.0)
+  - [diff](https://github.com/getsentry/sentry-javascript/compare/7.34.0...7.114.0)
+
+NOTE: There are important changes on the Javascript SDK, please check the Sentry JavaScript changelog from version 7.34.0 up to 7.11.0 to see if you have any impacted change on your code.
+
 ## 1.3.0
 
 ### Features
