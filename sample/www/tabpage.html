@@ -1,0 +1,37 @@
+<h1 class="titleHeader" style="max-height: 20%;">
+  <span>Sentry Cordova</span>
+  <div style="max-height: 50%;">
+    <img src="img/logo.png" alt="logo" style="max-height: 100%; width: auto;"/>
+  </div>
+  <div id="deviceready" class="blink" style="margin: 10px">
+      <p class="event listening">Connecting to Device</p>
+      <p class="event received">Device is Ready</p>
+  </div>
+</h1>
+
+<div id="tab-root" style="display: flex; flex-direction: column; height: 100vh;">
+  <div id="tab1" class="tabcontent">
+    <div class="container">
+      <ul>
+        <li><button onclick="captureHandled()">Capture Handled Error</button></li>
+        <li><button onclick="captureUnhandled()">Capture Unhandled Error</button></li>
+        <li><button onclick="addTag()">Set Tag</button></li>
+        <li><button onclick="addBreadcrumb()">Add Breadcrumb</button></li>
+        <li><button onclick="captureMessage()">Capture Message</button></li>
+        </ul>
+  </div>
+  </div>
+  <div id="tab2" class="tabcontent">
+    <div class="container">
+      <ul>
+        <li><button onclick="capturePerformance()">Create performance measure</button></li>
+        <li><button onclick="navigateCrash()">Navigation page and crash</button></li>
+        <li><button onclick="nativeCrash()">Native crash</button></li>
+        </ul>
+  </div>
+  </div>
+</div>
+<div id="tab_selector" class="tabs">
+  <a href="#" class="tab" onclick="selectTab('tab1', this)">Tab 1</a>
+  <a href="#" class="tab" onclick="selectTab('tab2', this)">Tab 2</a>
+</div>

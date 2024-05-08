@@ -1,0 +1,40 @@
+.container {
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+}
+
+/* Style for the list */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Style for list items (optional) */
+li {
+  margin-bottom: 5px;
+  display: inline-block; /* Display list items inline */
+  width: 100%; /* Ensure list items take up full width */
+}
+
+/* Style for buttons */
+button {
+  display: block;
+  width: 100%;
+  padding-left: auto;
+  padding-right: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center; /* Justify text within the button */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
