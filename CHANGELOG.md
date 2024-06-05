@@ -48,7 +48,7 @@ Replay, profiling and performance monitoring are bundled into Sentry Cordova, al
   - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/7.114.0)
   - [diff](https://github.com/getsentry/sentry-javascript/compare/7.34.0...7.114.0)
 
-NOTE: There are important changes on the Javascript SDK, please check the Sentry JavaScript changelog from version 7.34.0 up to 7.11.0 to see if you have any impacted change on your code.
+NOTE: There are important changes on the Javascript SDK, please check the Sentry JavaScript changelog from version 7.34.0 up to 7.114.0 to see if you have any impacted change on your code.
 
 ## 1.3.0
 
