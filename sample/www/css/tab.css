@@ -1,0 +1,29 @@
+.tabs {
+  background-color: ghostwhite;
+  display: flex;
+  justify-content: space-around;
+  margin-top: auto; /* Align tabs to bottom of the page */
+  margin-bottom: 30px;
+  border-top: 1px solid #ccc; /* Separate tabs from content */
+  padding-top: 30px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  color: #999;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #007bff;
+  font-weight: bold;
+  border-bottom: 2px solid #007bff;
+}
+
+.tabcontent {
+  display: none;
+}

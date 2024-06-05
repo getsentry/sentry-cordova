@@ -9,7 +9,9 @@
   "scripts": {
     "build": "cordova build",
     "open-xcode": "open ./platforms/ios/HelloSentry.xcworkspace",
-    "ios-run": "cordova emulate ios",
+    "run-ios": "cordova emulate ios",
+    "run-android": "cordova emulate android",
+    "run-web": "cordova serve",
     "platforms:add": "cordova platform add ios && cordova platform add android && cordova platform add browser",
     "platforms:remove": "cordova platform rm ios && cordova platform rm android && cordova platform rm browser",
     "sentry:remove": "cordova plugins remove sentry-cordova",
@@ -22,7 +24,6 @@
   "devDependencies": {
     "cordova-android": "^12.0.1",
     "cordova-browser": "^7.0.0",
-    "cordova-ios": "^7.0.1",
     "sentry-cordova": "file:.yalc/sentry-cordova"
   },
   "cordova": {
@@ -33,14 +34,15 @@
     },
     "platforms": [
       "android",
-      "browser",
-      "ios"
+      "browser"
     ],
     "plugins_comment": {
       "sentry-cordova": {}
     },
     "plugins": {
-      "sentry-cordova": {}
+      "sentry-cordova": {
+        "SENTRY_ANDROID_SDK_VERSION": "7.6.0"
+      }
     }
   },
   "dependencies": {
