@@ -6,7 +6,7 @@
 
 - build(ios): Bump `sentry-cocoa` to 8.36.0 ([#352](https://github.com/getsentry/sentry-cordova/pull/352))
   - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.36.0)
-  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.21.0...8.21.0)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.21.0...8.36.0)
 
 ## 1.3.0
 
