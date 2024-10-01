@@ -73,3 +73,6 @@ package-lock.json
 
 # Generated Lockfiles
 Cartfile.resolved
+
+# Yalc
+sample/yalc.lock
