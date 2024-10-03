@@ -30,7 +30,6 @@ function onDeviceReady() {
   Sentry.init({
     dsn: 'https://7e4fb5fbc26e4014acb13772e1782aea@o447951.ingest.sentry.io/5627302',
     debug: true,
-    dist: "",
     integrations: [
       // Replay integration.
       Sentry.replayIntegration({
