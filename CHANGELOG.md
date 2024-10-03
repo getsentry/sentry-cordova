@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ### Features
 
 - Sentry Replay Support ([#354](https://github.com/getsentry/sentry-wizard/pull/354))
