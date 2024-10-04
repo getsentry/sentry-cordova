@@ -42,11 +42,15 @@ Replay, profiling and performance monitoring are bundled into Sentry Cordova, al
   - [diff](https://github.com/getsentry/sentry-javascript/compare/7.34.0...7.118.0)
 - Bump `sentry-wizard` to 3.32.0 ([#354](https://github.com/getsentry/sentry-wizard/pull/354))
 
+- build(ios): Bump `sentry-cocoa` to 8.36.0 ([#352](https://github.com/getsentry/sentry-cordova/pull/352))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.36.0)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.21.0...8.36.0)
+
 ## 1.3.0
 
 ### Features
 
-- Add options for iOS: enableAppHangTracking and appHangTimeoutInterval, allowing users to define the App hang timeout or completly disabling it. ([#338](https://github.com/getsentry/sentry-cordova/pull/338))
+- Add options for iOS: enableAppHangTracking and appHangTimeoutInterval, allowing users to define the App hang timeout or completly disabling it. ([#338](https://github.com/getsentry/sentry-cordova/pull/338))s
 
 ### Dependencies
 
