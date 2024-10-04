@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "sentry-cordova": {
-      "signature": "2e6b6dee92a533c02fecac153810834a",
-      "file": true
-    }
-  }
-}
