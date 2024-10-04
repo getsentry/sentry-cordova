@@ -40,7 +40,6 @@ function onDeviceReady() {
       Sentry.browserTracingIntegration(),
     ],
 
-
     // Replay sampling filters.
     replaysSessionSampleRate: 1,
     replaysOnErrorSampleRate: 1,
