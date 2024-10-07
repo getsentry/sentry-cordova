@@ -37,9 +37,9 @@ Replay, profiling and performance monitoring are bundled into Sentry Cordova, al
 
 ### Dependencies
 
-- Bump Sentry JavaScript SDK to `7.119.0` ([#354](https://github.com/getsentry/sentry-cordova/pull/354))
-  - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/7.119.0)
-  - [diff](https://github.com/getsentry/sentry-javascript/compare/7.34.0...7.119.0)
+- Bump Sentry JavaScript SDK to `7.119.1` ([#354](https://github.com/getsentry/sentry-cordova/pull/354))
+  - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/7.119.1)
+  - [diff](https://github.com/getsentry/sentry-javascript/compare/7.34.0...7.119.1)
 - Bump `sentry-wizard` to 3.32.0 ([#354](https://github.com/getsentry/sentry-wizard/pull/354))
 
 - build(ios): Bump `sentry-cocoa` to 8.36.0 ([#352](https://github.com/getsentry/sentry-cordova/pull/352))
