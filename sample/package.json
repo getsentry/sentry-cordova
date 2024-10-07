@@ -20,7 +20,7 @@
     "ecosystem:cordova"
   ],
   "devDependencies": {
-    "cordova-android": "^12.0.1",
+    "cordova-android": "^13.0.0",
     "cordova-browser": "^7.0.0",
     "cordova-ios": "^7.1.1",
     "sentry-cordova": "file:.yalc/sentry-cordova"
@@ -41,7 +41,7 @@
     },
     "plugins": {
       "sentry-cordova": {
-        "SENTRY_ANDROID_SDK_VERSION": "7.6.0"
+        "SENTRY_ANDROID_SDK_VERSION": "7.14.0"
       }
     }
   },
