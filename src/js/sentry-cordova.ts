@@ -1,43 +1,60 @@
+
 export type {
-  SeverityLevel,
   Breadcrumb,
   Request,
   SdkInfo,
   Event,
-  Exception, StackFrame,
-  Stacktrace, Thread,
-  User
+  Exception,
+  SeverityLevel,
+  StackFrame,
+  Stacktrace,
+  Thread,
+  User,
 } from '@sentry/types';
 
 export {
+  // eslint-disable-next-line deprecation/deprecation
   addGlobalEventProcessor,
+  addEventProcessor,
   addBreadcrumb,
   captureException,
   captureEvent,
   captureMessage,
+  // eslint-disable-next-line deprecation/deprecation
   configureScope,
-  withScope,
+  getCurrentScope,
   getHubFromCarrier,
   getCurrentHub,
-  setUser,
+  Hub,
+  Scope,
   setContext,
   setExtra,
   setExtras,
   setTag,
   setTags,
+  setUser,
+  // eslint-disable-next-line deprecation/deprecation
   startTransaction,
-  Hub,
-  Scope,
+  startSpan,
+  startSpanManual,
+  startInactiveSpan,
+  withScope,
 } from '@sentry/core';
 
-import { Integrations as BrowserIntegrations } from '@sentry/browser';
+
+export {
+  replayIntegration,
+  browserTracingIntegration,
+} from '@sentry/browser';
 
 export type { CordovaOptions } from './options';
 export { init, nativeCrash } from './sdk';
 export { SDK_NAME, SDK_VERSION } from './version';
 
+
+export { Integrations as BrowserIntegrations } from '@sentry/browser';
+
 import * as Integrations from './integrations';
 export { Integrations };
-export { BrowserIntegrations };
 
 export { withSentryIonicErrorHandler } from './Ionic/SentryIonicErrorHandler';

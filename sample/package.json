@@ -32,8 +32,9 @@
       }
     },
     "platforms": [
-      "android",
-      "browser"
+      "browser",
+      "ios",
+      "android"
     ],
     "plugins_comment": {
       "sentry-cordova": {}
