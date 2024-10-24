@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump `sentry-wizard` to 3.34.2 ([#356](https://github.com/getsentry/sentry-cordova/pull/356))
+
 ## 1.4.0
 
 ### Features
