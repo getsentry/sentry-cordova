@@ -24,6 +24,7 @@
   ],
   "description": "Official Sentry SDK for Cordova",
   "dependencies": {
+    "@jest/types": "^29.6.3",
     "@sentry/browser": "7.119.1",
     "@sentry/core": "7.119.1",
     "@sentry/hub": "7.119.1",
@@ -36,7 +37,7 @@
     "@sentry-internal/eslint-config-sdk": "7.119.1",
     "@sentry-internal/typescript": "7.119.1",
     "@types/cordova": "0.0.34",
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^26.0.24",
     "@types/node": "^12.7.5",
     "@types/prettier": "<2.6.0",
     "codecov": "^3.8.3",
