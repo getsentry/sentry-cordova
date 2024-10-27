@@ -32,7 +32,7 @@
     "@sentry/wizard": "^3.34.2"
   },
   "devDependencies": {
-    "@jest/types": "^29.6.3",
+    "@jest/types": "^26.6.2",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-terser": "^0.4.4",
@@ -44,7 +44,7 @@
     "@types/node": "^12.7.5",
     "@types/prettier": "<2.6.0",
     "eslint": "^7.13.0",
-    "jest": "^26.1.0",
+    "jest": "^26.6.3",
     "json-schema": "^0.4.0",
     "prettier": "^3.3.3",
     "prettier-check": "^2.0.0",
