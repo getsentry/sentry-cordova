@@ -37,8 +37,7 @@ export function init(options: Partial<CordovaOptions>): void {
     ...options,
   };
 
-  if (finalOptions.enabled === false ||
-    NATIVE.platform === 'browser') {
+  if (finalOptions.enabled === false || NATIVE.platform === 'browser') {
     finalOptions.enableNative = false;
     finalOptions.enableNativeNagger = false;
   } else {
@@ -57,10 +56,13 @@ export function init(options: Partial<CordovaOptions>): void {
   }
 
   // Initialize a new hub using our scope with native sync
+  // eslint-disable-next-line deprecation/deprecation
   const cordovaHub = new Hub(undefined, new CordovaScope());
+  // eslint-disable-next-line deprecation/deprecation
   makeMain(cordovaHub);
 
   finalOptions.defaultIntegrations = [
+    // eslint-disable-next-line deprecation/deprecation
     ...defaultIntegrations,
     new SdkInfo(),
     new EventOrigin(),
@@ -73,18 +75,17 @@ export function init(options: Partial<CordovaOptions>): void {
 
   const browserOptions = {
     ...finalOptions,
-    autoSessionTracking:
-      NATIVE.platform === 'browser' && finalOptions.enableAutoSessionTracking,
+    autoSessionTracking: NATIVE.platform === 'browser' && finalOptions.enableAutoSessionTracking,
   } as BrowserOptions;
 
   const mobileOptions = {
     ...finalOptions,
-    enableAutoSessionTracking:
-      NATIVE.platform !== 'browser' && finalOptions.enableAutoSessionTracking,
+    enableAutoSessionTracking: NATIVE.platform !== 'browser' && finalOptions.enableAutoSessionTracking,
   } as CordovaOptions;
 
   // We first initialize the NATIVE SDK to avoid the Javascript SDK to invoke any
   // feature from the NATIVE SDK without the options being set.
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   void NATIVE.startWithOptions(mobileOptions);
   browserInit(browserOptions);
 }

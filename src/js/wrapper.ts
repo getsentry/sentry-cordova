@@ -1,4 +1,19 @@
-import type { AttachmentItem, BaseEnvelopeItemHeaders, Breadcrumb, ClientReportItem, Envelope, EnvelopeItem, Event, EventItem, SessionItem, SeverityLevel, User, UserFeedbackItem } from '@sentry/types';
+/* eslint-disable @typescript-eslint/no-floating-promises */
+// TODO: Fix floating promises on a major version.
+import type {
+  AttachmentItem,
+  BaseEnvelopeItemHeaders,
+  Breadcrumb,
+  ClientReportItem,
+  Envelope,
+  EnvelopeItem,
+  Event,
+  EventItem,
+  SessionItem,
+  SeverityLevel,
+  User,
+  UserFeedbackItem,
+} from '@sentry/types';
 import { getGlobalObject, logger, SentryError } from '@sentry/utils';
 
 import type { CordovaOptions } from './options';
@@ -39,14 +54,8 @@ export const NATIVE = {
 
       // filter out all the options that would crash native.
       /* eslint-disable @typescript-eslint/unbound-method,@typescript-eslint/no-unused-vars */
-      const {
-        beforeSend,
-        beforeBreadcrumb,
-        integrations,
-        defaultIntegrations,
-        transport,
-        ...filteredOptions
-      } = options;
+      const { beforeSend, beforeBreadcrumb, integrations, defaultIntegrations, transport, ...filteredOptions } =
+        options;
       /* eslint-enable @typescript-eslint/unbound-method,@typescript-eslint/no-unused-vars */
 
       return this._nativeCall('startWithOptions', filteredOptions)
@@ -89,7 +98,6 @@ export const NATIVE = {
     envelopeBytes.push(EOL);
 
     for (const rawItem of envelopeItems) {
-
       const [itemHeader, itemPayload] = this._processItem(rawItem);
 
       let bytesContentType: string;
@@ -98,9 +106,8 @@ export const NATIVE = {
         bytesContentType = 'text/plain';
         bytesPayload = utf8ToBytes(itemPayload);
       } else if (itemPayload instanceof Uint8Array) {
-        bytesContentType = typeof itemHeader.content_type === 'string'
-          ? itemHeader.content_type
-          : 'application/octet-stream';
+        bytesContentType =
+          typeof itemHeader.content_type === 'string' ? itemHeader.content_type : 'application/octet-stream';
         bytesPayload = [...itemPayload];
       } else {
         bytesContentType = 'application/json';
@@ -255,10 +262,10 @@ export const NATIVE = {
   },
 
   /**
- * Gets the event from envelopeItem and applies the level filter to the selected event.
- * @param data An envelope item containing the event.
- * @returns The event from envelopeItem or undefined.
- */
+   * Gets the event from envelopeItem and applies the level filter to the selected event.
+   * @param data An envelope item containing the event.
+   * @returns The event from envelopeItem or undefined.
+   */
   _processItem(item: EnvelopeItem): EnvelopeItem {
     if (NATIVE.platform === 'android') {
       const [itemHeader, itemPayload] = item;
@@ -266,7 +273,7 @@ export const NATIVE = {
       if (itemHeader.type == 'event' || itemHeader.type == 'transaction') {
         const event = this._processLevels(itemPayload as Event);
         if ('message' in event) {
-          // @ts-ignore Android still uses the old message object, without this the serialization of events will break.
+          // @ts-expect-error Android still uses the old message object, without this the serialization of events will break.
           event.message = { message: event.message };
         }
         /*
@@ -294,7 +301,9 @@ export const NATIVE = {
    * @param data An envelope item containing the event.
    * @returns The event from envelopeItem or undefined.
    */
-  _getEvent(envelopeItem: EventItem | AttachmentItem | UserFeedbackItem | SessionItem | ClientReportItem): Event | undefined {
+  _getEvent(
+    envelopeItem: EventItem | AttachmentItem | UserFeedbackItem | SessionItem | ClientReportItem
+  ): Event | undefined {
     if (envelopeItem[0].type == 'event' || envelopeItem[0].type == 'transaction') {
       return this._processLevels(envelopeItem[1] as Event);
     }
@@ -310,11 +319,9 @@ export const NATIVE = {
     const processed: Event = {
       ...event,
       level: event.level ? this._processLevel(event.level) : undefined,
-      breadcrumbs: event.breadcrumbs?.map(breadcrumb => ({
+      breadcrumbs: event.breadcrumbs?.map((breadcrumb) => ({
         ...breadcrumb,
-        level: breadcrumb.level
-          ? this._processLevel(breadcrumb.level)
-          : undefined,
+        level: breadcrumb.level ? this._processLevel(breadcrumb.level) : undefined,
       })),
     };
     return processed;
@@ -326,10 +333,9 @@ export const NATIVE = {
    * @returns More widely supported Severity level strings
    */
   _processLevel(level: SeverityLevel): SeverityLevel {
-    if (level == 'log' as SeverityLevel) {
+    if (level == ('log' as SeverityLevel)) {
       return 'debug' as SeverityLevel;
-    }
-    else if (level == 'critical' as SeverityLevel) {
+    } else if (level == ('critical' as SeverityLevel)) {
       return 'fatal' as SeverityLevel;
     }
 

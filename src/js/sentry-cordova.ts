@@ -1,4 +1,3 @@
-
 export type {
   Breadcrumb,
   Request,
@@ -24,7 +23,9 @@ export {
   configureScope,
   getCurrentScope,
   getHubFromCarrier,
+  // eslint-disable-next-line deprecation/deprecation
   getCurrentHub,
+  // eslint-disable-next-line deprecation/deprecation
   Hub,
   Scope,
   setContext,
@@ -41,17 +42,13 @@ export {
   withScope,
 } from '@sentry/core';
 
-
-export {
-  replayIntegration,
-  browserTracingIntegration,
-} from '@sentry/browser';
+export { replayIntegration, browserTracingIntegration } from '@sentry/browser';
 
 export type { CordovaOptions } from './options';
 export { init, nativeCrash } from './sdk';
 export { SDK_NAME, SDK_VERSION } from './version';
 
-
+// eslint-disable-next-line deprecation/deprecation
 export { Integrations as BrowserIntegrations } from '@sentry/browser';
 
 import * as Integrations from './integrations';
