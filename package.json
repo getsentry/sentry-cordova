@@ -54,7 +54,6 @@
     "typescript": "^3.6.3",
     "yarn": "^1.22.22"
   },
-  "_devDependencies_notes": "@types/prettier required in order to keep compatibility with older typescript/ serialize-javascript, node-notifier added for patching security issues.",
   "scripts": {
     "build:bundle": "rollup --config",
     "build:typescript": "tsc -p tsconfig.build.json",
