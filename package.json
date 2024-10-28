@@ -32,7 +32,7 @@
     "@sentry/wizard": "^3.34.2"
   },
   "devDependencies": {
-    "@jest/types": "^26.6.2",
+    "@jest/types": "^26.0.0",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-terser": "^0.4.4",
@@ -44,17 +44,13 @@
     "@types/node": "^12.7.5",
     "@types/prettier": "<2.6.0",
     "eslint": "^7.13.0",
-    "jest": "^26.6.3",
+    "jest": "^26.6.4",
     "json-schema": "^0.4.0",
     "prettier": "^3.3.3",
     "prettier-check": "^2.0.0",
     "replace-in-file": "^8.2.0",
     "rollup": "^2.79.2",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^4.2.3",
-    "rollup-plugin-terser": "^5.0.0",
-    "rollup-plugin-typescript2": "^0.36.0",
-    "ts-jest": "^25.0.0",
+    "ts-jest": "^26.5.0",
     "typescript": "^3.6.3",
     "yarn": "^1.22.22"
   },
