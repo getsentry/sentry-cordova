@@ -2,7 +2,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import ts from '@rollup/plugin-typescript';
-import typescript from 'typescript';
 
 const terserInstance = terser({
   mangle: {
@@ -13,7 +12,7 @@ Comment
     // I listed all of them here just for the clarity sake, as they are all used in the frames manipulation process.
     reserved: ['captureException', 'captureMessage', 'sentryWrapped'],
     properties: {
-      regex: /^_[^_]/, // Regex to match properties to mangle
+      regex: /^_[^_]/,
     },
   },
 });
@@ -28,12 +27,12 @@ const defaultPlugins = [
     },
   }),
   resolve({
-    mainFields: ['module'], // Use module field for resolution
+    mainFields: ['module'],
   }),
-  commonjs(), // Enable CommonJS module resolution
+  commonjs(),
 ];
 
-const defaultMinPlugins = [...defaultPlugins, terserInstance]; // Include terser for minification
+const defaultMinPlugins = [...defaultPlugins, terserInstance];
 
 export default [
   {
