@@ -8,7 +8,6 @@ module.exports = {
   },
   extends: ['@sentry-internal/sdk'],
   plugins: ['@sentry-internal/sdk'],
-
   ignorePatterns: ['build/**', 'dist/**', 'esm/**', 'sample/**', 'scripts/**', 'src/js/Ionic/**', '__tests__/**'],
   overrides: [
     {
