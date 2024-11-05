@@ -9,7 +9,7 @@ module.exports = {
   extends: ['@sentry-internal/sdk'],
   plugins: ['@sentry-internal/sdk'],
 
-  ignorePatterns: ['build/**', 'dist/**', 'esm/**', 'sample/**', 'scripts/**', 'dangerfile.js', 'src/js/Ionic/**', '__tests__/**'],
+  ignorePatterns: ['build/**', 'dist/**', 'esm/**', 'sample/**', 'scripts/**', 'src/js/Ionic/**', '__tests__/**'],
   overrides: [
     {
       files: ['*.ts', '*.tsx', '*.d.ts'],
