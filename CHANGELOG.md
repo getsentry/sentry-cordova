@@ -4,9 +4,9 @@
 
 ### Dependencies
 
-- Bump Android SDK from v7.14.0 to v7.16.0 ([#359](https://github.com/getsentry/sentry-cordova/pull/359))
-  - [changelog](https://github.com/getsentry/sentry-java/blob/7.16.0/CHANGELOG.md)
-  - [diff](https://github.com/getsentry/sentry-java/compare/7.14.0...7.16.0)
+- Bump Android SDK from v7.14.0 to v7.17.0 ([#359](https://github.com/getsentry/sentry-cordova/pull/359))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/7.17.0/CHANGELOG.md)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.14.0...7.17.0)
 
 ## 1.4.0
 

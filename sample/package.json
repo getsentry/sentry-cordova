@@ -41,7 +41,7 @@
     },
     "plugins": {
       "sentry-cordova": {
-        "SENTRY_ANDROID_SDK_VERSION": "7.16.0"
+        "SENTRY_ANDROID_SDK_VERSION": "7.17.0"
       }
     }
   },
