@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-### Dependencies
-
+- build(ios): Bump `sentry-cocoa` to 8.40.1 ([#360](https://github.com/getsentry/sentry-cordova/pull/352))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.40.1)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.36.1...8.40.1)
 - Bump Android SDK from v7.14.0 to v7.17.0 ([#359](https://github.com/getsentry/sentry-cordova/pull/359))
   - [changelog](https://github.com/getsentry/sentry-java/blob/7.17.0/CHANGELOG.md)
   - [diff](https://github.com/getsentry/sentry-java/compare/7.14.0...7.17.0)
