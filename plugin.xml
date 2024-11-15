@@ -9,7 +9,7 @@
     <repo>https://github.com/getsentry/sentry-cordova.git</repo>
     <issue>https://github.com/getsentry/sentry-cordova/issues</issue>
 
-    <preference name="SENTRY_ANDROID_SDK_VERSION" default="7.14.0"/>
+    <preference name="SENTRY_ANDROID_SDK_VERSION" default="7.17.0"/>
 
     <engines>
         <!-- https://issues.apache.org/jira/browse/CB-10239?jql=labels%20%3D%20cordova-8.0.0 -->
