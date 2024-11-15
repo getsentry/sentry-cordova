@@ -34,7 +34,7 @@ jobs:
           node-version: 18 # Specify the Node.js version explicitly
       - name: Compute dependency cache key
         id: compute_lockfile_hash
-        run: echo "hash=${{ hashFiles('**/yarn.lock') }}" >> "$GITHUB_OUTPUT"
+        run: echo "hash=${{ hashFiles('./yarn.lock') }}" >> "$GITHUB_OUTPUT"
       - name: Check dependency cache
         uses: actions/cache@v4
         id: cache_dependencies
