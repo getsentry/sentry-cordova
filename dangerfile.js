@@ -41,7 +41,7 @@ async function checkChangelog() {
 
   // Check if skipped
   const skipChangelog =
-    danger.github && (`${danger.github.pr.body  }`).toLowerCase().includes("#skip-changelog");
+    danger.github && (`${danger.github.pr.body}`).toLowerCase().includes("#skip-changelog");
 
   if (skipChangelog) {
     return;

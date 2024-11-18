@@ -37,7 +37,7 @@ export interface CordovaOptions extends Omit<BrowserOptions, 'autoSessionTrackin
    * https://docs.sentry.io/platforms/apple/guides/ios/configuration/out-of-memory/
    *
    * @default true
-   * */
+  */
   enableWatchdogTerminationTracking?: boolean;
 
   /**
@@ -47,7 +47,7 @@ export interface CordovaOptions extends Omit<BrowserOptions, 'autoSessionTrackin
    *
    * @default true
    * @deprecated The method will be removed on a major update, instead, use enableWatchdogTerminationTracking for the same result.
-   * */
+  */
   enableOutOfMemoryTracking?: boolean;
 
   /**
