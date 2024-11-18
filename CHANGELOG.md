@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+### Dependencies
+
 - build(ios): Bump `sentry-cocoa` to 8.40.1 ([#360](https://github.com/getsentry/sentry-cordova/pull/352))
   - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.40.1)
   - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.36.1...8.40.1)
