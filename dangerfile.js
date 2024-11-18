@@ -17,7 +17,7 @@ async function checkDocs() {
 
 function getCleanTitleWithPrLink() {
   const title = danger.github.pr.title;
-  return `${title.split(": ").slice(-1)[0].trim().replace(/\.+$/, "")  } ${  PR_LINK}`;
+  return `${title.split(": ").slice(-1)[0].trim().replace(/\.+$/, "")} ${PR_LINK}`;
 }
 
 function getChangelogDetailsHtml() {
