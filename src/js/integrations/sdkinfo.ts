@@ -1,7 +1,7 @@
-import type {  Integration } from '@sentry/types';
+import { addEventProcessor } from '@sentry/core';
+import type { Integration } from '@sentry/types';
 
 import { SDK_NAME, SDK_VERSION } from '../version';
-import { addEventProcessor } from '@sentry/core';
 
 /** Default SdkInfo instrumentation */
 export class SdkInfo implements Integration {
@@ -19,8 +19,7 @@ export class SdkInfo implements Integration {
    * @inheritDoc
    */
   public setupOnce(): void {
-    addEventProcessor(async event => {
-
+    addEventProcessor(async (event) => {
       event.platform = event.platform || 'javascript';
       event.sdk = {
         ...event.sdk,

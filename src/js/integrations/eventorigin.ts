@@ -17,7 +17,7 @@ export class EventOrigin implements Integration {
    * @inheritDoc
    */
   public setupOnce(): void {
-    addEventProcessor(event => {
+    addEventProcessor((event) => {
       event.tags = event.tags ?? {};
 
       event.tags['event.origin'] = 'cordova';

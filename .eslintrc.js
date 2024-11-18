@@ -7,7 +7,8 @@ module.exports = {
     ecmaVersion: 2018,
   },
   extends: ['@sentry-internal/sdk'],
-  ignorePatterns: ['build/**', 'dist/**', 'esm/**', 'examples/**', 'scripts/**', 'src/js/Ionic/**', '__tests__/**'],
+  plugins: ['@sentry-internal/sdk'],
+  ignorePatterns: ['build/**', 'dist/**', 'esm/**', 'sample/**', 'scripts/**', 'src/js/Ionic/**', '__tests__/**'],
   overrides: [
     {
       files: ['*.ts', '*.tsx', '*.d.ts'],
@@ -22,10 +23,20 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
-        '@sentry-internal/sdk/no-async-await': 'off',
-        '@sentry-internal/sdk/no-optional-chaining': 'off',
-        '@sentry-internal/sdk/no-nullish-coalescing': 'off',
+        '@typescript-eslint/ban-ts-comment': [
+          'error',
+          {
+            'ts-ignore': 'allow-with-description',
+          },
+        ],
       },
     },
   ],
+  rules: {
+    '@sentry-internal/sdk/no-async-await': 'off',
+    '@sentry-internal/sdk/no-optional-chaining': 'off',
+    '@sentry-internal/sdk/no-nullish-coalescing': 'off',
+    '@sentry-internal/sdk/no-class-field-initializers': 'off',
+    '@sentry-internal/sdk/no-unsupported-es6-methods' : 'off',
+  }
 };

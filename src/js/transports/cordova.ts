@@ -4,7 +4,7 @@ import { makePromiseBuffer } from '@sentry/utils';
 
 import { NATIVE } from '../wrapper';
 
-export type BaseNativeTransport = BaseTransportOptions
+export type BaseNativeTransport = BaseTransportOptions;
 
 /**
  * Uses the native transport if available.
@@ -32,4 +32,6 @@ export class NativeTransport implements Transport {
 /**
  * Creates a Native Transport.
  */
-export function makeCordovaTransport(): NativeTransport { return new NativeTransport(); }
+export function makeCordovaTransport(): NativeTransport {
+  return new NativeTransport();
+}

@@ -20,6 +20,7 @@ export class Cordova implements Integration {
    */
   public setupOnce(): void {
     addEventProcessor((event: Event) => {
+      // eslint-disable-next-line deprecation/deprecation
       const self = getCurrentHub().getIntegration(Cordova);
       if (self) {
         return normalizeData(event) as Event;

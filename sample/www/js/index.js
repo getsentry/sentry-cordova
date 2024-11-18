@@ -48,6 +48,6 @@ function onDeviceReady() {
     tracesSampleRate: 1,
   });
 
-  console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
+  console.log(`Running cordova-${cordova.platformId}@${cordova.version}`);
   document.getElementById('deviceready').classList.add('ready');
 }
