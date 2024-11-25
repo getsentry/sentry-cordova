@@ -11,7 +11,7 @@ import { CordovaPlatformType } from './types';
 export const serializeObject = (data: { [key: string]: unknown }): { [key: string]: string } => {
   const serialized: { [key: string]: string } = {};
 
-  Object.keys(data).forEach(dataKey => {
+  Object.keys(data).forEach((dataKey) => {
     const value = data[dataKey];
     serialized[dataKey] = typeof value === 'string' ? value : JSON.stringify(value);
   });
@@ -25,7 +25,7 @@ export const serializeObject = (data: { [key: string]: unknown }): { [key: strin
  * @returns More widely supported Severity level strings
  */
 export const processLevel = (level: SeverityLevel): SeverityLevel => {
-  if (level === 'log' as SeverityLevel) {
+  if (level === ('log' as SeverityLevel)) {
     return 'debug';
   }
 

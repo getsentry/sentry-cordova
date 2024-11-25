@@ -1,4 +1,5 @@
-import type { EventProcessor, Integration } from '@sentry/types';
+import { addEventProcessor } from '@sentry/core';
+import type { Integration } from '@sentry/types';
 
 import { SDK_NAME, SDK_VERSION } from '../version';
 
@@ -17,10 +18,8 @@ export class SdkInfo implements Integration {
   /**
    * @inheritDoc
    */
-  public setupOnce(addGlobalEventProcessor: (e: EventProcessor) => void): void {
-    // eslint-disable-next-line @sentry-internal/sdk/no-async-await
-    addGlobalEventProcessor(async event => {
-
+  public setupOnce(): void {
+    addEventProcessor(async (event) => {
       event.platform = event.platform || 'javascript';
       event.sdk = {
         ...event.sdk,

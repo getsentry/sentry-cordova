@@ -14,7 +14,7 @@ declare global {
 const setupGlobals = (): void => {
   // @ts-ignore Global
   global.Cordova = {
-    exec: jest.fn(resolve => resolve()),
+    exec: jest.fn((resolve) => resolve()),
   };
 
   // @ts-ignore Global

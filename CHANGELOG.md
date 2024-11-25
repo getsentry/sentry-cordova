@@ -1,15 +1,75 @@
 # Changelog
 
+## 1.4.1
+
+### Dependencies
+
+- Bump `sentry-wizard` to 3.34.2 ([#356](https://github.com/getsentry/sentry-cordova/pull/356))
+- build(ios): Bump `sentry-cocoa` to 8.40.1 ([#360](https://github.com/getsentry/sentry-cordova/pull/352))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.40.1)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.36.1...8.40.1)
+- Bump Android SDK from v7.14.0 to v7.17.0 ([#359](https://github.com/getsentry/sentry-cordova/pull/359))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/7.17.0/CHANGELOG.md)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.14.0...7.17.0)
+
+## 1.4.0
+
+### Features
+
+- Sentry Replay Support ([#354](https://github.com/getsentry/sentry-cordova/pull/354))
+
+How to use:
+
+Replay, profiling and performance monitoring are bundled into Sentry Cordova, all you need to do is to initialise the SDK, include the desired feature and use the sampling filters:
+
+```javascript
+/***
+ * @type {import("sentry-cordova")}
+ */
+  var Sentry = cordova.require("sentry-cordova.Sentry");
+  Sentry.init({
+    dsn: YOUR_DSN,
+    integrations: [
+      // Replay integration.
+      Sentry.replayIntegration({
+        maskAllText: true,
+        blockAllMedia: true,
+      }),
+      // Tracing integration.
+      Sentry.browserTracingIntegration(),
+    ],
+    // Replay sampling filters.
+    replaysSessionSampleRate: 1,
+    replaysOnErrorSampleRate: 1,
+
+    // Tracing sampling filter.
+    tracesSampleRate: 1,
+  });
+```
+
+### Dependencies
+
+- Bump Sentry JavaScript SDK to `7.119.1` ([#354](https://github.com/getsentry/sentry-cordova/pull/354))
+  - [changelog](https://github.com/getsentry/sentry-javascript/releases/tag/7.119.1)
+  - [diff](https://github.com/getsentry/sentry-javascript/compare/7.34.0...7.119.1)
+- Bump `sentry-wizard` to 3.32.0 ([#354](https://github.com/getsentry/sentry-cordova/pull/354))
+- Bump Android SDK from v7.6.0 to v7.14.0 ([#353](https://github.com/getsentry/sentry-cordova/pull/353))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#7140)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.6.0...7.14.0)
+- build(ios): Bump `sentry-cocoa` to 8.36.0 ([#352](https://github.com/getsentry/sentry-cordova/pull/352))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.36.0)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.21.0...8.36.0)
+
 ## 1.3.0
 
 ### Features
 
-- Add options for iOS: enableAppHangTracking and appHangTimeoutInterval, allowing users to define the App hang timeout or completly disabling it. ([#338](https://github.com/getsentry/sentry-cordova/pull/338))
+- Add options for iOS: enableAppHangTracking and appHangTimeoutInterval, allowing users to define the App hang timeout or completly disabling it. ([#338](https://github.com/getsentry/sentry-cordova/pull/338))s
 
 ### Dependencies
 
 - Bump `sentry-wizard` to 3.21.0 ([#544](https://github.com/getsentry/sentry-wizard/pull/544))
-- Bump Android SDK from v6.11.0 to v7.6.0 ([#336](https://github.com/getsentry/sentry-capacitor/pull/336))
+- Bump Android SDK from v6.11.0 to v7.6.0 ([#336](https://github.com/getsentry/sentry-cordova/pull/336))
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#760)
   - [diff](https://github.com/getsentry/sentry-java/compare/6.11.0...7.6.0)
 - build(ios): Bump `sentry-cocoa` to 8.21.0 ([#337](https://github.com/getsentry/sentry-cordova/pull/337))

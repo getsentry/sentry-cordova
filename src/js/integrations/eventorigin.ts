@@ -1,4 +1,5 @@
-import type { EventProcessor, Integration } from '@sentry/types';
+import { addEventProcessor } from '@sentry/core';
+import type { Integration } from '@sentry/types';
 
 /** Default EventOrigin instrumentation */
 export class EventOrigin implements Integration {
@@ -15,8 +16,8 @@ export class EventOrigin implements Integration {
   /**
    * @inheritDoc
    */
-  public setupOnce(addGlobalEventProcessor: (e: EventProcessor) => void): void {
-    addGlobalEventProcessor(event => {
+  public setupOnce(): void {
+    addEventProcessor((event) => {
       event.tags = event.tags ?? {};
 
       event.tags['event.origin'] = 'cordova';

@@ -25,22 +25,24 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         # we use a hash of yarn.lock as our cache key, because if it hasn't changed, our dependencies haven't changed,
         # so no need to reinstall them
+        with:
+          node-version: 18 # Specify the Node.js version explicitly
       - name: Compute dependency cache key
         id: compute_lockfile_hash
-        run: echo "hash=${{ hashFiles('yarn.lock') }}" >> "$GITHUB_OUTPUT"
+        run: echo "hash=${{ hashFiles('./yarn.lock') }}" >> "$GITHUB_OUTPUT"
       - name: Check dependency cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         id: cache_dependencies
         with:
           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
           key: ${{ steps.compute_lockfile_hash.outputs.hash }}
       - name: Install dependencies
-        if: steps.cache_dependencies.outputs.cache-hit == ''
+        if: steps.cache_dependencies.outputs.cache-hit != 'true'
         run: yarn install
     outputs:
       dependency_cache_key: ${{ steps.compute_lockfile_hash.outputs.hash }}
@@ -53,16 +55,18 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
       - name: Check dependency cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         with:
           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
           key: ${{ needs.job_build.outputs.dependency_cache_key }}
       - name: Check build cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         with:
           path: ${{ env.CACHED_BUILD_PATHS }}
           key: ${{ env.BUILD_CACHE_KEY }}
@@ -76,16 +80,18 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
       - name: Check dependency cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         with:
           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
           key: ${{ needs.job_install_deps.outputs.dependency_cache_key }}
       - name: Check build cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         id: cache_built_packages
         with:
           path: ${{ env.CACHED_BUILD_PATHS }}
@@ -95,11 +101,10 @@ jobs:
         # packages, and so `yarn build` should always run. This `if` check is therefore only there for testing CI issues
         # where the built packages are beside the point. In that case, you can change `BUILD_CACHE_KEY` (at the top of
         # this file) to a constant and skip rebuilding all of the packages each time CI runs.
-        if: steps.cache_built_packages.outputs.cache-hit == ''
+        if: steps.cache_built_packages.outputs.cache-hit != 'true'
         run: yarn build
-        # yarn.lock cannot be dirty when releasing a new version.
       - name: Check if yarn.lock is dirty
-        if: steps.cache_built_packages.outputs.cache-hit == ''
+        if: steps.cache_built_packages.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
     outputs:
@@ -109,22 +114,22 @@ jobs:
 
   job_carthage_build:
     name: Build Carthage Dependencies
-    runs-on: macos-latest
+    runs-on: macos-15
     timeout-minutes: 30
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Check Carthage build cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         id: cache_built_carthage
         with:
           path: ${{ env.CACHED_CARTHAGE_PATHS }}
           key: ${{ hashFiles('src/ios/Cartfile') }}
       - name: Install Carthage
-        if: steps.cache_built_carthage.outputs.cache-hit == ''
+        if: steps.cache_built_carthage.outputs.cache-hit != 'true'
         run: brew install carthage
       - name: Build Cocoa SDK from Carthage
-        if: steps.cache_built_carthage.outputs.cache-hit == ''
+        if: steps.cache_built_carthage.outputs.cache-hit != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
         run: make build
@@ -135,21 +140,23 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
       - name: Check dependency cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         with:
           path: ${{ env.CACHED_DEPENDENCY_PATHS }}
           key: ${{ needs.job_build.outputs.dependency_cache_key }}
       - name: Check build cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         with:
           path: ${{ env.CACHED_BUILD_PATHS }}
           key: ${{ env.BUILD_CACHE_KEY }}
       - name: Check Carthage build cache
-        uses: actions/cache@v3.2.5
+        uses: actions/cache@v4
         with:
           path: ${{ env.CACHED_CARTHAGE_PATHS }}
           key: ${{ hashFiles('src/ios/Cartfile') }}
@@ -158,7 +165,7 @@ jobs:
       - name: Pack
         run: yarn pack
       - name: Archive artifacts
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.sha }}
           path: |
@@ -173,10 +180,9 @@ jobs:
         shell: pwsh
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
       - name: Download test app artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: ${{ github.sha }}
           path: |
@@ -186,11 +192,10 @@ jobs:
           cd ${{ github.workspace }}/artifact
           $bundleName = (Get-Item *.tgz).Name
           tar -xvzf "$bundleName"
-
       - name: Check if package contains any Symlink
         run: |
           $symLinks = (find "${{ github.workspace }}" -type l -ls)
           if ($null -ne $symLinks) {
-            Write-Error "Atfifact contains illegal SymLinks`n$symLinks"
+            Write-Error "Artifact contains illegal Symlinks`n$symLinks"
           }
           Write-Output "No Symbolic Links found, all good :)"

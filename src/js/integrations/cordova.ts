@@ -1,4 +1,4 @@
-import { addGlobalEventProcessor, getCurrentHub } from '@sentry/core';
+import { addEventProcessor, getCurrentHub } from '@sentry/core';
 import type { Event, Integration } from '@sentry/types';
 
 import { normalizeData } from '../normalize';
@@ -19,7 +19,8 @@ export class Cordova implements Integration {
    * @inheritDoc
    */
   public setupOnce(): void {
-    addGlobalEventProcessor((event: Event) => {
+    addEventProcessor((event: Event) => {
+      // eslint-disable-next-line deprecation/deprecation
       const self = getCurrentHub().getIntegration(Cordova);
       if (self) {
         return normalizeData(event) as Event;

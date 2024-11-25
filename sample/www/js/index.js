@@ -23,12 +23,31 @@ document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
   // Cordova is now initialized. Have fun!
+  /***
+   * @type {import("sentry-cordova")}
+   */
   var Sentry = cordova.require("sentry-cordova.Sentry");
   Sentry.init({
     dsn: 'https://7e4fb5fbc26e4014acb13772e1782aea@o447951.ingest.sentry.io/5627302',
     debug: true,
+    integrations: [
+      // Replay integration.
+      Sentry.replayIntegration({
+        maskAllInputs: false,
+        blockAllMedia: true
+      }),
+      // Tracing integration.
+      Sentry.browserTracingIntegration(),
+    ],
+
+    // Replay sampling filters.
+    replaysSessionSampleRate: 1,
+    replaysOnErrorSampleRate: 1,
+
+    // Tracing sampling filter.
+    tracesSampleRate: 1,
   });
 
-  console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
+  console.log(`Running cordova-${cordova.platformId}@${cordova.version}`);
   document.getElementById('deviceready').classList.add('ready');
 }

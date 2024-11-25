@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="sentry-cordova" version="1.3.0">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="sentry-cordova" version="1.4.1">
     <name>Sentry</name>
     <author>Sentry</author>
     <description>Official Sentry SDK for Cordova</description>
@@ -9,7 +9,7 @@
     <repo>https://github.com/getsentry/sentry-cordova.git</repo>
     <issue>https://github.com/getsentry/sentry-cordova/issues</issue>
 
-    <preference name="SENTRY_ANDROID_SDK_VERSION" default="7.6.0"/>
+    <preference name="SENTRY_ANDROID_SDK_VERSION" default="7.17.0"/>
 
     <engines>
         <!-- https://issues.apache.org/jira/browse/CB-10239?jql=labels%20%3D%20cordova-8.0.0 -->

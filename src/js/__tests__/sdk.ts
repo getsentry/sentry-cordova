@@ -1,3 +1,4 @@
+// eslint-disable-next-line deprecation/deprecation
 import { getGlobalObject } from '@sentry/utils';
 
 import type { CordovaOptions } from '../options';
@@ -32,6 +33,7 @@ jest.mock('../utils', () => {
 describe('Tests SDK', () => {
   describe('init', () => {
     it('Uses SENTRY_RELEASE environment variable if present.', () => {
+      // eslint-disable-next-line deprecation/deprecation
       const window = getGlobalObject<any>();
       window.SENTRY_RELEASE = {
         id: 'test-release',
@@ -43,6 +45,7 @@ describe('Tests SDK', () => {
     });
 
     it('User release has precedence over SENTRY_RELEASE', () => {
+      // eslint-disable-next-line deprecation/deprecation
       const window = getGlobalObject<any>();
       window.SENTRY_RELEASE = {
         id: 'test-release',
@@ -56,7 +59,6 @@ describe('Tests SDK', () => {
     });
 
     describe('ios Options', () => {
-
       it('Should include iOS parameters when running on iOS', async () => {
         (getPlatform as jest.Mock).mockReturnValue('ios');
 
@@ -64,7 +66,7 @@ describe('Tests SDK', () => {
           environment: 'abc',
           // iOS parameters
           enableAppHangTracking: true,
-          appHangTimeoutInterval: 123
+          appHangTimeoutInterval: 123,
         };
 
         Sdk.init(expectedOptions);
@@ -77,11 +79,11 @@ describe('Tests SDK', () => {
         (getPlatform as jest.Mock).mockReturnValue('android');
 
         const expectedOption = {
-          environment: 'abc'
-        }
+          environment: 'abc',
+        };
         const unexpectedOptions = {
           appHangTimeoutInterval: 123,
-          enableAppHangTracking: true
+          enableAppHangTracking: true,
         };
 
         Sdk.init({ ...unexpectedOptions, ...expectedOption });
@@ -89,7 +91,6 @@ describe('Tests SDK', () => {
         expect(optionsTest.current).not.toContain(unexpectedOptions);
         expect(optionsTest.current?.environment).toEqual(expectedOption.environment);
       });
-    })
-
+    });
   });
 });
