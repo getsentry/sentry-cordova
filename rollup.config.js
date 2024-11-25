@@ -1,7 +1,7 @@
-import commonjs from 'rollup-plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
-import resolve from 'rollup-plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript2';
+import commonjs from '@rollup/plugin-commonjs';
+import terser from '@rollup/plugin-terser';
+import resolve from '@rollup/plugin-node-resolve';
+import ts from '@rollup/plugin-typescript';
 
 const terserInstance = terser({
   mangle: {
@@ -17,14 +17,12 @@ const terserInstance = terser({
 });
 
 const defaultPlugins = [
-  typescript({
+  ts({
     tsconfig: 'tsconfig.build.json',
-    tsconfigOverride: {
-      compilerOptions: {
-        declaration: false,
-        declarationMap: false,
-        module: 'ES2015',
-      },
+    compilerOptions: {
+      declaration: false,
+      declarationMap: false,
+      module: 'ES2015', // Set module to ES2015
     },
   }),
   resolve({

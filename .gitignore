@@ -13,7 +13,6 @@ sentry.properties
 ## Build generated
 build/
 DerivedData
-www
 coverage
 
 ## Various settings
@@ -74,3 +73,9 @@ package-lock.json
 
 # Generated Lockfiles
 Cartfile.resolved
+
+# Yarn cache
+.yarn
+
+# Yalc
+sample/yalc.lock

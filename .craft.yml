@@ -12,3 +12,7 @@ targets:
   - name: npm
   - name: github
     tagPrefix: v
+  - name: registry
+    sdks:
+      npm:sentry-cordova:
+        includeNames: /none/

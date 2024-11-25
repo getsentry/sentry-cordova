@@ -1,5 +1,5 @@
-import { Scope } from '@sentry/hub';
-import { Breadcrumb, User } from '@sentry/types';
+import { Scope } from '@sentry/core';
+import type { Breadcrumb, User } from '@sentry/types';
 
 import { NATIVE } from './wrapper';
 
@@ -28,7 +28,7 @@ export class CordovaScope extends Scope {
    */
   public setTags(tags: { [key: string]: string }): this {
     // As native only has setTag, we just loop through each tag key.
-    Object.keys(tags).forEach(key => {
+    Object.keys(tags).forEach((key) => {
       NATIVE.setTag(key, tags[key]);
     });
     return super.setTags(tags);
@@ -38,7 +38,7 @@ export class CordovaScope extends Scope {
    * @inheritDoc
    */
   public setExtras(extras: { [key: string]: any }): this {
-    Object.keys(extras).forEach(key => {
+    Object.keys(extras).forEach((key) => {
       NATIVE.setExtra(key, extras[key]);
     });
     return super.setExtras(extras);
