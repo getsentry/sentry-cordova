@@ -131,7 +131,7 @@ jobs:
       - name: Build Cocoa SDK from Carthage
         if: steps.cache_built_carthage.outputs.cache-hit != 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: make build
 
   job_artifacts:
