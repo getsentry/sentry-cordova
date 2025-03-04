@@ -21,7 +21,7 @@ if [ -f "$LOCAL_ENV_PATH" ]; then
     source "$LOCAL_ENV_PATH"
 fi
 
-if [ -z "$NODE_BINARY " ]; then
+if [ -z "$NODE_BINARY" ]; then
   echo "[Warning]: Node path was not found on \`.xcode.env\` and \`.xcode.env.local.\`. " \
   "You can quickly fix this by going to the path \`${IOS_PROJ_PATH}\`  and running the following script: " \
   " \`echo export NODE_BINARY=\$(command -v node) > .xcode.env\` " \
