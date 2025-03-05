@@ -22,11 +22,11 @@ if [ -f "$LOCAL_ENV_PATH" ]; then
 fi
 
 if [ -z "$NODE_BINARY" ]; then
-  echo "[Warning]: Node path was not found on \`.xcode.env\` and \`.xcode.env.local.\`. " \
+  echo "warning: Node path was not found on \`.xcode.env\` and \`.xcode.env.local.\`. " \
   "You can quickly fix this by going to the path \`${IOS_PROJ_PATH}\`  and running the following script: " \
   " \`echo export NODE_BINARY=\$(command -v node) > .xcode.env\` " \
   " Node is required for correctly build your project with Sentry." >&2
-  exit 1
+  exit 0
 else
   echo "Using Node.js from ${NODE_BINARY}"
 fi
@@ -59,7 +59,6 @@ if [ "$SENTRY_SKIP_DSYM_UPLOAD" != true ]; then
   set +x +e # disable printing commands otherwise we might print `error:` by accident and allow continuing on error
   SENTRY_XCODE_COMMAND_OUTPUT=$(/bin/sh -c "$NODE_BINARY  $SENTRY_COMMAND"  2>&1)
   if [ $? -eq 0 ]; then
-    echo "$SENTRY_XCODE_COMMAND_OUTPUT"
     echo "$SENTRY_XCODE_COMMAND_OUTPUT" | awk '{print "output: sentry-cli - " $0}'
   else
     echo "error: sentry-cli - To disable debug symbols upload, set SENTRY_SKIP_DSYM_UPLOAD=true in your environment variables. Or to allow failing upload, set SENTRY_ALLOW_FAILURE=true"
