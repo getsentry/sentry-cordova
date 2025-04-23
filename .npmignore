@@ -6,3 +6,9 @@
 !/src/android/**/*
 !/scripts/**/*
 !plugin.xml
+
+# Scripts used by the SDK
+/scripts/**/*
+!/scripts/before_compile.js
+!/scripts/plugin_add_rm.js
+!/scripts/xcode-upload-debug-files.sh
