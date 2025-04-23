@@ -1,10 +1,10 @@
 # Changelog
 
+## Unreleased
+
 ### Features
 
 - Support for Debug ID ([#374](https://github.com/getsentry/sentry-cordova/pull/374))
-
-## Unreleased
 
 ### Fixes
 
