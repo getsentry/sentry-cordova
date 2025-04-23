@@ -131,17 +131,22 @@ module.exports = function (ctx) {
         fs.writeFileSync(projectRootIndexHtml, contents.replace(regex, replaceWith));
       }
 
-      console.log(`Uploading assets release: '${release}' path: ${buildPath}`);
-      return sentryCli.releases
-        .new(release)
-        .then(() =>
-          sentryCli.releases.uploadSourceMaps(release, {
-            include: includes,
-            ignore: ignore,
-            rewrite: true,
-          })
-        )
-        .then(() => sentryCli.releases.finalize(release));
+      console.log(`Injecting Debug ID on release: '${release}' path: ${buildPath}`);
+      return sentryCli.execute(['sourcemaps', 'inject', buildPath])
+        .then(() => {
+          console.log(`Uploading assets release: '${release}' path: ${buildPath}`);
+
+          return sentryCli.releases
+            .new(release)
+            .then(() =>
+              sentryCli.releases.uploadSourceMaps(release, {
+                include: includes,
+                ignore: ignore,
+                rewrite: true,
+              })
+            )
+            .then(() => sentryCli.releases.finalize(release));
+        });
     });
   });
 
