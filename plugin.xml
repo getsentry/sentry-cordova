@@ -24,7 +24,7 @@
     <js-module src="dist/js/sentry-cordova.bundle.min.js" name="Sentry">
         <clobbers target="Sentry" />
     </js-module>
-    <asset src="dist/js/sentry-cordova.bundle.min.js" target="plugins/sentry-cordova/dist/js/sentry-cordova.bundle.min.js" />
+    <asset src="dist/js/sentry-cordova.bundle.min.js.map" target="plugins/sentry-cordova/dist/js/sentry-cordova.bundle.min.js.map" />
     <!-- android -->
     <platform name="android">
       <config-file target="res/xml/config.xml" parent="/*">
