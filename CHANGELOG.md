@@ -6,6 +6,10 @@
 
 - Support for Debug ID ([#374](https://github.com/getsentry/sentry-cordova/pull/374))
 
+### Fixes
+
+- Use a minified and optimized bundle to reduce the SDK size by three times, improving performance and reducing load times ([#371](https://github.com/getsentry/sentry-cordova/pull/371))
+
 ## 1.4.1
 
 ### Dependencies

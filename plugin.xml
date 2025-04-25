@@ -21,11 +21,10 @@
         <engine name="cordova-ios" version=">=4.4.0" />
     </engines>
 
-    <js-module src="dist/js/sentry-cordova.bundle.js" name="Sentry">
+    <js-module src="dist/js/sentry-cordova.bundle.min.js" name="Sentry">
         <clobbers target="Sentry" />
     </js-module>
-    <asset src="dist/js/sentry-cordova.bundle.js.map" target="plugins/sentry-cordova/dist/js/sentry-cordova.bundle.js.map" />
-
+    <asset src="dist/js/sentry-cordova.bundle.min.js.map" target="plugins/sentry-cordova/dist/js/sentry-cordova.bundle.min.js.map" />
     <!-- android -->
     <platform name="android">
       <config-file target="res/xml/config.xml" parent="/*">
