@@ -29,7 +29,8 @@
     "@sentry/hub": "7.119.1",
     "@sentry/types": "7.119.1",
     "@sentry/utils": "7.119.1",
-    "@sentry/wizard": "^3.34.2"
+    "@sentry/wizard": "^3.34.2",
+    "@sentry/cli": "2.43.1"
   },
   "devDependencies": {
     "@jest/types": "^26.0.0",
