@@ -10,6 +10,13 @@
 
 - Use a minified and optimized bundle to reduce the SDK size by three times, improving performance and reducing load times ([#371](https://github.com/getsentry/sentry-cordova/pull/371))
 
+
+### Dependencies
+
+- Bump `@sentry/cli` to 2.43.1 ([#???](https://github.com/getsentry/sentry-cordova/pull/???))
+  - [changelog](https://github.com/getsentry/sentry-cli/releases/tag/2.43.1)
+  - [diff](https://github.com/getsentry/sentry-cli/compare/1.77.3...2.43.1)
+
 ## 1.4.1
 
 ### Dependencies
