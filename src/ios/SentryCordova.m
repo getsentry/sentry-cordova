@@ -9,12 +9,17 @@
   bool sentHybridSdkDidBecomeActive;
 }
 
+NSString * const nativeSdkName = @"sentry.cocoa.cordova";
+
 - (void)pluginInitialize {
   NSLog(@"Sentry Cordova Plugin initialized");
 }
 
 - (void)startWithOptions:(CDVInvokedUrlCommand *)command {
   NSDictionary *options = [command.arguments objectAtIndex:0];
+
+  NSString *sdkVersion = [PrivateSentrySDKOnly getSdkVersionString];
+  [PrivateSentrySDKOnly setSdkName:nativeSdkName andVersionString:sdkVersion];
 
   SentryBeforeSendEventCallback beforeSend =
       ^SentryEvent *(SentryEvent *event) {
@@ -119,20 +124,19 @@
 
     // If the event is from cordova js, it gets set there and we do not handle
     // it here.
-    if ([sdkName isEqualToString:@"sentry.cocoa"]) {
-      [self setEventEnvironmentTag:event origin:@"ios" environment:@"native"];
+    if ([sdkName isEqualToString:nativeSdkName]) {
+      [self setEventEnvironmentTag:event environment:@"native"];
     }
   }
 }
 
 - (void)setEventEnvironmentTag:(SentryEvent *)event
-                        origin:(NSString *)origin
                    environment:(NSString *)environment {
   NSMutableDictionary *newTags = [NSMutableDictionary new];
   if (nil != event.tags) {
     [newTags addEntriesFromDictionary:event.tags];
   }
-  [newTags setValue:origin forKey:@"event.origin"];
+  [newTags setValue:@"ios" forKey:@"event.origin"];
   [newTags setValue:environment forKey:@"event.environment"];
   event.tags = newTags;
 }
