@@ -9,7 +9,7 @@
   bool sentHybridSdkDidBecomeActive;
 }
 
-NSString nativeSdkName = @"sentry.cocoa.capacitor";
+NSString * const nativeSdkName = @"sentry.cocoa.cordova";
 
 - (void)pluginInitialize {
   NSLog(@"Sentry Cordova Plugin initialized");
@@ -18,9 +18,9 @@ NSString nativeSdkName = @"sentry.cocoa.capacitor";
 - (void)startWithOptions:(CDVInvokedUrlCommand *)command {
   NSDictionary *options = [command.arguments objectAtIndex:0];
 
-
   NSString *sdkVersion = [PrivateSentrySDKOnly getSdkVersionString];
   [PrivateSentrySDKOnly setSdkName:nativeSdkName andVersionString:sdkVersion];
+
 
   SentryBeforeSendEventCallback beforeSend =
       ^SentryEvent *(SentryEvent *event) {
