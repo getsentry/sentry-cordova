@@ -21,7 +21,6 @@ NSString * const nativeSdkName = @"sentry.cocoa.cordova";
   NSString *sdkVersion = [PrivateSentrySDKOnly getSdkVersionString];
   [PrivateSentrySDKOnly setSdkName:nativeSdkName andVersionString:sdkVersion];
 
-
   SentryBeforeSendEventCallback beforeSend =
       ^SentryEvent *(SentryEvent *event) {
     [self setEventOriginTag:event];
