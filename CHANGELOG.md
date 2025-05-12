@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- Set custom SDK names on events to indicate where it was captured ([#378](https://github.com/getsentry/sentry-cordova/pull/378))
 - Use a minified and optimized bundle to reduce the SDK size by three times, improving performance and reducing load times ([#371](https://github.com/getsentry/sentry-cordova/pull/371))
 
 ### Dependencies

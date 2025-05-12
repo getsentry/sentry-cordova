@@ -37,6 +37,9 @@ import io.sentry.protocol.User;
 public class SentryCordova extends CordovaPlugin {
   private static final String TAG = "Sentry";
 
+    private static final String NATIVE_SDK_NAME = "sentry.native.android.cordova";
+    private static final String ANDROID_SDK_NAME = "sentry.java.android.cordova";
+
   final static Logger logger = Logger.getLogger("sentry-cordova");
 
   private SentryOptions sentryOptions;
@@ -165,6 +168,13 @@ public class SentryCordova extends CordovaPlugin {
           logger.info(String.format("Starting with DSN: '%s'", dsn));
           options.setDsn(dsn);
 
+          SdkVersion sdkVersion = options.getSdkVersion();
+          if (sdkVersion == null) {
+              sdkVersion = new SdkVersion(ANDROID_SDK_NAME, BuildConfig.VERSION_NAME);
+          } else {
+              sdkVersion.setName(ANDROID_SDK_NAME);
+          }
+
           boolean debug = jsonOptions.optBoolean("debug", false);
           options.setDebug(debug);
 
@@ -210,6 +220,8 @@ public class SentryCordova extends CordovaPlugin {
 
             return event;
           });
+
+          options.setNativeSdkName(NATIVE_SDK_NAME);
 
           sentryOptions = options;
         } catch (JSONException e) {
@@ -422,11 +434,11 @@ public class SentryCordova extends CordovaPlugin {
     if (sdk != null) {
       switch (sdk.getName()) {
       // If the event is from cordova js, it gets set there and we do not handle it here.
-      case "sentry.native":
-        setEventEnvironmentTag(event, "android", "native");
+      case NATIVE_SDK_NAME:
+        setEventEnvironmentTag(event, "native");
         break;
-      case "sentry.java.android":
-        setEventEnvironmentTag(event, "android", "java");
+      case ANDROID_SDK_NAME:
+        setEventEnvironmentTag(event, "java");
         break;
       default:
         break;
@@ -434,8 +446,8 @@ public class SentryCordova extends CordovaPlugin {
     }
   }
 
-  private void setEventEnvironmentTag(SentryEvent event, String origin, String environment) {
-    event.setTag("event.origin", origin);
+  private void setEventEnvironmentTag(SentryEvent event, String environment) {
+    event.setTag("event.origin", "android");
     event.setTag("event.environment", environment);
   }
 
