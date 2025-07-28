@@ -1,5 +1,15 @@
 # Changelog
 
+### Fixes
+
+- Google Play’s 16 KB page size compatibility requirement ([#930](https://github.com/getsentry/sentry-capacitor/pull/930))
+
+### Dependencies
+
+- Bump Android SDK from v7.17.0 to v7.22.6 ([#?](https://github.com/getsentry/sentry-cordova/pull/?))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/7.22.6/CHANGELOG.md)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.17.0...7.22.6)
+
 ## 1.5.0
 
 ### Features
