@@ -55,6 +55,9 @@
     "typescript": "^3.6.3",
     "yarn": "^1.22.22"
   },
+  "resolutions": {
+    "form-data": "4.0.4"
+  },
   "scripts": {
     "build:bundle": "rollup --config",
     "build:typescript": "tsc -p tsconfig.build.json",
