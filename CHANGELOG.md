@@ -10,6 +10,12 @@
   - [changelog](https://github.com/getsentry/sentry-java/blob/7.22.6/CHANGELOG.md)
   - [diff](https://github.com/getsentry/sentry-java/compare/7.17.0...7.22.6)
 
+## 1.6.0
+
+### Various fixes & improvements
+
+- Fix Android 15 support (#382) by @lucas-zimerman
+
 ## 1.5.0
 
 ### Features
