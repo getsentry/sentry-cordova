@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ### Fixes
 
 - Google Play’s 16 KB page size compatibility requirement ([#382](https://github.com/getsentry/sentry-cordova/pull/382))
