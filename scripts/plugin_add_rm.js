@@ -20,19 +20,19 @@ module.exports = function (ctx) {
   let uninstall = false;
 
   const fromProps = 'sentry.properties';
+  const isPropsFileExists = fs.existsSync(fromProps);
   if (process.stdin.isTTY) {
     if (ctx.hook === 'before_plugin_rm') {
       uninstall = true;
-      if (uninstall && fs.existsSync(fromProps)) {
+      if (uninstall && isPropsFileExists) {
         console.log(`Sentry: removing ${fromProps}`);
         fs.unlinkSync(fromProps);
       }
     }
     return wizard.run({
-      quiet: false,
+      quiet: isPropsFileExists,
       integration: 'cordova',
-      skipConnect: fs.existsSync(fromProps),
-      quiet: fs.existsSync(fromProps),
+      skipConnect: isPropsFileExists,
       uninstall: uninstall,
     });
   } else {

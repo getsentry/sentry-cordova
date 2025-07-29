@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 // import { Severity } from '@sentry/types';
-import { logger } from '@sentry/utils';
+import { logger } from '@sentry/core';
 
 import { NATIVE } from '../wrapper';
 

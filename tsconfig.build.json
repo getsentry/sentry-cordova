@@ -5,6 +5,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "lib": [
+      "ES2018",
+      "dom"
+    ]
   }
 }

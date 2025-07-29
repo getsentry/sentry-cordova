@@ -322,7 +322,7 @@ public class SentryCordova extends CordovaPlugin {
               otherUserKeysMap.put(key, value);
             }
 
-            userInstance.setOthers(otherUserKeysMap);
+            userInstance.setData(otherUserKeysMap);
           }
 
           scope.setUser(userInstance);
