@@ -1,5 +1,5 @@
+import type { Breadcrumb, User } from '@sentry/core';
 import { Scope } from '@sentry/core';
-import type { Breadcrumb, User } from '@sentry/types';
 
 import { NATIVE } from './wrapper';
 
@@ -29,7 +29,7 @@ export class CordovaScope extends Scope {
   public setTags(tags: { [key: string]: string }): this {
     // As native only has setTag, we just loop through each tag key.
     Object.keys(tags).forEach((key) => {
-      NATIVE.setTag(key, tags[key]);
+      NATIVE.setTag(key, tags[key] as string);
     });
     return super.setTags(tags);
   }

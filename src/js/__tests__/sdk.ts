@@ -1,5 +1,5 @@
 // eslint-disable-next-line deprecation/deprecation
-import { getGlobalObject } from '@sentry/utils';
+import { GLOBAL_OBJ } from '@sentry/core';
 
 import type { CordovaOptions } from '../options';
 import * as Sdk from '../sdk';
@@ -34,7 +34,7 @@ describe('Tests SDK', () => {
   describe('init', () => {
     it('Uses SENTRY_RELEASE environment variable if present.', () => {
       // eslint-disable-next-line deprecation/deprecation
-      const window = getGlobalObject<any>();
+      const window = GLOBAL_OBJ;
       window.SENTRY_RELEASE = {
         id: 'test-release',
       };
@@ -46,7 +46,7 @@ describe('Tests SDK', () => {
 
     it('User release has precedence over SENTRY_RELEASE', () => {
       // eslint-disable-next-line deprecation/deprecation
-      const window = getGlobalObject<any>();
+      const window = GLOBAL_OBJ;
       window.SENTRY_RELEASE = {
         id: 'test-release',
       };

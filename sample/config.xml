@@ -8,7 +8,4 @@
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <source-file src="..." target-dir="..." />
-    <engine name="ios" />
-    <engine name="browser" />
-    <plugin name="sentry-cordova" />
 </widget>

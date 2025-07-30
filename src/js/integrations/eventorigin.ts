@@ -1,5 +1,5 @@
+import type { Integration } from '@sentry/core';
 import { addEventProcessor } from '@sentry/core';
-import type { Integration } from '@sentry/types';
 
 /** Default EventOrigin instrumentation */
 export class EventOrigin implements Integration {

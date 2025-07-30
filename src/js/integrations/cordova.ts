@@ -1,5 +1,5 @@
+import type { Event, Integration } from '@sentry/core';
 import { addEventProcessor, getCurrentHub } from '@sentry/core';
-import type { Event, Integration } from '@sentry/types';
 
 import { normalizeData } from '../normalize';
 

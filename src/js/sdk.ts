@@ -1,7 +1,6 @@
 import type { BrowserOptions } from '@sentry/browser';
-import { defaultIntegrations, init as browserInit } from '@sentry/browser';
-import { Hub, makeMain } from '@sentry/core';
-import { getGlobalObject } from '@sentry/utils';
+import { init as browserInit } from '@sentry/browser';
+import { getClient,GLOBAL_OBJ  } from '@sentry/core';
 
 import { Cordova, EventOrigin, SdkInfo } from './integrations';
 import type { CordovaOptions } from './options';
@@ -22,7 +21,7 @@ const DEFAULT_OPTIONS: CordovaOptions = {
  */
 export function init(options: Partial<CordovaOptions>): void {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, deprecation/deprecation
-  const window = getGlobalObject<{ SENTRY_RELEASE?: { id?: string } }>();
+  const window = GLOBAL_OBJ as { SENTRY_RELEASE?: { id?: string } };
 
   if (options.enableWatchdogTerminationTracking !== null) {
     // eslint-disable-next-line deprecation/deprecation
@@ -57,13 +56,12 @@ export function init(options: Partial<CordovaOptions>): void {
 
   // Initialize a new hub using our scope with native sync
   // eslint-disable-next-line deprecation/deprecation
-  const cordovaHub = new Hub(undefined, new CordovaScope());
-  // eslint-disable-next-line deprecation/deprecation
-  makeMain(cordovaHub);
+  const cordovaScope = new CordovaScope();
+  const client = getClient();
+  cordovaScope.setClient(client);
 
   finalOptions.defaultIntegrations = [
     // eslint-disable-next-line deprecation/deprecation
-    ...defaultIntegrations,
     new SdkInfo(),
     new EventOrigin(),
     new Cordova(),

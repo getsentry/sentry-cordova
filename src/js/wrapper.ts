@@ -12,9 +12,9 @@ import type {
   SessionItem,
   SeverityLevel,
   User,
-  UserFeedbackItem,
-} from '@sentry/types';
-import { getGlobalObject, logger, SentryError } from '@sentry/utils';
+  UserFeedbackItem
+} from '@sentry/core';
+import { GLOBAL_OBJ, logger, SentryError } from '@sentry/core';
 
 import type { CordovaOptions } from './options';
 import { CordovaPlatformType } from './types';
@@ -80,7 +80,7 @@ export const NATIVE = {
 
   /**
    * Sending the event over the bridge to native
-   * @param event Event
+   * @param envelope
    */
   async sendEnvelope(envelope: Envelope): Promise<void> {
     if (!this.enableNative) {
@@ -95,7 +95,7 @@ export const NATIVE = {
 
     const headerString = JSON.stringify(envelopeHeader);
     let envelopeBytes: number[] = utf8ToBytes(headerString);
-    envelopeBytes.push(EOL);
+    envelopeBytes.push(EOL as number);
 
     for (const rawItem of envelopeItems) {
       const [itemHeader, itemPayload] = this._processItem(rawItem);
@@ -120,9 +120,9 @@ export const NATIVE = {
       const serializedItemHeader = JSON.stringify(itemHeader);
 
       envelopeBytes.push(...utf8ToBytes(serializedItemHeader));
-      envelopeBytes.push(EOL);
+      envelopeBytes.push(EOL as number);
       envelopeBytes = envelopeBytes.concat(bytesPayload);
-      envelopeBytes.push(EOL);
+      envelopeBytes.push(EOL as number);
     }
     await this._nativeCall('captureEnvelope', { envelope: envelopeBytes });
   },
@@ -142,7 +142,7 @@ export const NATIVE = {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, deprecation/deprecation
-      const _window = getGlobalObject<any>();
+      const _window = GLOBAL_OBJ as any;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const exec = _window && _window.Cordova && _window.Cordova.exec;
       if (!exec) {

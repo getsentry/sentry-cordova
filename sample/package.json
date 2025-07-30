@@ -7,6 +7,8 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
+    "plugin:build&publish": "cd .. && yarn build && yalc publish",
+    "plugin:push&install": "yalc push && yalc add sentry-cordova && yarn && rm -rf {platforms,plugins}",
     "build": "cordova build",
     "open-xcode": "open ./platforms/ios/HelloSentry.xcworkspace",
     "ios-run": "cordova emulate ios",
@@ -41,7 +43,7 @@
     },
     "plugins": {
       "sentry-cordova": {
-        "SENTRY_ANDROID_SDK_VERSION": "7.22.6"
+        "SENTRY_ANDROID_SDK_VERSION": "8.13.0"
       }
     }
   },
