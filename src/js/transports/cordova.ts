@@ -1,6 +1,5 @@
-import type { BaseTransportOptions, Envelope, Transport } from '@sentry/types';
-import type { PromiseBuffer } from '@sentry/utils';
-import { makePromiseBuffer } from '@sentry/utils';
+import type { BaseTransportOptions, Envelope, PromiseBuffer , Transport, TransportMakeRequestResponse } from '@sentry/core';
+import { makePromiseBuffer } from '@sentry/core';
 
 import { NATIVE } from '../wrapper';
 
@@ -17,7 +16,9 @@ export class NativeTransport implements Transport {
   /**
    * @inheritDoc
    */
-  public send(envelope: Envelope): PromiseLike<void> {
+  public send(envelope: Envelope): PromiseLike<TransportMakeRequestResponse> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     return this._buffer.add(() => NATIVE.sendEnvelope(envelope));
   }
 

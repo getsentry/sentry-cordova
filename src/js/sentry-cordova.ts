@@ -1,6 +1,6 @@
 export type {
   Breadcrumb,
-  Request,
+  RequestEventData,
   SdkInfo,
   Event,
   Exception,
@@ -9,24 +9,19 @@ export type {
   Stacktrace,
   Thread,
   User,
-} from '@sentry/types';
+} from '@sentry/core';
 
 export {
-  // eslint-disable-next-line deprecation/deprecation
-  addGlobalEventProcessor,
   addEventProcessor,
   addBreadcrumb,
   captureException,
   captureEvent,
   captureMessage,
   // eslint-disable-next-line deprecation/deprecation
-  configureScope,
   getCurrentScope,
-  getHubFromCarrier,
   // eslint-disable-next-line deprecation/deprecation
   getCurrentHub,
   // eslint-disable-next-line deprecation/deprecation
-  Hub,
   Scope,
   setContext,
   setExtra,
@@ -35,7 +30,6 @@ export {
   setTags,
   setUser,
   // eslint-disable-next-line deprecation/deprecation
-  startTransaction,
   startSpan,
   startSpanManual,
   startInactiveSpan,
@@ -47,9 +41,6 @@ export { replayIntegration, browserTracingIntegration } from '@sentry/browser';
 export type { CordovaOptions } from './options';
 export { init, nativeCrash } from './sdk';
 export { SDK_NAME, SDK_VERSION } from './version';
-
-// eslint-disable-next-line deprecation/deprecation
-export { Integrations as BrowserIntegrations } from '@sentry/browser';
 
 import * as Integrations from './integrations';
 export { Integrations };
