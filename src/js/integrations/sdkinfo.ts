@@ -30,7 +30,7 @@ export class SdkInfo implements Integration {
 
     const client = getClient();
     if (client) {
-      const options = client?.getOptions();
+      const options = client.getOptions();
       defaultPii = options.sendDefaultPii;
     }
 
