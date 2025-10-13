@@ -7,46 +7,39 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "build": "cordova build",
     "open-xcode": "open ./platforms/ios/HelloSentry.xcworkspace",
-    "ios-run": "cordova emulate ios",
-    "platforms:add": "cordova platform add ios && cordova platform add android && cordova platform add browser",
-    "platforms:remove": "cordova platform rm ios && cordova platform rm android && cordova platform rm browser",
-    "sentry:remove": "cordova plugins remove sentry-cordova",
-    "reset-ios": "cordova platform rm ios && cordova platform add ios",
-    "reset-sentry-ios": "yarn reset-ios && cordova plugins add .yalc/sentry-cordova"
+    "ios": "yarn cordova emulate ios",
+    "android": "yarn cordova emulate android",
+    "build": "yarn build:android && yarn build:ios",
+    "build:ios": "yarn cordova build ios",
+    "build:android": "yarn cordova build android",
+    "platforms:add": "node scripts/add-platforms.js",
+    "platforms:remove": "node scripts/remove-platforms.js",
+    "platforms:reset": "yarn platforms:remove && yarn playforms:add ",
+    "sentry:remove": "yarn cordova plugins remove sentry-cordova",
+    "sentry:add": "yarn cordova plugins add ./sentry-sdk"
   },
   "keywords": [
     "ecosystem:cordova"
   ],
-  "devDependencies": {
-    "cordova-android": "^14.0.0",
-    "cordova-browser": "^7.0.0",
-    "cordova-ios": "^7.1.1",
-    "sentry-cordova": "file:.yalc/sentry-cordova"
-  },
-  "cordova": {
-    "_comment_plugins": {
-      "sentry-cordova": {
-        "SENTRY_ANDROID_SDK_VERSION": "6.11.0"
-      }
-    },
-    "platforms": [
-      "browser",
-      "ios",
-      "android"
-    ],
-    "plugins_comment": {
-      "sentry-cordova": {}
-    },
-    "plugins": {
-      "sentry-cordova": {
-        "SENTRY_ANDROID_SDK_VERSION": "7.22.6"
-      }
-    }
-  },
   "dependencies": {
     "cordova": "^12.0.0",
     "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "cordova-android": "^14.0.1",
+    "cordova-browser": "^7.0.0",
+    "cordova-ios": "^7.1.1",
+    "sentry-cordova": "file:sentry-sdk"
+  },
+  "cordova": {
+    "platforms": [
+      "android",
+      "browser",
+      "ios"
+    ],
+    "plugins": {
+      "sentry-cordova": {}
+    }
   }
 }
