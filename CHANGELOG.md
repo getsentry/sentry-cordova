@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Support iOS 26 ([#395](https://github.com/getsentry/sentry-cordova/pull/395))
+
 ## 1.7.0
 
 ### Important Changes
