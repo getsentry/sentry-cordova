@@ -1,10 +1,16 @@
 # Changelog
 
-## Unreleased
+## 1.7.1
 
 ### Fixes
 
 - Support iOS 26 ([#395](https://github.com/getsentry/sentry-cordova/pull/395))
+
+### Dependencies
+
+- build(ios): Bump `sentry-cocoa` to 8.56.2 ([#395](https://github.com/getsentry/sentry-cordova/pull/395))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/releases/tag/8.56.2)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.36.0...8.56.2)
 
 ## 1.7.0
 
