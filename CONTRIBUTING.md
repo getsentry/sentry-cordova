@@ -25,7 +25,7 @@ On the root folder of Sentry Cordova run the following commands:
 
 ### Testing on a sample project
 
-First, make a build from the SDK using the command `yarn build`.
+First, make a build from the SDK using the command `yarn build` and `yarn postbuild`.
 Then, on the sample project folder, run the following commands::
 
 - yarn install
