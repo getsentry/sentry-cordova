@@ -79,3 +79,6 @@ Cartfile.resolved
 
 # Yalc
 sample/yalc.lock
+
+# Sample App
+sample/sentry-sdk/*

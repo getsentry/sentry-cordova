@@ -62,6 +62,7 @@
     "build:bundle": "rollup --config",
     "build:typescript": "tsc -p tsconfig.build.json",
     "build": "yarn run clean && yarn run build:typescript && yarn run build:bundle",
+    "postbuild": "node scripts/sample-sync.js",
     "clean": "rimraf dist coverage",
     "jest": "jest",
     "test:watch": "jest --watch",

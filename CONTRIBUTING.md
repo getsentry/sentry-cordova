@@ -25,25 +25,27 @@ On the root folder of Sentry Cordova run the following commands:
 
 ### Testing on a sample project
 
-On the sample project folder, load your local Sentry Cordova with the following commands:
+First, make a build from the SDK using the command `yarn build` and `yarn postbuild`.
+Then, on the sample project folder, run the following commands::
 
+- yarn install
 - yarn platforms:add
-- cordova plugin add '../'
+- yarn sentry:add
 
 If succeeded, Sentry wizzard will be invoked and your project configured with Sentry Cordova.
 
 Addionally, if you want to remove Sentry Cordova you can run the following command:
 
 ```
-cordova plugin remove sentry-cordova # same command works for removing the local sentry cordova from your project
+yarn sentry:remove
 ```
 
 To build your sample project:
 
 ```
-cordova build ios # Build the iOS solution
-cordova build android # Build the Android solution
-cordova build # Build both Android and iOS
+yarn build:ios
+yarn build:android
+yarn build # Build both Android and iOS
 ```
 
 To test your code you can run the following command:
