@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- compatibility with sentry-cocoa 8.54.0+ ([#399](https://github.com/getsentry/sentry-cordova/pull/399))
+
 ## 1.7.1
 
 ### Fixes
