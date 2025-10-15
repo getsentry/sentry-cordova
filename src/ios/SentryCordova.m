@@ -1,7 +1,7 @@
 #import "SentryCordova.h"
 #import <Sentry/Sentry.h>
 #import <Sentry/PrivateSentrySDKOnly.h>
-#import <Sentry/SentryOptions+HybridSDKs.h>
+#import <Sentry/SentryOptionsInternal.h>
 #import <Cordova/CDVAvailability.h>
 @import Sentry;
 
@@ -90,7 +90,7 @@ NSString * const nativeSdkName = @"sentry.cocoa.cordova";
     [mutableOptions removeObjectForKey:@"tracesSampler"];
     [mutableOptions removeObjectForKey:@"enableTracing"];
 
-    SentryOptions *sentryOptions = [[SentryOptions alloc] initWithDict:mutableOptions didFailWithError:errorPointer];
+    SentryOptions *sentryOptions = [SentryOptionsInternal initWithDict:mutableOptions didFailWithError:errorPointer];
     if (*errorPointer != nil) {
         NSLog(@"Failed to create Sentry options.");
         return nil;
