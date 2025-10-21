@@ -7,7 +7,7 @@ const sourceDir = path.join(__dirname, '..');
 const targetDir = path.join(__dirname, '..', 'sample', 'sentry-sdk');
 
 // Items to sync
-const itemsToSync = ['dist', 'src', 'plugin.xml', 'package.json'];
+const itemsToSync = ['dist', 'src', 'plugin.xml', 'package.json', 'scripts'];
 
 // Remove existing symlink or directory
 if (fs.existsSync(targetDir)) {
