@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- iOS app release due to inclusion of arm64e references ([#402](https://github.com/getsentry/sentry-cordova/pull/402))
+
 ## 1.7.2
 
 ### Fixes

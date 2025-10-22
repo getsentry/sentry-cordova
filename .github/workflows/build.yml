@@ -114,7 +114,7 @@ jobs:
 
   job_carthage_build:
     name: Build Carthage Dependencies
-    runs-on: macos-15
+    runs-on: macos-latest
     timeout-minutes: 30
     steps:
       - name: Check out current commit (${{ github.sha }})
@@ -124,7 +124,7 @@ jobs:
         id: cache_built_carthage
         with:
           path: ${{ env.CACHED_CARTHAGE_PATHS }}
-          key: ${{ hashFiles('src/ios/Cartfile') }}
+          key: ${{ hashFiles('src/ios/Cartfile', 'Makefile') }}
       - name: Install Carthage
         if: steps.cache_built_carthage.outputs.cache-hit != 'true'
         run: brew install carthage
@@ -159,7 +159,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.CACHED_CARTHAGE_PATHS }}
-          key: ${{ hashFiles('src/ios/Cartfile') }}
+          key: ${{ hashFiles('src/ios/Cartfile', 'Makefile') }}
       - name: Check that Carthage build exists
         run: test -d src/ios/Carthage || exit 1
       - name: Pack
