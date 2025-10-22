@@ -124,7 +124,7 @@ jobs:
         id: cache_built_carthage
         with:
           path: ${{ env.CACHED_CARTHAGE_PATHS }}
-          key: ${{ hashFiles('src/ios/Cartfile') }}
+          key: ${{ hashFiles('src/ios/Cartfile', 'Makefile') }}
       - name: Install Carthage
         if: steps.cache_built_carthage.outputs.cache-hit != 'true'
         run: brew install carthage
