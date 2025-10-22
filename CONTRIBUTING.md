@@ -48,6 +48,8 @@ yarn build:android
 yarn build # Build both Android and iOS
 ```
 
+Due to some limitations, you can't save the Sentry Plugin code on the Sample app directly from XCode, instead, you should save your changes to the files located at /src/ios and they will automatically be synced with Xcode due to symbolc links made when you run the script `sentry:add`.
+
 To test your code you can run the following command:
 
 ## iOS
