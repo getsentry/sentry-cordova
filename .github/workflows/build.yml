@@ -159,7 +159,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.CACHED_CARTHAGE_PATHS }}
-          key: ${{ hashFiles('src/ios/Cartfile') }}
+          key: ${{ hashFiles('src/ios/Cartfile', 'Makefile') }}
       - name: Check that Carthage build exists
         run: test -d src/ios/Carthage || exit 1
       - name: Pack
