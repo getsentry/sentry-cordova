@@ -207,12 +207,20 @@ NSString * const nativeSdkName = @"sentry.cocoa.cordova";
 
     [scope addBreadcrumb:breadcrumbInstance];
   }];
+
+  CDVPluginResult *result =
+        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
 - (void)clearBreadcrumbs:(CDVInvokedUrlCommand *)command {
   [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
     [scope clearBreadcrumbs];
   }];
+
+  CDVPluginResult *result =
+        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
 - (void)setUser:(CDVInvokedUrlCommand *)command {
@@ -242,6 +250,10 @@ NSString * const nativeSdkName = @"sentry.cocoa.cordova";
       [scope setUser:userInstance];
     }
   }];
+
+  CDVPluginResult *result =
+        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
 - (void)setExtra:(CDVInvokedUrlCommand *)command {
@@ -251,6 +263,10 @@ NSString * const nativeSdkName = @"sentry.cocoa.cordova";
   [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
     [scope setExtraValue:extra forKey:key];
   }];
+
+  CDVPluginResult *result =
+        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
 - (void)setContext:(CDVInvokedUrlCommand *)command {
@@ -260,6 +276,10 @@ NSString * const nativeSdkName = @"sentry.cocoa.cordova";
   [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
     [scope setContextValue:context forKey:key];
   }];
+
+  CDVPluginResult *result =
+        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
 - (void)setTag:(CDVInvokedUrlCommand *)command {
@@ -269,6 +289,10 @@ NSString * const nativeSdkName = @"sentry.cocoa.cordova";
   [SentrySDK configureScope:^(SentryScope *_Nonnull scope) {
     [scope setTagValue:value forKey:key];
   }];
+
+  CDVPluginResult *result =
+        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
 - (void)crash:(CDVInvokedUrlCommand *)command {
