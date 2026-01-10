@@ -25,9 +25,9 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v2
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 # v2
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         # we use a hash of yarn.lock as our cache key, because if it hasn't changed, our dependencies haven't changed,
         # so no need to reinstall them
         with:
@@ -55,9 +55,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v2
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 # v2
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 18
       - name: Check dependency cache
@@ -80,9 +80,9 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v2
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 # v2
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 18
       - name: Check dependency cache
@@ -118,7 +118,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v2
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 # v2
       - name: Check Carthage build cache
         uses: actions/cache@v4
         id: cache_built_carthage
@@ -140,9 +140,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v2
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 # v2
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 18
       - name: Check dependency cache
@@ -180,7 +180,7 @@ jobs:
         shell: pwsh
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v2
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 # v2
       - name: Download test app artifact
         uses: actions/download-artifact@v4
         with:
