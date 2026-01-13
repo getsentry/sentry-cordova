@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.5.5
+
+- Update Craft action version in release workflow by @lucas-zimerman in [#409](https://github.com/getsentry/sentry-cordova/pull/409)
+
 ## 1.7.3
 
 ### Fixes
