@@ -12,13 +12,11 @@
     <preference name="SENTRY_ANDROID_SDK_VERSION" default="7.22.6"/>
 
     <engines>
-        <!-- https://issues.apache.org/jira/browse/CB-10239?jql=labels%20%3D%20cordova-8.0.0 -->
-        <!-- Requires > 8.0.0 because of scoped npm packages -->
+        <!-- Requires cordova >= 7.0.0 and cordova-ios >= 4.4.0 since we need to support embed framework -->
         <engine name="cordova" version=">=7.0.0" />
-        <!-- Requires > 3.5.0 because of the custom Framework tag for iOS [CB-6698] -->
-        <!-- Requires > 4.0.0 because of the Framework tag for Android that uses gradle -->
-        <engine name="cordova-android" version=">=3.5.0" />
         <engine name="cordova-ios" version=">=4.4.0" />
+        <!-- Requires >= 4.0.0 because of the Framework tag for Android that uses Maven libraries -->
+        <engine name="cordova-android" version=">=4.0.0" />
     </engines>
 
     <js-module src="dist/js/sentry-cordova.bundle.min.js" name="Sentry">
