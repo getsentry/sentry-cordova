@@ -81,8 +81,10 @@ public class SentryCordova extends CordovaPlugin {
         try (FileOutputStream out = new FileOutputStream(installation)) {
           out.write(bytes);
           logger.info("Successfully captured envelope.");
+          callbackContext.success();
         } catch (Exception e) {
           logger.info("Error writing envelope.");
+          callbackContext.error("Error writing envelope.");
         }
 
         break;
@@ -369,8 +371,10 @@ public class SentryCordova extends CordovaPlugin {
 
         scope.addBreadcrumb(breadcrumb);
         logger.info("Send breadcrumb successful");
+        callbackContext.success();
       } catch (JSONException e) {
         logger.warning("Error deserializing breadcrumb");
+        callbackContext.error("Failed to add breadcrumb");
       }
     });
   }
