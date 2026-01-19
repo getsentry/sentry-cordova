@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Fixes memory leak on the Native SDK. ([#407](https://github.com/getsentry/sentry-cordova/pull/407))
+
 ## 1.7.3
 
 ### Fixes
