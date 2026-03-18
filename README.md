@@ -46,9 +46,9 @@ Sentry.init({ dsn: '___PUBLIC_DSN___' });
 
 ## Documentation
 
-- [Installation](https://docs.sentry.io/platforms/javascript/guides/cordova/#install)
-- [Using Sentry with Ionic](https://docs.sentry.io/platforms/javascript/guides/cordova/ionic/)
-- [Documentation](https://docs.sentry.io/platforms/javascript/guides/cordova/)
+* [Installation](https://docs.sentry.io/platforms/javascript/guides/cordova/#install)
+* [Using Sentry with Ionic](https://docs.sentry.io/platforms/javascript/guides/cordova/ionic/)
+* [Documentation](https://docs.sentry.io/platforms/javascript/guides/cordova/)
 
 > [!WARNING]
 > Example and sample code in is unmaintained. Sample code may contain security vulnerabilities, should never be used in production, and exists only for illustrative purposes.
