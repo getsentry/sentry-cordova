@@ -6,6 +6,11 @@
 
 <h1>Official Sentry SDK for Cordova (Ionic, ...)</h1>
 
+> [!IMPORTANT]
+> Cordova is being superseded by modern alternatives like [Capacitor](https://ionic.io/resources/articles/capacitor-vs-cordova-modern-hybrid-app-development). This codebase is no longer maintained by Sentry. If you are starting a new project or planning a [migration](https://capacitorjs.com/docs/cordova/migration-strategy), consider using [Sentry Capacitor](https://github.com/getsentry/sentry-capacitor), [Sentry React Native](https://github.com/getsentry/sentry-react-native), or [Sentry Flutter](https://github.com/getsentry/sentry-dart) instead.
+
+===========
+
 _Bad software is everywhere, and we're tired of it. Sentry is on a mission to help developers write better software faster, so we can get back to enjoying technology. If you want to join us [<kbd>**Check out our open positions**</kbd>](https://sentry.io/careers/)_
 
 [![build](https://github.com/getsentry/sentry-cordova/workflows/Build%20&%20Test/badge.svg?branch=main)](https://github.com/getsentry/sentry-cordova/actions?query=branch%3Amain)
